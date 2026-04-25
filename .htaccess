@@ -1,0 +1,8 @@
+# Block access to .env and other hidden files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Optional: Disable directory browsing
+Options -Indexes

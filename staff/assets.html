@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assets - ICT Careline Center</title>
+    <link rel="stylesheet" href="../assets/css/style.css?v=9">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">🛠️</div>
+                <h2>ICT Careline Center</h2>
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+                <a href="profile.html" class="nav-link">👤 My Profile</a>
+                <a href="assets.html" class="nav-link active">🖥️ My Assets</a>
+                <a href="report_form.html" class="nav-link">📝 Submit KEW.PA-9</a>
+                <a href="history.html" class="nav-link">📜 My Reports</a>
+            </nav>
+            <div style="margin-top: auto;">
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
+                <div>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">ICT Careline Center
+                    </p>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">My Assets</h2>
+                </div>
+                <div id="current-date"
+                    style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                    <!-- Date will be loaded here -->
+                </div>
+            </header>
+
+            <section>
+                <h1>Asset Registration Form</h1>
+                <p class="text-muted">Register your primary ICT equipment details below.</p>
+                
+                <div class="card" style="margin-top: 2rem; max-width: 800px;">
+                    <form id="masterAssetForm">
+                        <input type="hidden" name="id" id="f_asset_id">
+                        
+                        <!-- Bahagian A: User Info -->
+                        <h3 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 0.5rem; display: inline-block;">BAHAGIAN A: MAKLUMAT PEMOHON</h3>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2.5rem;">
+                            <div class="form-group">
+                                <label>Nama Pemohon</label>
+                                <input type="text" id="user_nama" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
+                            </div>
+                            <div class="form-group">
+                                <label>Jawatan</label>
+                                <input type="text" id="user_jawatan" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Bahagian / Unit</label>
+                                <input type="text" id="user_dept" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
+                            </div>
+                        </div>
+
+                        <!-- Bahagian B: Asset Info -->
+                        <h3 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 0.5rem; display: inline-block;">BAHAGIAN B: MAKLUMAT KOMPUTER / KOMPUTER RIBA</h3>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label>Model Komputer / Laptop</label>
+                                <input type="text" name="model_komputer" id="f_model_comp" class="form-control" placeholder="e.g. Acer Veriton">
+                            </div>
+                            <div class="form-group">
+                                <label>No. Siri Komputer / Laptop</label>
+                                <input type="text" name="serial_number" id="f_serial" class="form-control" required placeholder="Enter Serial No">
+                            </div>
+                            <div class="form-group">
+                                <label>Model Monitor</label>
+                                <input type="text" name="model_monitor" id="f_model_mon" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>No. Siri Monitor</label>
+                                <input type="text" name="serial_monitor" id="f_serial_mon" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Sistem Operasi (Windows)</label>
+                                <input type="text" name="os" id="f_os" class="form-control" placeholder="e.g. Windows 10 Pro">
+                            </div>
+                            <div class="form-group">
+                                <label>Model Processor</label>
+                                <input type="text" name="processor" id="f_processor" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Model dan Kapasiti RAM</label>
+                                <input type="text" name="ram" id="f_ram" class="form-control" placeholder="e.g. 8GB DDR4">
+                            </div>
+                            <div class="form-group">
+                                <label>Jenis Cakera Keras (Hard Disk)</label>
+                                <input type="text" name="hard_disk" id="f_disk" class="form-control" placeholder="e.g. 512GB SSD">
+                            </div>
+                            <div class="form-group">
+                                <label>Jenis Tetikus (Mouse)</label>
+                                <input type="text" name="mouse" id="f_mouse" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Jenis Papan Kekunci (Keyboard)</label>
+                                <input type="text" name="keyboard" id="f_keyboard" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Versi Microsoft Office</label>
+                                <input type="text" name="ms_office" id="f_office" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Versi Antivirus</label>
+                                <input type="text" name="antivirus" id="f_antivirus" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>No. IP Address</label>
+                                <input type="text" name="ip_address" id="f_ip" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Pencetak (Printer)</label>
+                                <input type="text" name="printer" id="f_printer" class="form-control">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Perisian Lain</label>
+                                <textarea name="perisian_lain" id="f_others" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Bahagian C: Asset Images -->
+                        <h3 style="font-size: 1.1rem; color: var(--primary); margin: 2rem 0 1.5rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 0.5rem; display: inline-block;">BAHAGIAN C: MAKLUMAT GAMBAR ASET (MAX 5)</h3>
+                        <div class="form-group">
+                            <label>Lampiran Gambar Aset (Maksima 5 keping)</label>
+                            <div style="border: 2px dashed var(--border); padding: 2rem; border-radius: 12px; text-align: center; background: #fafafa; transition: all 0.3s ease; position: relative;">
+                                <input type="file" name="images[]" id="asset_images" multiple accept="image/*" 
+                                       style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer;">
+                                <div style="font-size: 2.5rem; margin-bottom: 1rem;">📸</div>
+                                <p style="font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Click or drag images to upload</p>
+                                <p class="text-muted" style="font-size: 0.85rem;">Max 5 images. Format: JPG, PNG, WEBP.</p>
+                            </div>
+                            <div id="image-preview-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-top: 1.5rem;">
+                                <!-- Previews will appear here -->
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                            <button type="submit" id="saveAssetBtn" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.05rem; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 15px var(--primary-light);">
+                                Save Asset Information
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        async function handleLogout() {
+            try {
+                await fetch('../api/logout.php');
+            } catch (err) {}
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('../login.html');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            const dateDisplay = document.getElementById('current-date');
+            if (dateDisplay) dateDisplay.textContent = new Date().toLocaleDateString('en-MY', dateOpts);
+            
+            fetchProfile();
+            loadAssetData();
+            setupImagePreview();
+        });
+
+        function setupImagePreview() {
+            const input = document.getElementById('asset_images');
+            const grid = document.getElementById('image-preview-grid');
+
+            input.addEventListener('change', (e) => {
+                grid.innerHTML = '';
+                const files = e.target.files;
+                
+                if (files.length > 5) {
+                    alert('You can only upload a maximum of 5 images.');
+                    input.value = '';
+                    return;
+                }
+
+                Array.from(files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const div = document.createElement('div');
+                        div.style.cssText = 'position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; border:1px solid var(--border);';
+                        div.innerHTML = `
+                            <img src="${event.target.result}" style="width:100%; height:100%; object-fit:cover;">
+                            <div style="position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.5); color:#fff; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; cursor:pointer;" onclick="this.parentElement.remove()">×</div>
+                        `;
+                        grid.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
+
+        async function fetchProfile() {
+            try {
+                const response = await fetch('../api/staff_get_profile.php');
+                const result = await response.json();
+                if (result.status === 'success') {
+                    document.getElementById('user_nama').value = result.data.full_name || '';
+                    document.getElementById('user_jawatan').value = result.data.jawatan || '';
+                    document.getElementById('user_dept').value = result.data.department || '';
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadAssetData() {
+            try {
+                const response = await fetch('../api/staff_get_assets.php');
+                const result = await response.json();
+                if (result.status === 'success' && result.data.length > 0) {
+                    const a = result.data[0];
+                    document.getElementById('f_asset_id').value = a.id;
+                    document.getElementById('f_model_comp').value = a.model_komputer || '';
+                    document.getElementById('f_serial').value = a.serial_number || '';
+                    document.getElementById('f_model_mon').value = a.model_monitor || '';
+                    document.getElementById('f_serial_mon').value = a.serial_monitor || '';
+                    document.getElementById('f_os').value = a.os || '';
+                    document.getElementById('f_processor').value = a.processor || '';
+                    document.getElementById('f_ram').value = a.ram || '';
+                    document.getElementById('f_disk').value = a.hard_disk || '';
+                    document.getElementById('f_mouse').value = a.mouse || '';
+                    document.getElementById('f_keyboard').value = a.keyboard || '';
+                    document.getElementById('f_office').value = a.ms_office || '';
+                    document.getElementById('f_antivirus').value = a.antivirus || '';
+                    document.getElementById('f_ip').value = a.ip_address || '';
+                    document.getElementById('f_printer').value = a.printer || '';
+                    document.getElementById('f_others').value = a.perisian_lain || '';
+
+                    // Load existing images
+                    if (a.images && a.images.length > 0) {
+                        const grid = document.getElementById('image-preview-grid');
+                        grid.innerHTML = '';
+                        a.images.forEach(img => {
+                            const div = document.createElement('div');
+                            div.style.cssText = 'position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; border:1px solid var(--border);';
+                            div.innerHTML = `
+                                <img src="../${img.image_path}" style="width:100%; height:100%; object-fit:cover;">
+                            `;
+                            grid.appendChild(div);
+                        });
+                    }
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        document.getElementById('masterAssetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveAssetBtn');
+            const formData = new FormData(e.target);
+            
+            if (!formData.get('asset_type')) {
+                formData.append('asset_type', 'Desktop PC');
+            }
+            
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Saving Details...';
+                
+                const response = await fetch('../api/staff_save_asset.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert('Asset Information Saved Successfully!');
+                    loadAssetData();
+                } else {
+                    alert(result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error occurred.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Asset Information';
+            }
+        });
+    </script>
+</body>
+</html>

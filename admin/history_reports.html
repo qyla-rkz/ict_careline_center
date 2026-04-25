@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Logs - ICT Careline Center</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">🛠️</div>
+                <h2>ICT Careline Center</h2>
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+                <a href="report_management.html" class="nav-link">📝 Report Management</a>
+                <a href="inventory.html" class="nav-link">🖥️ Assets Inventory</a>
+                <a href="staff_assets.html" class="nav-link">👥 Staff Assets</a>
+                <a href="history_reports.html" class="nav-link active">📜 History Logs</a>
+            </nav>
+            <div style="margin-top: auto;">
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
+                <div>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">ICT Careline Center</p>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Historical Reports</h2>
+                </div>
+                <div id="current-date"
+                    style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                    <!-- Date loaded via JS -->
+                </div>
+            </header>
+
+            <div class="card">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 2px solid var(--border);">
+                            <th style="padding: 1rem;">ID</th>
+                            <th style="padding: 1rem;">Reporter</th>
+                            <th style="padding: 1rem;">Decision</th>
+                            <th style="padding: 1rem;">Processed By</th>
+                            <th style="padding: 1rem;">Date</th>
+                            <th style="padding: 1rem; text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function handleLogout() {
+            try {
+                await fetch('../api/logout.php');
+            } catch (err) {}
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('../login.html');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-MY', opts);
+            fetchHistory();
+        });
+
+        async function fetchHistory() {
+            try {
+                const response = await fetch('../api/admin_get_reports.php');
+                const result = await response.json();
+                if (result.status === 'success') {
+                    // Filter for Resolved/Rejected in history
+                    const history = result.data.filter(r => r.status === 'Resolved' || r.status === 'Rejected');
+                    const tbody = document.getElementById('historyTableBody');
+                    tbody.innerHTML = history.map(r => `
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 1rem; font-weight: 600;">#${r.id}</td>
+                            <td style="padding: 1rem;">${r.nama_pelapor || r.full_name}</td>
+                            <td style="padding: 1rem;"><span class="badge badge-${r.keputusan === 'Diluluskan' ? 'resolved' : 'rejected'}">${r.keputusan || 'N/A'}</span></td>
+                            <td style="padding: 1rem;">${r.admin_name_jawatan || 'System'}</td>
+                            <td style="padding: 1rem;">${new Date(r.created_at).toLocaleDateString('en-MY')}</td>
+                            <td style="padding: 1rem; text-align: center;">
+                                <button onclick='viewReport(${JSON.stringify(r)})' class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">View / Print</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        function viewReport(r) {
+            // We can reuse the print logic from dashboard or just redirect
+            localStorage.setItem('print_report', JSON.stringify(r));
+            window.location.href = 'dashboard.html?view=' + r.id;
+        }
+    </script>
+</body>
+</html>

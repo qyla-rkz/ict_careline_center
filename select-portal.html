@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICT Careline Center - Select Your Portal</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=9">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            overflow: hidden;
+            height: 100vh;
+        }
+        .roles h2 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem) !important;
+        }
+        .role-card {
+            padding: 2.5rem 2rem !important;
+            width: 340px !important;
+        }
+    </style>
+</head>
+
+<body class="portal-body">
+
+    <nav class="navbar container" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; border-bottom: none;">
+        <div class="logo">
+            <a href="index.html" style="text-decoration:none; color:inherit;">ICT Careline <span>Center</span></a>
+        </div>
+    </nav>
+
+    <main class="container centered-content" style="height: 100vh; padding: 0;">
+        <section class="roles fade-in">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Choose Your Portal</h2>
+            <div class="role-cards" style="margin-top: 2rem;">
+                <div class="role-card register">
+                    <div class="icon">📖</div>
+                    <h3>Staff Register Portal</h3>
+                    <p>Create a new staff account to start managing your own dashboard.</p>
+                    <a href="register.html" class="role-btn">Register Now</a>
+                </div>
+                <div class="role-card login">
+                    <div class="icon">👤</div>
+                    <h3>Login Portal</h3>
+                    <p>Access your existing account for oversight and management activities.</p>
+                    <a href="login.html" class="role-btn">Login Now</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="container" style="position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; border-top: none; background: transparent;">
+        <p>&copy; 2026 Unit Teknologi Maklumat Majlis Perbandaran Muar. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="assets/js/main.js?v=2"></script>
+</body>
+
+</html>

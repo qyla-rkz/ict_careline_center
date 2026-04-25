@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ICT Careline Center</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        @media print {
+            @page { size: A4 portrait; margin: 10mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">🛠️</div>
+                <h2>ICT Careline Center</h2>
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-link active">📊 Dashboard</a>
+                <a href="report_management.html" class="nav-link">📝 Report Management</a>
+                <a href="inventory.html" class="nav-link">🖥️ Assets Inventory</a>
+                <a href="staff_assets.html" class="nav-link">👥 Staff Assets</a>
+                <a href="history_reports.html" class="nav-link">📜 History Logs</a>
+            </nav>
+            <div style="margin-top: auto;">
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
+                <div>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">ICT Careline Center</p>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Admin Management</h2>
+                </div>
+                <div id="adminDate"
+                    style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                    <!-- Date loaded via JS -->
+                </div>
+            </header>
+
+            <section id="section-overview">
+                <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-main);">System Control</h1>
+                <p class="text-muted">Manage incoming KEW.PA-9 reports and maintenance requests.</p>
+
+                <div class="stats-grid"
+                    style="margin-top: 2.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="stat-icon"
+                            style="background: #eff6ff; color: #1e40af; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            📥</div>
+                        <div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Total Reports</div>
+                            <div id="stat-total"
+                                style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="stat-icon"
+                            style="background: #fef3c7; color: #92400e; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            ⏳</div>
+                        <div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Pending Approval</div>
+                            <div id="stat-pending"
+                                style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="stat-icon"
+                            style="background: #dcfce7; color: #166534; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            ✅</div>
+                        <div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Resolved</div>
+                            <div id="stat-resolved"
+                                style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="stat-icon"
+                            style="background: #fee2e2; color: #991b1b; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            ❌</div>
+                        <div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Rejected</div>
+                            <div id="stat-rejected"
+                                style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Table -->
+            <div class="card">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 2px solid var(--border);">
+                            <th style="padding: 1rem;">ID</th>
+                            <th style="padding: 1rem;">Reporter</th>
+                            <th style="padding: 1rem;">Asset</th>
+                            <th style="padding: 1rem;">Date</th>
+                            <th style="padding: 1rem;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- ─── Report Management Modal ─── -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content" style="max-width: 850px;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>Process KEW.PA-9 Report</h2>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            
+            <form id="manageForm">
+                <input type="hidden" id="edit_id" name="id">
+                <input type="hidden" id="edit_reporter_name">
+                <input type="hidden" id="edit_created_at">
+
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    <div>
+                        <h4 style="margin-bottom: 1rem; color: var(--primary);">Bahagian I: Maklumat Pengadu</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div class="form-group"><label>Nama Aset</label><input type="text" id="m_nama_aset" readonly class="form-control"></div>
+                            <div class="form-group"><label>Jenis Aset</label><input type="text" id="m_jenis_aset" readonly class="form-control"></div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+                            <div class="form-group"><label>No. Siri Pendaftaran</label><input type="text" id="m_nombor_siri" readonly class="form-control"></div>
+                            <div class="form-group"><label>Pengguna Terakhir</label><input type="text" id="m_pengguna" readonly class="form-control"></div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+                            <div class="form-group"><label>Lokasi Aset</label><input type="text" id="m_lokasi" readonly class="form-control"></div>
+                            <div class="form-group"><label>Tarikh Kerosakan</label><input type="text" id="m_tarikh_kerosakan" readonly class="form-control"></div>
+                        </div>
+                        <div class="form-group"><label>Perihal Kerosakan</label><textarea id="m_perihal" readonly class="form-control" rows="3"></textarea></div>
+                    </div>
+                    
+                    <div>
+                        <h4 style="margin-bottom: 1rem; color: var(--primary);">Bahagian II: Penemuan Teknikal</h4>
+                        <div class="form-group"><label>Kos Penyelenggaraan Terdahulu (RM)</label><input type="number" step="0.01" name="kos_penyelenggaraan_dahulu" id="edit_kos_dahulu" class="form-control"></div>
+                        <div class="form-group"><label>Anggaran Kos Penyelenggaraan (RM)</label><input type="number" step="0.01" name="anggaran_kos" id="edit_anggaran_kos" class="form-control"></div>
+                        <div class="form-group"><label>Syor dan Ulasan</label><textarea name="syor_ulasan" id="edit_syor" class="form-control" rows="3"></textarea></div>
+                        <div class="form-group"><label>Nama Pegawai Teknikal</label><input type="text" name="pegawai_teknikal_nama" id="edit_admin_nama" class="form-control"></div>
+                        <div class="form-group"><label>Jawatan Pegawai Teknikal</label><input type="text" name="pegawai_teknikal_jawatan" id="edit_admin_jawatan" class="form-control"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                    <h4 style="margin-bottom: 1rem; color: var(--primary);">Bahagian III: Keputusan</h4>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Keputusan</label>
+                            <select name="keputusan" id="edit_keputusan" class="form-control">
+                                <option value="Diluluskan">Diluluskan</option>
+                                <option value="Tidak Diluluskan">Tidak Diluluskan</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Nama Ketua Jabatan</label><input type="text" name="keputusan_nama" id="edit_keputusan_nama" class="form-control"></div>
+                        <div class="form-group"><label>Tarikh Keputusan</label><input type="date" name="keputusan_tarikh" id="edit_keputusan_tarikh" class="form-control"></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 2;">Save Report</button>
+                    <button type="button" class="btn btn-secondary" onclick="printReport()" style="flex: 1; border: 2px solid var(--primary); color: var(--primary); background: transparent;">Print Form</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ─── Hidden Printable Area ─── -->
+    <div id="printableArea" style="display: none;">
+        <div class="kewpa-container" style="padding: 15px; font-family: Arial, sans-serif; line-height: 1.5; font-size: 12px;">
+            <div style="text-align: right; font-size: 12px; font-weight: bold; margin-bottom: 15px;">KEW.PA-9</div>
+            <div style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 30px;">BORANG ADUAN KEROSAKAN ASET ALIH</div>
+            
+            <div style="font-weight: bold; margin-bottom: 15px;">Bahagian I (Untuk diisi oleh Pengadu)</div>
+            <div style="display: flex; gap: 15px; align-items: stretch; margin-bottom: 10px;">
+                <div style="flex: 1; display: grid; grid-template-columns: 220px 15px 1fr; gap: 5px;">
+                    <div>1. Jenis Aset</div><div>:</div><div id="p_jenis_aset" style="border-bottom: 1px dotted #000;"></div>
+                    <div>2. Nombor Siri Pendaftaran Aset/ Komponen</div><div>:</div><div id="p_nombor_siri" style="border-bottom: 1px dotted #000;"></div>
+                    <div>3. Pengguna Terakhir</div><div>:</div><div id="p_pengguna_terakhir" style="border-bottom: 1px dotted #000;"></div>
+                    <div>4. Tarikh Kerosakan</div><div>:</div><div id="p_tarikh_kerosakan" style="border-bottom: 1px dotted #000;"></div>
+                    <div>5. Perihal Kerosakan</div><div>:</div><div id="p_perihal_kerosakan" style="border-bottom: 1px dotted #000;"></div>
+                    <div>6. Nama Dan Jawatan</div><div>:</div><div id="p_nama_jawatan" style="border-bottom: 1px dotted #000;"></div>
+                    <div>7. Tarikh</div><div>:</div><div id="p_tarikh_aduan" style="border-bottom: 1px dotted #000;"></div>
+                </div>
+                <div style="width: 180px; border: 1px solid #000; padding: 15px; display: flex; flex-direction: column;">
+                    <div style="font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 40px;">Pengesahan Pengadu</div>
+                    <div style="flex: 1;"></div>
+                    <div style="border-top: 1px dotted #000; text-align: center; font-size: 12px; padding-top: 5px;">Tandatangan & Cop</div>
+                </div>
+            </div>
+
+            <div style="font-weight: bold; margin-top: 30px; margin-bottom: 15px;">Bahagian II (Untuk diisi oleh Pegawai Aset / Pegawai Teknikal)</div>
+            <div style="display: grid; grid-template-columns: 280px 20px 1fr; gap: 5px;">
+                <div>8. Jumlah Kos Penyelenggaraan Terdahulu</div><div>:</div><div id="p_kos_dahulu" style="border-bottom: 1px dotted #000;"></div>
+                <div>9. Anggaran Kos Penyelenggaraan</div><div>:</div><div id="p_anggaran_kos" style="border-bottom: 1px dotted #000;"></div>
+                <div>10. Syor Dan Ulasan</div><div>:</div><div id="p_syor_text" style="border-bottom: 1px dotted #000;"></div>
+                <div>11. Nama Dan Jawatan</div><div>:</div><div id="p_admin_nama" style="border-bottom: 1px dotted #000;"></div>
+                <div>12. Tarikh</div><div>:</div><div id="p_admin_tarikh" style="border-bottom: 1px dotted #000;"></div>
+            </div>
+
+            <div style="font-weight: bold; margin-top: 30px; margin-bottom: 10px;">Bahagian III (Keputusan Ketua Jabatan / Bahagian / Seksyen / Unit)</div>
+            <div id="p_keputusan_line" style="margin-bottom: 20px;">Diluluskan/ Tidak Diluluskan*</div>
+            
+            <div style="margin-top: 40px; width: 350px;">
+                <div style="border-bottom: 1px dotted #000; height: 30px; margin-bottom: 5px;"></div>
+                <div style="font-size: 14px;">Tandatangan</div>
+                <div style="display: grid; grid-template-columns: 80px 1fr; gap: 5px; margin-top: 10px;">
+                    <div>Nama</div><div id="p_kep_nama" style="border-bottom: 1px dotted #000;">:</div>
+                    <div>Jawatan</div><div id="p_kep_jawatan" style="border-bottom: 1px dotted #000;">:</div>
+                    <div>Tarikh</div><div id="p_kep_tarikh" style="border-bottom: 1px dotted #000;">:</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; font-size: 13px;">Nota: * Potong mana yang berkenaan</div>
+        </div>
+    </div>
+
+    <script>
+        async function handleLogout() {
+            try {
+                await fetch('../api/logout.php');
+            } catch (err) {}
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('../login.html');
+        }
+
+        // ─── Block Back Button ───
+        for (let i = 0; i < 50; i++) {
+            window.history.pushState(null, null, window.location.href);
+        }
+        window.onpopstate = function() {
+            window.history.pushState(null, null, window.location.href);
+        };
+
+        // ─── Date Display ───
+        document.addEventListener('DOMContentLoaded', () => {
+            const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('adminDate').textContent = new Date().toLocaleDateString('en-MY', opts);
+            fetchReports();
+        });
+
+        async function fetchReports() {
+            try {
+                const response = await fetch('../api/admin_get_reports.php');
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const reports = result.data;
+                    const tbody = document.getElementById('reportTableBody');
+                    tbody.innerHTML = '';
+                    
+                    let pending = 0, resolved = 0, rejected = 0;
+                    
+                    reports.forEach(r => {
+                        if (r.status === 'Pending') pending++;
+                        if (r.status === 'Resolved') resolved++;
+                        if (r.status === 'Rejected') rejected++;
+                        
+                        const tr = document.createElement('tr');
+                        tr.style.borderBottom = '1px solid var(--border)';
+                        tr.innerHTML = `
+                            <td style="padding: 1rem; font-weight: 600;">#${r.id}</td>
+                            <td style="padding: 1rem;">${r.nama_pelapor || r.full_name || '-'}</td>
+                            <td style="padding: 1rem;">${r.jenis_aset}</td>
+                            <td style="padding: 1rem;">${new Date(r.created_at).toLocaleDateString('en-MY')}</td>
+                            <td style="padding: 1rem;"><span class="badge badge-${r.status.toLowerCase().replace(' ', '')}">${r.status}</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    
+                    document.getElementById('stat-total').textContent = reports.length;
+                    document.getElementById('stat-pending').textContent = pending;
+                    document.getElementById('stat-resolved').textContent = resolved;
+                    document.getElementById('stat-rejected').textContent = rejected;
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        function manageReport(r) {
+            document.getElementById('edit_id').value = r.id;
+            document.getElementById('edit_reporter_name').value = r.name || r.full_name;
+            document.getElementById('edit_created_at').value = r.created_at;
+            
+            document.getElementById('m_nama_aset').value = r.nama_aset || '-';
+            document.getElementById('m_jenis_aset').value = r.jenis_aset;
+            document.getElementById('m_nombor_siri').value = r.nombor_siri;
+            document.getElementById('m_pengguna').value = r.pengguna_terakhir;
+            document.getElementById('m_lokasi').value = r.lokasi || '-';
+            document.getElementById('m_tarikh_kerosakan').value = r.tarikh_kerosakan;
+            document.getElementById('m_perihal').value = r.perihal_kerosakan;
+            
+            document.getElementById('edit_kos_dahulu').value = r.kos_penyelenggaraan_dahulu || '0.00';
+            document.getElementById('edit_anggaran_kos').value = r.anggaran_kos || '0.00';
+            document.getElementById('edit_syor').value = r.syor_ulasan || '';
+            document.getElementById('edit_admin_nama').value = r.admin_name_jawatan || '';
+            document.getElementById('edit_admin_jawatan').value = r.admin_jawatan || '';
+            
+            document.getElementById('edit_keputusan').value = r.keputusan || 'Diluluskan';
+            document.getElementById('edit_keputusan_nama').value = r.keputusan_nama || '';
+            document.getElementById('edit_keputusan_tarikh').value = r.keputusan_tarikh || new Date().toISOString().split('T')[0];
+            
+            document.getElementById('reportModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('reportModal').style.display = 'none';
+        }
+
+        document.getElementById('manageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            try {
+                const response = await fetch('../api/admin_update_report.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const res = await response.json();
+                if (res.status === 'success') {
+                    alert('Report updated successfully!');
+                    closeModal();
+                    fetchReports();
+                } else {
+                    alert(res.message);
+                }
+            } catch (err) { console.error(err); }
+        });
+
+        window.printReport = function() {
+            // Map form values to printable area
+            document.getElementById('p_jenis_aset').textContent = document.getElementById('m_jenis_aset').value;
+            document.getElementById('p_nombor_siri').textContent = document.getElementById('m_nombor_siri').value;
+            document.getElementById('p_pengguna_terakhir').textContent = document.getElementById('m_pengguna').value;
+            document.getElementById('p_tarikh_kerosakan').textContent = document.getElementById('m_tarikh_kerosakan').value;
+            document.getElementById('p_perihal_kerosakan').textContent = document.getElementById('m_perihal').value;
+            document.getElementById('p_nama_jawatan').textContent = document.getElementById('edit_reporter_name').value;
+            document.getElementById('p_tarikh_aduan').textContent = new Date(document.getElementById('edit_created_at').value).toLocaleDateString('en-MY');
+            
+            document.getElementById('p_kos_dahulu').textContent = document.getElementById('edit_kos_dahulu').value;
+            document.getElementById('p_anggaran_kos').textContent = document.getElementById('edit_anggaran_kos').value;
+            document.getElementById('p_syor_text').textContent = document.getElementById('edit_syor').value;
+            const adminNama = document.getElementById('edit_admin_nama').value;
+            const adminJawatan = document.getElementById('edit_admin_jawatan').value;
+            document.getElementById('p_admin_nama').textContent = adminJawatan ? adminNama + ' / ' + adminJawatan : adminNama;
+            document.getElementById('p_admin_tarikh').textContent = new Date().toLocaleDateString('en-MY');
+            
+            const kep = document.getElementById('edit_keputusan').value;
+            document.getElementById('p_keputusan_line').innerHTML = kep === 'Diluluskan' ? '<strong>Diluluskan</strong>/ Tidak Diluluskan*' : 'Diluluskan/ <strong>Tidak Diluluskan*</strong>';
+            
+            document.getElementById('p_kep_nama').textContent = ': ' + document.getElementById('edit_keputusan_nama').value;
+            document.getElementById('p_kep_jawatan').textContent = ': Ketua Jabatan';
+            document.getElementById('p_kep_tarikh').textContent = ': ' + document.getElementById('edit_keputusan_tarikh').value;
+
+            const printContent = document.getElementById('printableArea').innerHTML;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            window.location.reload(); // Refresh to restore JS event listeners
+        };
+    </script>
+</body>
+</html>

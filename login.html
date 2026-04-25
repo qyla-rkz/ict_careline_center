@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICT Careline Center - Login</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=9">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            overflow: hidden;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body class="portal-body">
+
+    <nav class="navbar container" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; border-bottom: none;">
+        <div class="logo">
+            <a href="index.html" style="text-decoration:none; color:inherit;">ICT Careline <span>Center</span></a>
+        </div>
+    </nav>
+
+    <main class="container centered-content" style="height: 100vh; padding: 0;">
+        <div class="form-container fade-in" style="padding: 1.5rem 2rem; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+            <h2 class="form-title" style="margin-bottom: 0.25rem; font-size: 1.8rem;">Login</h2>
+            <p style="text-align:center; margin-bottom: 1.25rem; color: var(--text-muted); font-size: 0.85rem;">Access your dashboard.</p>
+
+            <form id="loginForm">
+                <div class="role-selector" style="margin-bottom: 1.25rem; padding: 0.4rem;">
+                    <label class="role-option" style="padding: 0.5rem; font-size: 0.9rem;">
+                        <input type="radio" name="role" value="Staff" checked> Staff
+                    </label>
+                    <label class="role-option" style="padding: 0.5rem; font-size: 0.9rem;">
+                        <input type="radio" name="role" value="Admin"> Admin
+                    </label>
+                </div>
+
+                <div class="auth-form-group" style="margin-bottom: 0.75rem;">
+                    <input type="text" name="username" class="auth-input" style="padding: 0.8rem 1rem;" placeholder="Staff ID / Username" required>
+                </div>
+                <div class="auth-form-group" style="margin-bottom: 0.75rem;">
+                    <input type="password" name="password" class="auth-input" style="padding: 0.8rem 1rem;" placeholder="Password" required>
+                </div>
+
+                <div class="form-footer" style="margin-bottom: 1.25rem; font-size: 0.85rem;">
+                    <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; color: var(--text-muted);">
+                        <input type="checkbox" style="width:auto;"> Remember
+                    </label>
+                    <a href="#" style="color: var(--primary);">Forgot?</a>
+                </div>
+
+                <button type="submit" class="cta-btn primary" style="width:100%; border:none; cursor:pointer; padding: 0.8rem;">
+                    Sign In
+                </button>
+                
+                <p style="text-align:center; margin-top:1.25rem; font-size:0.85rem; color: var(--text-muted);">
+                    Don't have an account? <a href="register.html" style="color:var(--primary); font-weight:700; text-decoration:none;">Register</a>
+                </p>
+            </form>
+        </div>
+    </main>
+
+    <footer class="container" style="position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; border-top: none; background: transparent;">
+        <p>&copy; 2026 Unit Teknologi Maklumat Majlis Perbandaran Muar. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="assets/js/main.js?v=2"></script>
+</body>
+
+</html>

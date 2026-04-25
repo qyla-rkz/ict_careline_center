@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit KEW.PA-9 - ICT Careline Center</title>
+    <link rel="stylesheet" href="../assets/css/style.css?v=9">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">🛠️</div>
+                <h2>ICT Careline Center</h2>
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+                <a href="profile.html" class="nav-link">👤 My Profile</a>
+                <a href="assets.html" class="nav-link">🖥️ My Assets</a>
+                <a href="report_form.html" class="nav-link active">📝 Submit KEW.PA-9</a>
+                <a href="history.html" class="nav-link">📜 My Reports</a>
+            </nav>
+            <div style="margin-top: auto;">
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
+                    Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
+                <div>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">ICT Careline Center
+                    </p>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Borang KEW.PA-9</h2>
+                </div>
+                <div id="current-date"
+                    style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                    <!-- Date will be loaded here -->
+                </div>
+            </header>
+
+            <section>
+                <h1>Submit Kerosakan Aset</h1>
+                <p class="text-muted">Aduan Kerosakan Aset Alih Kerajaan</p>
+
+                <div class="card" style="margin-top: 2rem; max-width: 800px;">
+                    <form id="reportForm" enctype="multipart/form-data">
+                        <div
+                            style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem;">
+                            <div class="form-group">
+                                <label>Nama Pemohon</label>
+                                <input type="text" id="f_nama" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
+                            </div>
+                            <div class="form-group">
+                                <label>Jawatan</label>
+                                <input type="text" id="f_jawatan" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
+                            </div>
+                            <div class="form-group">
+                                <label>Bahagian / Unit</label>
+                                <input type="text" id="f_dept" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
+                            </div>
+                            <div class="form-group">
+                                <label>Pengguna Terakhir</label>
+                                <input type="text" name="pengguna_terakhir" id="f_pengguna" class="form-control" required
+                                    placeholder="Enter name">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label>Nama Aset</label>
+                                <input type="text" name="nama_aset" id="f_nama_aset" class="form-control" required
+                                    placeholder="e.g. Komputer Pejabat / Printer Unit">
+                            </div>
+                            <div class="form-group">
+                                <label>Jenis Aset</label>
+                                <select name="jenis_aset" class="form-control" required id="f_jenis_aset">
+                                    <option value="">Select Type</option>
+                                    <option value="Laptop">Laptop</option>
+                                    <option value="Desktop PC">Desktop PC</option>
+                                    <option value="Monitor">Monitor</option>
+                                    <option value="Printer">Printer</option>
+                                    <option value="Scanner">Scanner</option>
+                                    <option value="Lain-lain">Lain-lain</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>No. Siri Pendaftaran / Asset ID</label>
+                                <input type="text" name="nombor_siri" id="f_nombor_siri" class="form-control" required
+                                    placeholder="e.g. KKM/ICT/01...">
+                            </div>
+                            <div class="form-group">
+                                <label>Tarikh Kerosakan</label>
+                                <input type="date" name="tarikh_kerosakan" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label>Perihal Kerosakan</label>
+                            <textarea name="perihal_kerosakan" class="form-control" rows="5" required
+                                placeholder="Describe the issue in detail..."></textarea>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label>Lampiran Gambar (Optional)</label>
+                            <div style="border: 2px dashed var(--border); padding: 1.5rem; border-radius: 12px; text-align: center; background: #fafafa;">
+                                <input type="file" name="images[]" multiple accept="image/*" class="form-control" style="margin-bottom: 0.5rem;">
+                                <p class="text-muted" style="font-size: 0.8rem;">Max 5 photos. Select multiple files to upload.</p>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="submit-btn" class="btn btn-primary"
+                            style="width: 100%; margin-top: 2rem; padding: 1rem; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 15px var(--primary-light);">
+                            Submit Borang KEW.PA-9
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        async function handleLogout() {
+            try {
+                await fetch('../api/logout.php');
+            } catch (err) { }
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('../login.html');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Display Current Date
+            const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-MY', dateOpts);
+            fetchProfile();
+        });
+
+        async function fetchProfile() {
+            try {
+                const response = await fetch('../api/staff_get_profile.php');
+                const result = await response.json();
+                if (result.status === 'success') {
+                    document.getElementById('f_nama').value = result.data.full_name || '';
+                    document.getElementById('f_jawatan').value = result.data.jawatan || '';
+                    document.getElementById('f_dept').value = result.data.department || '';
+                    document.getElementById('f_pengguna').value = result.data.full_name || '';
+                } else if (result.message === 'Not logged in') {
+                    window.location.replace('../login.html');
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        document.getElementById('reportForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const formData = new FormData(e.target);
+            const imageInput = e.target.querySelector('input[type="file"]');
+            
+            // Validate image count
+            if (imageInput.files.length > 5) {
+                alert('You can only upload a maximum of 5 images.');
+                return;
+            }
+
+            try {
+                btn.disabled = true;
+                btn.textContent = 'Submitting...';
+
+                const response = await fetch('../api/staff_submit_report.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const res = await response.json();
+
+                if (res.status === 'success') {
+                    alert('Borang KEW.PA-9 submitted successfully!');
+                    window.location.href = 'history.html';
+                } else {
+                    alert(res.message || 'Submission failed');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error. Please check your network.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Submit Borang KEW.PA-9';
+            }
+        });
+    </script>
+</body>
+
+</html>
