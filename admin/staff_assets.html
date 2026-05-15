@@ -15,14 +15,14 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-                <a href="report_management.html" class="nav-link">📝 Report Management</a>
-                <a href="inventory.html" class="nav-link">🖥️ Assets Inventory</a>
-                <a href="staff_assets.html" class="nav-link active">👥 Staff Assets</a>
-                <a href="history_reports.html" class="nav-link">📜 History Logs</a>
+                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
+                <a href="report_management.html" class="nav-link">📝 Pengurusan Laporan</a>
+                <a href="inventory.html" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets.html" class="nav-link active">👥 Aset Staf</a>
+                <a href="history_reports.html" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="../login.html" class="nav-link" style="color: var(--danger);">🚪 Logout</a>
+                <a href="../login.html" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 
@@ -32,7 +32,7 @@
                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
                 <div>
                     <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">ICT Careline Center</p>
-                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Staff Assets</h2>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Aset Staf</h2>
                 </div>
                 <div style="display: flex; gap: 1rem; align-items: center;">
                     <div id="current-date"
@@ -43,21 +43,32 @@
             </header>
 
             <div class="card">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="text-align: left; border-bottom: 2px solid var(--border);">
-                            <th style="padding: 1rem;">Asset ID</th>
-                            <th style="padding: 1rem;">Owner</th>
-                            <th style="padding: 1rem;">Type</th>
-                            <th style="padding: 1rem;">Brand/Model</th>
-                            <th style="padding: 1rem;">Status</th>
-                            <th style="padding: 1rem; text-align: center;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="assetTableBody">
-                        <!-- Loaded via JS -->
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left;">
+                                <th style="padding: 1rem;">ID Aset</th>
+                                <th style="padding: 1rem;">Pemilik</th>
+                                <th style="padding: 1rem;">Jenis</th>
+                                <th style="padding: 1rem;">Jenama/Model</th>
+                                <th style="padding: 1rem;">Status</th>
+                                <th style="padding: 1rem; text-align: center;">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assetTableBody">
+                            <!-- Loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info" id="paginationInfo">Menunjukkan 0 hingga 0 daripada 0 entri</div>
+                    <div class="pagination-controls">
+                        <button onclick="prevPage()" id="prevBtn" class="pagination-btn" disabled>Sebelumnya</button>
+                        <button onclick="nextPage()" id="nextBtn" class="pagination-btn">Seterusnya</button>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -65,7 +76,7 @@
     <div id="assetModal" class="modal">
         <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2 id="modalTitle">Asset Details</h2>
+                <h2 id="modalTitle">Butiran Aset</h2>
                 <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
             <div id="assetDetailsContent">
@@ -77,42 +88,83 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-MY', opts);
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', opts);
             fetchAssets();
         });
+
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let allAssets = [];
 
         async function fetchAssets() {
             try {
                 const response = await fetch('../api/admin_get_assets.php');
                 const result = await response.json();
                 if (result.status === 'success') {
-                    const tbody = document.getElementById('assetTableBody');
-                    tbody.innerHTML = result.data.map(a => `
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 1rem; font-weight: 600;">${a.serial_number || 'N/A'}</td>
-                            <td style="padding: 1rem;">
-                                <div style="font-weight:600;">${a.name}</div>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">${a.department}</div>
-                            </td>
-                            <td style="padding: 1rem;">${a.asset_type}</td>
-                            <td style="padding: 1rem;">${a.model_komputer || '-'}</td>
-                            <td style="padding: 1rem;"><span class="badge badge-resolved">Active</span></td>
-                            <td style="padding: 1rem; text-align: center;">
-                                <button onclick='viewAssetDetails(${JSON.stringify(a).replace(/'/g, "&apos;")})' 
-                                        class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.75rem; border-radius: 6px;">
-                                    🔍 View Details
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('');
+                    allAssets = result.data;
+                    renderAssets();
                 }
             } catch (err) { console.error(err); }
+        }
+
+        function renderAssets() {
+            const tbody = document.getElementById('assetTableBody');
+            
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = allAssets.slice(start, end);
+            
+            tbody.innerHTML = pageItems.map(a => `
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 1rem; font-weight: 600;">${a.serial_number || 'N/A'}</td>
+                    <td style="padding: 1rem;">
+                        <div style="font-weight:600;">${a.name}</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted);">${a.department}</div>
+                    </td>
+                    <td style="padding: 1rem;">${a.asset_type}</td>
+                    <td style="padding: 1rem;">${a.model_komputer || '-'}</td>
+                    <td style="padding: 1rem;"><span class="badge badge-resolved">Aktif</span></td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <button onclick='viewAssetDetails(${JSON.stringify(a).replace(/'/g, "&#39;")})' 
+                                class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.75rem; border-radius: 6px;">
+                            🔍 Lihat Butiran
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updatePagination(allAssets.length);
+        }
+
+        function updatePagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(currentPage * itemsPerPage, totalItems);
+
+            document.getElementById('paginationInfo').textContent = totalItems > 0 
+                ? `Menunjukkan ${start} hingga ${end} daripada ${totalItems} entri`
+                : `Menunjukkan 0 hingga 0 daripada 0 entri`;
+
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        function nextPage() {
+            currentPage++;
+            renderAssets();
+            document.querySelector('.table-container').scrollTop = 0;
+        }
+
+        function prevPage() {
+            currentPage--;
+            renderAssets();
+            document.querySelector('.table-container').scrollTop = 0;
         }
 
         function viewAssetDetails(a) {
             const content = document.getElementById('assetDetailsContent');
             
-            let imagesHtml = '<p class="text-muted">No images uploaded</p>';
+            let imagesHtml = '<p class="text-muted">Tiada gambar dimuat naik</p>';
             if (a.images && a.images.length > 0) {
                 imagesHtml = `
                     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;">
@@ -129,7 +181,7 @@
                 <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid var(--border);">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                         <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Owner Name</label>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Nama Pemilik</label>
                             <div style="font-weight:600;">${a.name}</div>
                         </div>
                         <div>
@@ -145,28 +197,28 @@
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
                     ${renderDetailRow('Model Komputer', a.model_komputer)}
-                    ${renderDetailRow('Serial Number', a.serial_number)}
+                    ${renderDetailRow('No. Siri', a.serial_number)}
                     ${renderDetailRow('Model Monitor', a.model_monitor)}
-                    ${renderDetailRow('Serial Monitor', a.serial_monitor)}
+                    ${renderDetailRow('No. Siri Monitor', a.serial_monitor)}
                     ${renderDetailRow('OS', a.os)}
-                    ${renderDetailRow('Processor', a.processor)}
+                    ${renderDetailRow('Pemproses', a.processor)}
                     ${renderDetailRow('RAM', a.ram)}
-                    ${renderDetailRow('Hard Disk', a.hard_disk)}
-                    ${renderDetailRow('Mouse', a.mouse)}
-                    ${renderDetailRow('Keyboard', a.keyboard)}
+                    ${renderDetailRow('Cakera Keras', a.hard_disk)}
+                    ${renderDetailRow('Tetikus', a.mouse)}
+                    ${renderDetailRow('Papan Kekunci', a.keyboard)}
                     ${renderDetailRow('MS Office', a.ms_office)}
                     ${renderDetailRow('Antivirus', a.antivirus)}
-                    ${renderDetailRow('IP Address', a.ip_address)}
-                    ${renderDetailRow('Printer', a.printer)}
+                    ${renderDetailRow('Alamat IP', a.ip_address)}
+                    ${renderDetailRow('Pencetak', a.printer)}
                 </div>
 
                 <div style="margin-bottom: 2rem;">
                     <label style="font-weight:700; display:block; margin-bottom:0.5rem; color:var(--primary);">PERISIAN LAIN</label>
-                    <div style="padding:1rem; background:#fff; border:1px solid var(--border); border-radius:8px;">${a.perisian_lain || 'None'}</div>
+                    <div style="padding:1rem; background:#fff; border:1px solid var(--border); border-radius:8px;">${a.perisian_lain || 'Tiada'}</div>
                 </div>
 
                 <div>
-                    <label style="font-weight:700; display:block; margin-bottom:1rem; color:var(--primary);">ATTACHED IMAGES</label>
+                    <label style="font-weight:700; display:block; margin-bottom:1rem; color:var(--primary);">GAMBAR LAMPIRAN</label>
                     ${imagesHtml}
                 </div>
             `;

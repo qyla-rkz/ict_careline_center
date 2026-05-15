@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>History Logs - ICT Careline Center</title>
+    <title>Sejarah Laporan - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
         @media print {
@@ -145,14 +145,14 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-                <a href="report_management.html" class="nav-link">📝 Report Management</a>
-                <a href="inventory.html" class="nav-link">🖥️ Assets Inventory</a>
-                <a href="staff_assets.html" class="nav-link">👥 Staff Assets</a>
-                <a href="history_reports.html" class="nav-link active">📜 History Logs</a>
+                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
+                <a href="report_management.html" class="nav-link">📝 Pengurusan Laporan</a>
+                <a href="inventory.html" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets.html" class="nav-link">👥 Aset Staf</a>
+                <a href="history_reports.html" class="nav-link active">📜 Sejarah Laporan</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Logout</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 
@@ -162,30 +162,58 @@
                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
                 <div>
                     <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">ICT Careline Center</p>
-                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Historical Reports</h2>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Sejarah Laporan</h2>
                 </div>
                 <div id="current-date"
                     style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
                     <!-- Date loaded via JS -->
                 </div>
             </header>
+            
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div style="display: flex; gap: 1rem; align-items: flex-end; padding: 0.5rem;">
+                    <div class="form-group" style="margin-bottom: 0; flex: 1;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Cari Nama Pelapor</label>
+                        <input type="text" id="filterName" class="form-control" placeholder="Masukkan nama..." onkeyup="if(event.key === 'Enter') fetchHistory()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0; flex: 1;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Pilih Tarikh</label>
+                        <input type="date" id="filterDate" class="form-control" onchange="fetchHistory()">
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="fetchHistory()" class="btn btn-primary" style="padding: 0.6rem 1.25rem;">🔍 Cari</button>
+                        <button onclick="resetFilters()" class="btn btn-secondary" style="padding: 0.6rem 1.25rem;">🔄 Set Semula</button>
+                    </div>
+                </div>
+            </div>
 
             <div class="card">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="text-align: left; border-bottom: 2px solid var(--border);">
-                            <th style="padding: 1rem;">ID</th>
-                            <th style="padding: 1rem;">Reporter</th>
-                            <th style="padding: 1rem;">Decision</th>
-                            <th style="padding: 1rem;">Processed By</th>
-                            <th style="padding: 1rem;">Date</th>
-                            <th style="padding: 1rem; text-align: center;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyTableBody">
-                        <!-- Loaded via JS -->
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left;">
+                                <th style="padding: 1rem;">ID</th>
+                                <th style="padding: 1rem;">Pengadu</th>
+                                <th style="padding: 1rem;">Keputusan</th>
+                                <th style="padding: 1rem;">Diproses Oleh</th>
+                                <th style="padding: 1rem;">Tarikh</th>
+                                <th style="padding: 1rem; text-align: center;">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- Loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info" id="paginationInfo">Menunjukkan 0 hingga 0 daripada 0 entri</div>
+                    <div class="pagination-controls">
+                        <button onclick="prevPage()" id="prevBtn" class="pagination-btn" disabled>Sebelumnya</button>
+                        <button onclick="nextPage()" id="nextBtn" class="pagination-btn">Seterusnya</button>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -267,7 +295,7 @@
 
                     <div style="display: flex; gap: 1rem;">
                         <button type="button" onclick="printKEWPA9()" class="btn btn-secondary" style="flex: 1;">🖨️
-                            Print KEW.PA-9</button>
+                            Cetak KEW.PA-9</button>
                         <button type="button" onclick="closeModal()" class="btn btn-secondary"
                             style="flex: 0 0 auto; padding: 0.75rem 1.5rem;">Tutup</button>
                     </div>
@@ -412,32 +440,80 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-MY', opts);
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', opts);
             fetchHistory();
         });
 
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let allHistory = [];
+
         async function fetchHistory() {
+            const name = document.getElementById('filterName').value;
+            const date = document.getElementById('filterDate').value;
+            const url = `../api/admin_get_reports.php?name=${encodeURIComponent(name)}&date=${encodeURIComponent(date)}`;
+
             try {
-                const response = await fetch('../api/admin_get_reports.php');
+                const response = await fetch(url);
                 const result = await response.json();
                 if (result.status === 'success') {
-                    // Filter for Resolved/Rejected in history
-                    const history = result.data.filter(r => r.status === 'Resolved' || r.status === 'Rejected');
-                    const tbody = document.getElementById('historyTableBody');
-                    tbody.innerHTML = history.map(r => `
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 1rem; font-weight: 600;">#${r.id}</td>
-                            <td style="padding: 1rem;">${r.nama_pelapor || r.full_name}</td>
-                            <td style="padding: 1rem;"><span class="badge badge-${r.keputusan === 'Diluluskan' ? 'resolved' : 'rejected'}">${r.keputusan || 'N/A'}</span></td>
-                            <td style="padding: 1rem;">${r.admin_name_jawatan || 'System'}</td>
-                            <td style="padding: 1rem;">${new Date(r.created_at).toLocaleDateString('en-MY')}</td>
-                            <td style="padding: 1rem; text-align: center;">
-                                <button onclick='showReportDetails(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">View / Print</button>
-                            </td>
-                        </tr>
-                    `).join('');
+                    allHistory = result.data.filter(r => r.status === 'Resolved' || r.status === 'Rejected');
+                    renderHistory();
                 }
             } catch (err) { console.error(err); }
+        }
+
+        function renderHistory() {
+            const tbody = document.getElementById('historyTableBody');
+            if (!allHistory.length) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--text-muted)">Tiada rekod ditemui.</td></tr>';
+                updatePagination(0);
+                return;
+            }
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = allHistory.slice(start, end);
+
+            tbody.innerHTML = pageItems.map(r => `
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 1rem; font-weight: 600; color: var(--primary);">#${r.id}</td>
+                    <td style="padding: 1rem;">${r.nama_pelapor || r.full_name}</td>
+                    <td style="padding: 1rem;"><span class="badge badge-${r.keputusan === 'Diluluskan' ? 'resolved' : 'rejected'}">${r.keputusan || 'N/A'}</span></td>
+                    <td style="padding: 1rem;">${r.admin_name_jawatan || 'System'}</td>
+                    <td style="padding: 1rem;">${new Date(r.created_at).toLocaleDateString('ms-MY')}</td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <button onclick='showReportDetails(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Lihat / Cetak</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updatePagination(allHistory.length);
+        }
+
+        function updatePagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(currentPage * itemsPerPage, totalItems);
+
+            document.getElementById('paginationInfo').textContent = totalItems > 0 
+                ? `Menunjukkan ${start} hingga ${end} daripada ${totalItems} entri`
+                : `Menunjukkan 0 hingga 0 daripada 0 entri`;
+
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        function nextPage() {
+            currentPage++;
+            renderHistory();
+            document.querySelector('.table-container').scrollTop = 0;
+        }
+
+        function prevPage() {
+            currentPage--;
+            renderHistory();
+            document.querySelector('.table-container').scrollTop = 0;
         }
 
         function showReportDetails(r) {
@@ -463,6 +539,12 @@
             document.getElementById('viewModal').style.display = 'flex';
         }
 
+        function resetFilters() {
+            document.getElementById('filterName').value = '';
+            document.getElementById('filterDate').value = '';
+            fetchHistory();
+        }
+
         function closeModal() {
             document.getElementById('viewModal').style.display = 'none';
         }
@@ -474,7 +556,7 @@
             document.getElementById('pr_tarikh_rosak').textContent = document.getElementById('v_tarikh_rosak').value;
             document.getElementById('pr_perihal').textContent = document.getElementById('v_perihal').value;
             document.getElementById('pr_nama_jawatan').textContent = document.getElementById('v_nama_jawatan').value;
-            document.getElementById('pr_tarikh_aduan').textContent = new Date(document.getElementById('p_created_at').value).toLocaleDateString('en-MY');
+            document.getElementById('pr_tarikh_aduan').textContent = new Date(document.getElementById('p_created_at').value).toLocaleDateString('ms-MY');
 
             const kosDahulu = parseFloat(document.getElementById('v_kos_dahulu').value) || 0;
             const anggaranKos = parseFloat(document.getElementById('v_anggaran_kos').value) || 0;
@@ -485,7 +567,7 @@
             const adminNama = document.getElementById('v_admin_nama').value;
             const adminJawatan = document.getElementById('v_admin_jawatan').value;
             document.getElementById('pr_admin_nama').textContent = adminJawatan ? adminNama + ' / ' + adminJawatan : adminNama;
-            document.getElementById('pr_admin_tarikh').textContent = new Date().toLocaleDateString('en-MY');
+            document.getElementById('pr_admin_tarikh').textContent = new Date().toLocaleDateString('ms-MY');
 
             const kep = document.getElementById('v_keputusan').value;
             document.getElementById('pr_keputusan_line').innerHTML = kep === 'Diluluskan'

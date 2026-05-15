@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile - ICT Careline Center</title>
+    <title>Profil Saya - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=9">
 </head>
 <body>
@@ -15,14 +15,14 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-                <a href="profile.html" class="nav-link active">👤 My Profile</a>
-                <a href="assets.html" class="nav-link">🖥️ My Assets</a>
-                <a href="report_form.html" class="nav-link">📝 Submit KEW.PA-9</a>
-                <a href="history.html" class="nav-link">📜 My Reports</a>
+                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.html" class="nav-link active">👤 Profil Saya</a>
+                <a href="assets.html" class="nav-link">🖥️ Aset Saya</a>
+                <a href="report_form.html" class="nav-link">📝 Hantar KEW.PA-9</a>
+                <a href="history.html" class="nav-link">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Logout</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 
@@ -31,7 +31,7 @@
             <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
                 <div>
                     <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">ICT Careline Center</p>
-                    <h2 style="font-size: 1.8rem; color: var(--text-main);">My Profile</h2>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Profil Saya</h2>
                 </div>
                 <div id="current-date" style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
                     <!-- Date will be loaded here -->
@@ -39,23 +39,23 @@
             </header>
 
             <section>
-                <h1>Account Information</h1>
+                <h1>Maklumat Akaun</h1>
                 <div class="card" style="margin-top: 2rem; max-width: 600px;">
                     <form id="profile-form">
                         <div class="form-group">
-                            <label>Full Name</label>
+                            <label>Nama Penuh</label>
                             <input type="text" id="p_name" name="full_name" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>Staff ID</label>
+                            <label>ID Staf</label>
                             <input type="text" id="p_user" name="username" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
                         </div>
                         <div class="form-group">
-                            <label>Phone Number</label>
+                            <label>No. Telefon</label>
                             <input type="text" id="p_phone" name="phone" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>Office Extension</label>
+                            <label>Sambungan Pejabat</label>
                             <input type="text" id="p_office" name="office" class="form-control">
                         </div>
                         <div class="form-group">
@@ -63,33 +63,33 @@
                             <input type="text" id="p_jawatan" name="jawatan" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>Department / Unit</label>
+                            <label>Jabatan / Unit</label>
                             <input type="text" id="p_dept" name="department" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
                         </div>
                         
                         <div style="margin-top: 2rem;">
-                            <button type="submit" id="save-btn" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+                            <button type="submit" id="save-btn" class="btn btn-primary" style="width: 100%;">Simpan Perubahan</button>
                         </div>
                     </form>
                 </div>
 
-                <h1 style="margin-top: 3rem;">Security</h1>
+                <h1 style="margin-top: 3rem;">Keselamatan</h1>
                 <div class="card" style="margin-top: 2rem; max-width: 600px;">
                     <form id="password-form">
                         <div class="form-group">
-                            <label>Current Password</label>
-                            <input type="password" name="current_password" class="form-control" required placeholder="Enter current password">
+                            <label>Kata Laluan Semasa</label>
+                            <input type="password" name="current_password" class="form-control" required placeholder="Masukkan kata laluan semasa">
                         </div>
                         <div class="form-group">
-                            <label>New Password</label>
-                            <input type="password" name="new_password" class="form-control" required placeholder="Enter new password">
+                            <label>Kata Laluan Baru</label>
+                            <input type="password" name="new_password" class="form-control" required placeholder="Masukkan kata laluan baru">
                         </div>
                         <div class="form-group">
-                            <label>Confirm New Password</label>
-                            <input type="password" name="confirm_password" class="form-control" required placeholder="Repeat new password">
+                            <label>Sahkan Kata Laluan Baru</label>
+                            <input type="password" name="confirm_password" class="form-control" required placeholder="Ulang kata laluan baru">
                         </div>
                         <div style="margin-top: 2rem;">
-                            <button type="submit" id="pass-btn" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--border); background: transparent; color: var(--text-main);">Update Password</button>
+                            <button type="submit" id="pass-btn" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--border); background: transparent; color: var(--text-main);">Kemaskini Kata Laluan</button>
                         </div>
                     </form>
                 </div>
@@ -110,7 +110,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Display Current Date
             const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-MY', dateOpts);
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', dateOpts);
 
             const loadProfile = async () => {
                 try {
@@ -133,7 +133,7 @@
                     }
                 } catch (err) { 
                     console.error('Fetch error:', err);
-                    alert('Connection Error: Could not load profile data.');
+                    alert('Ralat Sambungan: Tidak dapat memuatkan data profil.');
                 }
             };
 
@@ -147,7 +147,7 @@
 
                 try {
                     btn.disabled = true;
-                    btn.textContent = 'Saving...';
+                    btn.textContent = 'Menyimpan...';
 
                     const formData = new FormData(e.target);
                     const response = await fetch('../api/staff_update_profile.php', {
@@ -157,14 +157,14 @@
                     const result = await response.json();
 
                     if (result.status === 'success') {
-                        alert('Profile updated successfully!');
+                        alert('Profil berjaya dikemaskini!');
                         await loadProfile();
                     } else {
                         alert(result.message || 'Update failed');
                     }
                 } catch (err) {
                     console.error(err);
-                    alert('An error occurred. Please try again.');
+                    alert('Ralat berlaku. Sila cuba lagi.');
                 } finally {
                     btn.disabled = false;
                     btn.textContent = originalText;
@@ -178,13 +178,13 @@
                 const formData = new FormData(e.target);
 
                 if (formData.get('new_password') !== formData.get('confirm_password')) {
-                    alert('Passwords do not match!');
+                    alert('Kata laluan tidak sepadan!');
                     return;
                 }
 
                 try {
                     btn.disabled = true;
-                    btn.textContent = 'Updating...';
+                    btn.textContent = 'Mengemaskini...';
 
                     const response = await fetch('../api/staff_change_password.php', {
                         method: 'POST',
@@ -193,17 +193,17 @@
                     const result = await response.json();
 
                     if (result.status === 'success') {
-                        alert('Password updated successfully!');
+                        alert('Kata laluan berjaya dikemaskini!');
                         e.target.reset();
                     } else {
                         alert(result.message || 'Update failed');
                     }
                 } catch (err) {
                     console.error(err);
-                    alert('An error occurred. Please try again.');
+                    alert('Ralat berlaku. Sila cuba lagi.');
                 } finally {
                     btn.disabled = false;
-                    btn.textContent = 'Update Password';
+                    btn.textContent = 'Kemaskini Kata Laluan';
                 }
             });
         });

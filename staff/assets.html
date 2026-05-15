@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Assets - ICT Careline Center</title>
+    <title>Aset Saya - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=9">
 </head>
 <body>
@@ -15,14 +15,14 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-                <a href="profile.html" class="nav-link">👤 My Profile</a>
-                <a href="assets.html" class="nav-link active">🖥️ My Assets</a>
-                <a href="report_form.html" class="nav-link">📝 Submit KEW.PA-9</a>
-                <a href="history.html" class="nav-link">📜 My Reports</a>
+                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
+                <a href="assets.html" class="nav-link active">🖥️ Aset Saya</a>
+                <a href="report_form.html" class="nav-link">📝 Hantar KEW.PA-9</a>
+                <a href="history.html" class="nav-link">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Logout</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 
@@ -33,7 +33,7 @@
                 <div>
                     <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">ICT Careline Center
                     </p>
-                    <h2 style="font-size: 1.8rem; color: var(--text-main);">My Assets</h2>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Aset Saya</h2>
                 </div>
                 <div id="current-date"
                     style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
@@ -42,8 +42,8 @@
             </header>
 
             <section>
-                <h1>Asset Registration Form</h1>
-                <p class="text-muted">Register your primary ICT equipment details below.</p>
+                <h1>Borang Pendaftaran Aset</h1>
+                <p class="text-muted">Daftar butiran peralatan ICT utama anda di bawah.</p>
                 
                 <div class="card" style="margin-top: 2rem; max-width: 800px;">
                     <form id="masterAssetForm">
@@ -71,11 +71,11 @@
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
                             <div class="form-group">
                                 <label>Model Komputer / Laptop</label>
-                                <input type="text" name="model_komputer" id="f_model_comp" class="form-control" placeholder="e.g. Acer Veriton">
+                                <input type="text" name="model_komputer" id="f_model_comp" class="form-control" placeholder="cth: Acer Veriton">
                             </div>
                             <div class="form-group">
                                 <label>No. Siri Komputer / Laptop</label>
-                                <input type="text" name="serial_number" id="f_serial" class="form-control" required placeholder="Enter Serial No">
+                                <input type="text" name="serial_number" id="f_serial" class="form-control" required placeholder="Masukkan No. Siri">
                             </div>
                             <div class="form-group">
                                 <label>Model Monitor</label>
@@ -87,19 +87,19 @@
                             </div>
                             <div class="form-group">
                                 <label>Sistem Operasi (Windows)</label>
-                                <input type="text" name="os" id="f_os" class="form-control" placeholder="e.g. Windows 10 Pro">
+                                <input type="text" name="os" id="f_os" class="form-control" placeholder="cth: Windows 10 Pro">
                             </div>
                             <div class="form-group">
-                                <label>Model Processor</label>
+                                <label>Model Pemproses</label>
                                 <input type="text" name="processor" id="f_processor" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label>Model dan Kapasiti RAM</label>
-                                <input type="text" name="ram" id="f_ram" class="form-control" placeholder="e.g. 8GB DDR4">
+                                <input type="text" name="ram" id="f_ram" class="form-control" placeholder="cth: 8GB DDR4">
                             </div>
                             <div class="form-group">
                                 <label>Jenis Cakera Keras (Hard Disk)</label>
-                                <input type="text" name="hard_disk" id="f_disk" class="form-control" placeholder="e.g. 512GB SSD">
+                                <input type="text" name="hard_disk" id="f_disk" class="form-control" placeholder="cth: 512GB SSD">
                             </div>
                             <div class="form-group">
                                 <label>Jenis Tetikus (Mouse)</label>
@@ -118,7 +118,7 @@
                                 <input type="text" name="antivirus" id="f_antivirus" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label>No. IP Address</label>
+                                <label>No. Alamat IP</label>
                                 <input type="text" name="ip_address" id="f_ip" class="form-control">
                             </div>
                             <div class="form-group">
@@ -139,8 +139,8 @@
                                 <input type="file" name="images[]" id="asset_images" multiple accept="image/*" 
                                        style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer;">
                                 <div style="font-size: 2.5rem; margin-bottom: 1rem;">📸</div>
-                                <p style="font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Click or drag images to upload</p>
-                                <p class="text-muted" style="font-size: 0.85rem;">Max 5 images. Format: JPG, PNG, WEBP.</p>
+                                <p style="font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Klik atau seret gambar untuk memuat naik</p>
+                                <p class="text-muted" style="font-size: 0.85rem;">Maksimum 5 gambar. Format: JPG, PNG, WEBP.</p>
                             </div>
                             <div id="image-preview-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-top: 1.5rem;">
                                 <!-- Previews will appear here -->
@@ -149,7 +149,7 @@
 
                         <div style="margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
                             <button type="submit" id="saveAssetBtn" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.05rem; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 15px var(--primary-light);">
-                                Save Asset Information
+                                Simpan Maklumat Aset
                             </button>
                         </div>
                     </form>
@@ -171,7 +171,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             const dateDisplay = document.getElementById('current-date');
-            if (dateDisplay) dateDisplay.textContent = new Date().toLocaleDateString('en-MY', dateOpts);
+            if (dateDisplay) dateDisplay.textContent = new Date().toLocaleDateString('ms-MY', dateOpts);
             
             fetchProfile();
             loadAssetData();
@@ -187,7 +187,7 @@
                 const files = e.target.files;
                 
                 if (files.length > 5) {
-                    alert('You can only upload a maximum of 5 images.');
+                    alert('Anda hanya boleh memuat naik maksimum 5 gambar.');
                     input.value = '';
                     return;
                 }
@@ -271,7 +271,7 @@
             
             try {
                 btn.disabled = true;
-                btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Saving Details...';
+                btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Menyimpan Butiran...';
                 
                 const response = await fetch('../api/staff_save_asset.php', {
                     method: 'POST',
@@ -280,17 +280,17 @@
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    alert('Asset Information Saved Successfully!');
+                    alert('Maklumat Aset Berjaya Disimpan!');
                     loadAssetData();
                 } else {
                     alert(result.message);
                 }
             } catch (err) {
                 console.error(err);
-                alert('Connection error occurred.');
+                alert('Ralat sambungan berlaku.');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Save Asset Information';
+                btn.textContent = 'Simpan Maklumat Aset';
             }
         });
     </script>

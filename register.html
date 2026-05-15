@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICT Careline Center - Register</title>
+    <title>ICT Careline Center - Daftar</title>
     <link rel="stylesheet" href="assets/css/style.css?v=9">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,30 +27,33 @@
 
     <main class="container centered-content">
         <div class="form-container fade-in" style="padding: 3rem; max-width: 540px;">
-            <h2 class="form-title" style="margin-bottom: 0.5rem; font-size: 2.2rem;">Create Account</h2>
-            <p style="text-align:center; margin-bottom: 2rem; color: var(--text-muted);">Join the ICT Support Portal.</p>
+            <h2 class="form-title" style="margin-bottom: 0.5rem; font-size: 2.2rem;">Daftar Akaun</h2>
+            <p style="text-align:center; margin-bottom: 2rem; color: var(--text-muted);">Sertai Portal Sokongan ICT.</p>
 
             <form id="registerForm">
                 <div class="auth-form-group">
-                    <input type="text" name="full_name" class="auth-input" placeholder="Full Name" required>
+                    <input type="text" name="full_name" class="auth-input" placeholder="Nama Penuh" required>
                 </div>
                 <div class="auth-form-group">
-                    <input type="text" name="username" class="auth-input" placeholder="Staff ID" required>
+                    <input type="text" name="username" class="auth-input" placeholder="ID Staf" required>
                 </div>
                 <div class="auth-form-group">
-                    <input type="text" name="phone" class="auth-input" placeholder="Phone Number">
+                    <input type="text" name="phone" class="auth-input" placeholder="Nombor Telefon">
                 </div>
                 <div class="auth-form-group">
-                    <input type="text" name="office" class="auth-input" placeholder="Office Extension">
+                    <input type="email" name="email" class="auth-input" placeholder="Alamat Emel (untuk tetapan semula kata laluan)">
                 </div>
                 <div class="auth-form-group">
-                    <input type="text" name="jawatan" class="auth-input" placeholder="Jawatan (e.g. Penolong Pegawai IT)" required>
+                    <input type="text" name="office" class="auth-input" placeholder="Sambungan Pejabat">
+                </div>
+                <div class="auth-form-group">
+                    <input type="text" name="jawatan" class="auth-input" placeholder="Jawatan (cth: Penolong Pegawai IT)" required>
                 </div>
 
                 <div class="auth-form-group" style="position: relative;">
                     <input type="hidden" name="department" id="selected_dept" required>
                     <div id="custom_dept_select" class="auth-input" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                        <span id="dept_display">Select Department / Unit</span>
+                        <span id="dept_display">Pilih Jabatan / Unit</span>
                         <span style="font-size: 0.8rem;">▼</span>
                     </div>
                     <div id="dept_options" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); z-index: 1000; max-height: 250px; overflow-y: auto; margin-top: 5px;">
@@ -76,22 +79,22 @@
                 </div>
 
                 <div class="auth-form-group">
-                    <input type="password" name="password" class="auth-input" placeholder="Password" required>
+                    <input type="password" name="password" class="auth-input" placeholder="Kata Laluan" required>
                 </div>
 
                 <button type="submit" class="cta-btn primary" style="width:100%; border:none; cursor:pointer; margin-top: 1rem;">
-                    Register Now
+                    Daftar Sekarang
                 </button>
 
                 <p style="text-align:center; margin-top:2rem; font-size:0.9rem; color: var(--text-muted);">
-                    Already have an account? <a href="login.html" style="color:var(--primary); font-weight:700; text-decoration:none;">Login here</a>
+                    Sudah mempunyai akaun? <a href="login.html" style="color:var(--primary); font-weight:700; text-decoration:none;">Log masuk di sini</a>
                 </p>
             </form>
         </div>
     </main>
 
     <footer class="container" style="padding: 2rem 0;">
-        <p>&copy; 2026 Unit Teknologi Maklumat Majlis Perbandaran Muar. All rights reserved.</p>
+        <p>&copy; 2026 Unit Teknologi Maklumat Majlis Perbandaran Muar. Hak cipta terpelihara.</p>
     </footer>
 
     <script type="module">
@@ -127,7 +130,7 @@
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!selectedDeptInput.value) {
-                alert('Please select a department');
+                alert('Sila pilih jabatan');
                 return;
             }
 
@@ -139,7 +142,7 @@
                 });
                 const res = await response.json();
                 if (res.status === 'success') {
-                    alert('Registration successful! Please login.');
+                    alert('Pendaftaran berjaya! Sila log masuk.');
                     window.location.href = 'login.html';
                 } else {
                     alert(res.message);

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit KEW.PA-9 - ICT Careline Center</title>
+    <title>Hantar KEW.PA-9 - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=9">
 </head>
 
@@ -17,15 +17,15 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-                <a href="profile.html" class="nav-link">👤 My Profile</a>
-                <a href="assets.html" class="nav-link">🖥️ My Assets</a>
-                <a href="report_form.html" class="nav-link active">📝 Submit KEW.PA-9</a>
-                <a href="history.html" class="nav-link">📜 My Reports</a>
+                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
+                <a href="assets.html" class="nav-link">🖥️ Aset Saya</a>
+                <a href="report_form.html" class="nav-link active">📝 Hantar KEW.PA-9</a>
+                <a href="history.html" class="nav-link">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
-                    Logout</a>
+                    Log Keluar</a>
             </div>
         </aside>
 
@@ -45,7 +45,7 @@
             </header>
 
             <section>
-                <h1>Submit Kerosakan Aset</h1>
+                <h1>Hantar Kerosakan Aset</h1>
                 <p class="text-muted">Aduan Kerosakan Aset Alih Kerajaan</p>
 
                 <div class="card" style="margin-top: 2rem; max-width: 800px;">
@@ -67,7 +67,7 @@
                             <div class="form-group">
                                 <label>Pengguna Terakhir</label>
                                 <input type="text" name="pengguna_terakhir" id="f_pengguna" class="form-control" required
-                                    placeholder="Enter name">
+                                    placeholder="Masukkan nama">
                             </div>
                         </div>
 
@@ -75,12 +75,12 @@
                             <div class="form-group">
                                 <label>Nama Aset</label>
                                 <input type="text" name="nama_aset" id="f_nama_aset" class="form-control" required
-                                    placeholder="e.g. Komputer Pejabat / Printer Unit">
+                                    placeholder="cth: Komputer Pejabat / Printer Unit">
                             </div>
                             <div class="form-group">
                                 <label>Jenis Aset</label>
                                 <select name="jenis_aset" class="form-control" required id="f_jenis_aset">
-                                    <option value="">Select Type</option>
+                                    <option value="">Pilih Jenis</option>
                                     <option value="Laptop">Laptop</option>
                                     <option value="Desktop PC">Desktop PC</option>
                                     <option value="Monitor">Monitor</option>
@@ -92,7 +92,7 @@
                             <div class="form-group">
                                 <label>No. Siri Pendaftaran / Asset ID</label>
                                 <input type="text" name="nombor_siri" id="f_nombor_siri" class="form-control" required
-                                    placeholder="e.g. KKM/ICT/01...">
+                                    placeholder="cth: KKM/ICT/01...">
                             </div>
                             <div class="form-group">
                                 <label>Tarikh Kerosakan</label>
@@ -103,20 +103,20 @@
                         <div class="form-group" style="margin-top: 1.5rem;">
                             <label>Perihal Kerosakan</label>
                             <textarea name="perihal_kerosakan" class="form-control" rows="5" required
-                                placeholder="Describe the issue in detail..."></textarea>
+                                placeholder="Huraikan masalah secara terperinci..."></textarea>
                         </div>
 
                         <div class="form-group" style="margin-top: 1.5rem;">
                             <label>Lampiran Gambar (Optional)</label>
                             <div style="border: 2px dashed var(--border); padding: 1.5rem; border-radius: 12px; text-align: center; background: #fafafa;">
                                 <input type="file" name="images[]" multiple accept="image/*" class="form-control" style="margin-bottom: 0.5rem;">
-                                <p class="text-muted" style="font-size: 0.8rem;">Max 5 photos. Select multiple files to upload.</p>
+                                <p class="text-muted" style="font-size: 0.8rem;">Maksimum 5 gambar. Pilih beberapa fail untuk dimuat naik.</p>
                             </div>
                         </div>
 
                         <button type="submit" id="submit-btn" class="btn btn-primary"
                             style="width: 100%; margin-top: 2rem; padding: 1rem; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 15px var(--primary-light);">
-                            Submit Borang KEW.PA-9
+                            Hantar Borang KEW.PA-9
                         </button>
                     </form>
                 </div>
@@ -137,7 +137,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Display Current Date
             const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-MY', dateOpts);
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', dateOpts);
             fetchProfile();
         });
 
@@ -164,13 +164,13 @@
             
             // Validate image count
             if (imageInput.files.length > 5) {
-                alert('You can only upload a maximum of 5 images.');
+                alert('Anda hanya boleh memuat naik maksimum 5 gambar.');
                 return;
             }
 
             try {
                 btn.disabled = true;
-                btn.textContent = 'Submitting...';
+                btn.textContent = 'Menghantar...';
 
                 const response = await fetch('../api/staff_submit_report.php', {
                     method: 'POST',
@@ -179,17 +179,17 @@
                 const res = await response.json();
 
                 if (res.status === 'success') {
-                    alert('Borang KEW.PA-9 submitted successfully!');
+                    alert('Borang KEW.PA-9 berjaya dihantar!');
                     window.location.href = 'history.html';
                 } else {
                     alert(res.message || 'Submission failed');
                 }
             } catch (err) {
                 console.error(err);
-                alert('Connection error. Please check your network.');
+                alert('Ralat sambungan. Sila semak rangkaian anda.');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Submit Borang KEW.PA-9';
+                btn.textContent = 'Hantar Borang KEW.PA-9';
             }
         });
     </script>

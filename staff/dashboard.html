@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Dashboard - ICT Careline Center</title>
+    <title>Papan Pemuka Staf - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=9">
 </head>
 
@@ -17,15 +17,15 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link active">📊 Dashboard</a>
-                <a href="profile.html" class="nav-link">👤 My Profile</a>
-                <a href="assets.html" class="nav-link">🖥️ My Assets</a>
-                <a href="report_form.html" class="nav-link">📝 Submit KEW.PA-9</a>
-                <a href="history.html" class="nav-link">📜 My Reports</a>
+                <a href="dashboard.html" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
+                <a href="assets.html" class="nav-link">🖥️ Aset Saya</a>
+                <a href="report_form.html" class="nav-link">📝 Hantar KEW.PA-9</a>
+                <a href="history.html" class="nav-link">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
-                    Logout</a>
+                    Log Keluar</a>
             </div>
         </aside>
 
@@ -36,7 +36,7 @@
                 <div>
                     <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">ICT Careline Center
                     </p>
-                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Overview Dashboard</h2>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Ringkasan Papan Pemuka</h2>
                 </div>
                 <div id="current-date"
                     style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
@@ -45,8 +45,8 @@
             </header>
 
             <section id="section-overview">
-                <h1 id="welcome-msg">Welcome Back, Staff</h1>
-                <p class="text-muted">Here is a quick overview of your account activity.</p>
+                <h1 id="welcome-msg">Selamat Datang Kembali, Staf</h1>
+                <p class="text-muted">Berikut adalah ringkasan aktiviti akaun anda.</p>
 
                 <div class="stats-grid"
                     style="margin-top: 2.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
@@ -55,7 +55,7 @@
                             style="background: #fef3c7; color: #92400e; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                             📝</div>
                         <div>
-                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Pending Reports</div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Laporan Belum Selesai</div>
                             <div id="stat-pending"
                                 style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
                         </div>
@@ -65,7 +65,7 @@
                             style="background: #dcfce7; color: #166534; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                             📜</div>
                         <div>
-                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Total Reports</div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Laporan</div>
                             <div id="stat-total" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0
                             </div>
                         </div>
@@ -73,10 +73,10 @@
                 </div>
 
                 <div class="card" style="margin-top: 2.5rem;">
-                    <h3 style="margin-bottom: 1.5rem;">Recent Activity</h3>
+                    <h3 style="margin-bottom: 1.5rem;">Aktiviti Terkini</h3>
                     <div id="activity-list" style="display: flex; flex-direction: column; gap: 1rem;">
                         <!-- Activities will be loaded here -->
-                        <p class="text-muted">Loading your recent activities...</p>
+                        <p class="text-muted">Memuatkan aktiviti terkini anda...</p>
                     </div>
                 </div>
             </section>
@@ -96,7 +96,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Display Current Date
             const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-MY', dateOpts);
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', dateOpts);
 
             // Fetch Profile (Critical for welcome message)
             try {
@@ -105,8 +105,8 @@
                 
                 const profile = await profileRes.json();
                 if (profile.status === 'success') {
-                    const name = profile.data.full_name || profile.data.username || 'Staff';
-                    document.getElementById('welcome-msg').textContent = `Welcome Back, ${name}`;
+                    const name = profile.data.full_name || profile.data.username || 'Staf';
+                    document.getElementById('welcome-msg').textContent = `Selamat Datang Kembali, ${name}`;
                     localStorage.setItem('user', JSON.stringify(profile.data));
                 } else {
                     console.error('Profile fetch failed:', profile.message);
@@ -160,17 +160,17 @@
                                     <div class="text-muted" style="font-size: 0.85rem;">${a.description}</div>
                                 </div>
                                 <div class="text-muted" style="font-size: 0.75rem; font-weight: 600;">
-                                    ${new Date(a.created_at).toLocaleDateString('en-MY', { day: 'numeric', month: 'short' })}
+                                    ${new Date(a.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short' })}
                                 </div>
                             </div>
                         `;
                     }).join('');
                 } else {
-                    activityList.innerHTML = '<p class="text-muted" style="text-align: center; padding: 1rem;">No recent activities found.</p>';
+                    activityList.innerHTML = '<p class="text-muted" style="text-align: center; padding: 1rem;">Tiada aktiviti terkini ditemui.</p>';
                 }
             } catch (err) { 
                 console.error('Activity fetch error:', err); 
-                activityList.innerHTML = '<p class="text-muted" style="text-align: center; padding: 1rem;">No recent activities found.</p>';
+                activityList.innerHTML = '<p class="text-muted" style="text-align: center; padding: 1rem;">Tiada aktiviti terkini ditemui.</p>';
             }
         });
     </script>

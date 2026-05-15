@@ -151,6 +151,97 @@ h1, h2, h3, h4 {
     box-shadow: 0 12px 40px rgba(31, 38, 135, 0.08);
 }
 
+/* Table Container for internal scrolling */
+.table-container {
+    max-height: 550px;
+    overflow-y: auto;
+    overflow-x: auto;
+    position: relative;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+/* Custom Scrollbar for Premium Feel */
+.table-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Sticky Header */
+.table-container table thead th {
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    z-index: 10;
+    box-shadow: 0 1px 0 var(--border);
+}
+
+/* Pagination UI */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.pagination-info {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.pagination-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f1f5f9;
+}
+
+.pagination-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
 .btn {
     padding: 0.75rem 1.5rem;
     border-radius: 10px;

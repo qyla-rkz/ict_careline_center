@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Management - ICT Careline Center</title>
+    <title>Pengurusan Laporan - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
         @media print {
@@ -146,15 +146,15 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-                <a href="report_management.html" class="nav-link active">📝 Report Management</a>
-                <a href="inventory.html" class="nav-link">🖥️ Assets Inventory</a>
-                <a href="staff_assets.html" class="nav-link">👥 Staff Assets</a>
-                <a href="history_reports.html" class="nav-link">📜 History Logs</a>
+                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
+                <a href="report_management.html" class="nav-link active">📝 Pengurusan Laporan</a>
+                <a href="inventory.html" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets.html" class="nav-link">👥 Aset Staf</a>
+                <a href="history_reports.html" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
-                    Logout</a>
+                    Log Keluar</a>
             </div>
         </aside>
 
@@ -164,7 +164,7 @@
                 <div>
                     <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">ICT Careline Center
                     </p>
-                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Report Management</h2>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Pengurusan Laporan</h2>
                 </div>
                 <div id="adminDate"
                     style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
@@ -186,9 +186,9 @@
                             style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-muted);">STATUS</label>
                         <select id="statusFilter" class="form-control" onchange="filterReports()">
                             <option value="all">Semua Status</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Resolved">Resolved</option>
-                            <option value="Rejected">Rejected</option>
+                            <option value="Pending">Belum Selesai</option>
+                            <option value="Resolved">Selesai</option>
+                            <option value="Rejected">Ditolak</option>
                         </select>
                     </div>
                 </div>
@@ -196,24 +196,35 @@
 
             <!-- Table -->
             <div class="card">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="text-align: left; border-bottom: 2px solid var(--border);">
-                            <th style="padding: 1rem;">ID</th>
-                            <th style="padding: 1rem;">Maklumat Aset</th>
-                            <th style="padding: 1rem;">Pelapor</th>
-                            <th style="padding: 1rem;">Tarikh</th>
-                            <th style="padding: 1rem; text-align: center;">Status</th>
-                            <th style="padding: 1rem; text-align: center;">Tindakan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reportTableBody">
-                        <tr>
-                            <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">
-                                Memuatkan laporan...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left;">
+                                <th style="padding: 1rem;">ID</th>
+                                <th style="padding: 1rem;">Maklumat Aset</th>
+                                <th style="padding: 1rem;">Pelapor</th>
+                                <th style="padding: 1rem;">Tarikh</th>
+                                <th style="padding: 1rem; text-align: center;">Status</th>
+                                <th style="padding: 1rem; text-align: center;">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                            <tr>
+                                <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                                    Memuatkan laporan...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info" id="paginationInfo">Menunjukkan 0 hingga 0 daripada 0 entri</div>
+                    <div class="pagination-controls">
+                        <button onclick="prevPage()" id="prevBtn" class="pagination-btn" disabled>Sebelumnya</button>
+                        <button onclick="nextPage()" id="nextBtn" class="pagination-btn">Seterusnya</button>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -299,7 +310,7 @@
                     <div style="display: flex; gap: 1rem;">
                         <button type="submit" class="btn btn-primary" style="flex: 1;">💾 Simpan & Selesaikan</button>
                         <button type="button" onclick="printKEWPA9()" class="btn btn-secondary" style="flex: 1;">🖨️
-                            Print KEW.PA-9</button>
+                            Cetak KEW.PA-9</button>
                         <button type="button" onclick="closeModal()" class="btn btn-secondary"
                             style="flex: 0 0 auto; padding: 0.75rem 1.5rem;">Tutup</button>
                     </div>
@@ -438,10 +449,11 @@
         }
 
         let allReports = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let filteredData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('adminDate').textContent = new Date().toLocaleDateString('en-MY', opts);
             fetchReports();
         });
 
@@ -451,7 +463,8 @@
                 const result = await res.json();
                 if (result.status === 'success') {
                     allReports = result.data;
-                    renderReports(allReports);
+                    filteredData = [...allReports];
+                    renderReports();
                 } else {
                     console.error('API error:', result.message);
                     document.getElementById('reportTableBody').innerHTML =
@@ -460,13 +473,19 @@
             } catch (err) { console.error(err); }
         }
 
-        function renderReports(reports) {
+        function renderReports() {
             const tbody = document.getElementById('reportTableBody');
-            if (!reports.length) {
+            if (!filteredData.length) {
                 tbody.innerHTML = '<tr><td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">Tiada laporan dijumpai.</td></tr>';
+                updatePagination(0);
                 return;
             }
-            tbody.innerHTML = reports.map(r => {
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = filteredData.slice(start, end);
+
+            tbody.innerHTML = pageItems.map(r => {
                 const badgeClass = r.status === 'Resolved' ? 'badge-resolved' : r.status === 'Rejected' ? 'badge-rejected' : 'badge-pending';
                 return `
                 <tr style="border-bottom: 1px solid var(--border);">
@@ -479,24 +498,52 @@
                         <div style="font-weight: 600;">${r.nama_pelapor || r.full_name || '-'}</div>
                         <div style="font-size: 0.8rem; color: var(--text-muted);">${r.location || '-'}</div>
                     </td>
-                    <td style="padding: 1rem; font-size: 0.9rem; color: var(--text-muted);">${new Date(r.created_at).toLocaleDateString('en-MY')}</td>
-                    <td style="padding: 1rem; text-align: center;"><span class="badge ${badgeClass}">${r.status}</span></td>
+                    <td style="padding: 1rem; font-size: 0.9rem; color: var(--text-muted);">${new Date(r.created_at).toLocaleDateString('ms-MY')}</td>
+                    <td style="padding: 1rem; text-align: center;"><span class="badge ${badgeClass}">${r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
                     <td style="padding: 1rem; text-align: center;">
-                        <button onclick='openReport(${JSON.stringify(r)})' class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📋 Urus</button>
+                        <button onclick='openReport(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📋 Urus</button>
                     </td>
                 </tr>`;
             }).join('');
+
+            updatePagination(filteredData.length);
+        }
+
+        function updatePagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(currentPage * itemsPerPage, totalItems);
+
+            document.getElementById('paginationInfo').textContent = totalItems > 0 
+                ? `Menunjukkan ${start} hingga ${end} daripada ${totalItems} entri`
+                : `Menunjukkan 0 hingga 0 daripada 0 entri`;
+
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        function nextPage() {
+            currentPage++;
+            renderReports();
+            document.querySelector('.table-container').scrollTop = 0;
+        }
+
+        function prevPage() {
+            currentPage--;
+            renderReports();
+            document.querySelector('.table-container').scrollTop = 0;
         }
 
         function filterReports() {
             const q = document.getElementById('reportSearch').value.toLowerCase();
             const s = document.getElementById('statusFilter').value;
-            const filtered = allReports.filter(r => {
+            filteredData = allReports.filter(r => {
                 const matchQ = [r.jenis_aset, r.nombor_siri, r.nama_pelapor, r.full_name].some(v => v && v.toLowerCase().includes(q));
                 const matchS = s === 'all' || r.status === s;
                 return matchQ && matchS;
             });
-            renderReports(filtered);
+            currentPage = 1;
+            renderReports(filteredData);
         }
 
         function openReport(r) {
@@ -548,7 +595,7 @@
             document.getElementById('pr_tarikh_rosak').textContent = document.getElementById('v_tarikh_rosak').value;
             document.getElementById('pr_perihal').textContent = document.getElementById('v_perihal').value;
             document.getElementById('pr_nama_jawatan').textContent = document.getElementById('v_nama_jawatan').value;
-            document.getElementById('pr_tarikh_aduan').textContent = new Date(document.getElementById('p_created_at').value).toLocaleDateString('en-MY');
+            document.getElementById('pr_tarikh_aduan').textContent = new Date(document.getElementById('p_created_at').value).toLocaleDateString('ms-MY');
 
             const kosDahulu = parseFloat(document.getElementById('v_kos_dahulu').value) || 0;
             const anggaranKos = parseFloat(document.getElementById('v_anggaran_kos').value) || 0;
@@ -559,7 +606,7 @@
             const adminNama = document.getElementById('v_admin_nama').value;
             const adminJawatan = document.getElementById('v_admin_jawatan').value;
             document.getElementById('pr_admin_nama').textContent = adminJawatan ? adminNama + ' / ' + adminJawatan : adminNama;
-            document.getElementById('pr_admin_tarikh').textContent = new Date().toLocaleDateString('en-MY');
+            document.getElementById('pr_admin_tarikh').textContent = new Date().toLocaleDateString('ms-MY');
 
             const kep = document.getElementById('v_keputusan').value;
             document.getElementById('pr_keputusan_line').innerHTML = kep === 'Diluluskan'
