@@ -14,6 +14,10 @@
                 <div class="logo-icon">🛠️</div>
                 <h2>ICT Careline Center</h2>
             </div>
+            <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
+                <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
+            </div>
             <nav class="nav-links">
                 <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
                 <a href="report_management.html" class="nav-link">📝 Pengurusan Laporan</a>
@@ -164,6 +168,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', opts);
+            
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.full_name) {
+                document.getElementById('sidebarAdminName').textContent = user.full_name;
+            }
+            
             fetchInventory();
         });
 

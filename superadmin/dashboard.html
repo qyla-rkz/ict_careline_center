@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Dashboard - ICT Careline Center</title>
+    <link rel="stylesheet" href="../assets/css/style.css?v=9">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">👑</div>
+                <h2>Super Admin</h2>
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="users.html" class="nav-link">👥 Pengguna</a>
+                <a href="audit_logs.html" class="nav-link">📜 Jejak Audit</a>
+                <a href="settings.html" class="nav-link">⚙️ Tetapan</a>
+            </nav>
+            <div style="margin-top: auto;">
+                <a href="javascript:void(0)" onclick="logout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
+                <div>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Super Admin Portal</p>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Papan Pemuka Utama</h2>
+                </div>
+                <div id="userGreeting" style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                    Sila Tunggu...
+                </div>
+            </header>
+
+            <section id="section-overview">
+                <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-main);">Selamat Datang ke Super Admin</h1>
+                <p class="text-muted">Pantau dan urus keseluruhan sistem daripada satu tempat berpusat.</p>
+
+                <div class="stats-grid" style="margin-top: 2.5rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="stat-icon" style="background: #eff6ff; color: #1e40af; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            👥
+                        </div>
+                        <div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Pengguna</div>
+                            <div id="totalUsers" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">-</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="stat-icon" style="background: #dcfce7; color: #166534; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            🖥️
+                        </div>
+                        <div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Aset</div>
+                            <div id="totalAssets" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">-</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="stat-icon" style="background: #fef3c7; color: #92400e; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            📝
+                        </div>
+                        <div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Laporan/Tiket</div>
+                            <div id="totalReports" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">-</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section style="margin-top: 3.5rem;">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+                    <div class="card" style="padding: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-main);">Ringkasan Data (Carta)</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="mainChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-main);">Jejak Audit Terkini</h3>
+                        <ul id="recentActivityList" style="list-style: none; padding: 0; margin: 0;">
+                            <li style="padding: 1rem 0; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; color: #64748b;">Memuatkan...</li>
+                        </ul>
+                        <div style="margin-top: 1.5rem; text-align: center;">
+                            <a href="audit_logs.html" class="btn btn-outline" style="width: 100%; display: block; font-size: 0.9rem;">Lihat Semua Jejak Audit &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('user');
+            if (!userStr) {
+                window.location.replace('../login.html');
+                return;
+            }
+            const user = JSON.parse(userStr);
+            if (user.role !== 'Super Admin' && user.role !== 'superadmin') {
+                alert('Akses Ditolak. Anda bukan Super Admin.');
+                window.location.replace('../login.html');
+                return;
+            }
+            document.getElementById('userGreeting').textContent = `Hi, ${user.full_name}`;
+            
+            fetchStats();
+        });
+
+        async function fetchStats() {
+            try {
+                const res = await fetch('../api/superadmin/system_stats.php');
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    document.getElementById('totalUsers').textContent = data.data.total_users;
+                    document.getElementById('totalAssets').textContent = data.data.total_assets;
+                    document.getElementById('totalReports').textContent = data.data.total_reports;
+                    
+                    renderChart(data.data);
+                    renderRecentLogs(data.data.recent_logs);
+                }
+            } catch(e) {
+                console.error("Gagal mengambil statistik:", e);
+            }
+        }
+
+        function renderChart(stats) {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Pengguna', 'Aset', 'Tiket/Laporan'],
+                    datasets: [{
+                        label: 'Jumlah Keseluruhan',
+                        data: [stats.total_users, stats.total_assets, stats.total_reports],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.5)',
+                            'rgba(16, 185, 129, 0.5)',
+                            'rgba(245, 158, 11, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgb(59, 130, 246)',
+                            'rgb(16, 185, 129)',
+                            'rgb(245, 158, 11)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderRecentLogs(logs) {
+            const list = document.getElementById('recentActivityList');
+            list.innerHTML = '';
+            
+            if(!logs || logs.length === 0) {
+                list.innerHTML = '<li style="padding: 1rem 0; font-size: 0.9rem; color: #64748b;">Tiada aktiviti.</li>';
+                return;
+            }
+
+            logs.forEach(log => {
+                const li = document.createElement('li');
+                li.style.cssText = 'padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem;';
+                li.innerHTML = `
+                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 0.2rem;">${log.action}</div>
+                    <div style="color: #64748b; font-size: 0.8rem;">Oleh <strong>${log.name || 'System'}</strong> pada ${new Date(log.created_at).toLocaleString('ms-MY')}</div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        async function logout() {
+            try {
+                await fetch('../api/logout.php');
+                localStorage.removeItem('user');
+                window.location.replace('../login.html');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>

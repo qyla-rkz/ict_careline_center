@@ -145,6 +145,10 @@
                 <div class="logo-icon">🛠️</div>
                 <h2>ICT Careline Center</h2>
             </div>
+            <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
+                <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
+            </div>
             <nav class="nav-links">
                 <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
                 <a href="report_management.html" class="nav-link active">📝 Pengurusan Laporan</a>
@@ -174,19 +178,12 @@
             <!-- Filter Bar -->
             <div class="card" style="margin-bottom: 1.5rem;">
                 <div style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 220px;">
+                    <div style="width: 250px;">
                         <label
-                            style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-muted);">CARI
-                            LAPORAN</label>
-                        <input type="text" id="reportSearch" class="form-control"
-                            placeholder="Cari mengikut aset, nama atau s/n..." oninput="filterReports()">
-                    </div>
-                    <div style="width: 180px;">
-                        <label
-                            style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-muted);">STATUS</label>
+                            style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-muted);">STATUS LAPORAN</label>
                         <select id="statusFilter" class="form-control" onchange="filterReports()">
+                            <option value="Pending" selected>Belum Selesai</option>
                             <option value="all">Semua Status</option>
-                            <option value="Pending">Belum Selesai</option>
                             <option value="Resolved">Selesai</option>
                             <option value="Rejected">Ditolak</option>
                         </select>
@@ -454,6 +451,14 @@
         let filteredData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
+            const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('adminDate').textContent = new Date().toLocaleDateString('ms-MY', opts);
+            
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.full_name) {
+                document.getElementById('sidebarAdminName').textContent = user.full_name;
+            }
+            
             fetchReports();
         });
 
@@ -463,8 +468,7 @@
                 const result = await res.json();
                 if (result.status === 'success') {
                     allReports = result.data;
-                    filteredData = [...allReports];
-                    renderReports();
+                    filterReports();
                 } else {
                     console.error('API error:', result.message);
                     document.getElementById('reportTableBody').innerHTML =
@@ -535,15 +539,12 @@
         }
 
         function filterReports() {
-            const q = document.getElementById('reportSearch').value.toLowerCase();
             const s = document.getElementById('statusFilter').value;
             filteredData = allReports.filter(r => {
-                const matchQ = [r.jenis_aset, r.nombor_siri, r.nama_pelapor, r.full_name].some(v => v && v.toLowerCase().includes(q));
-                const matchS = s === 'all' || r.status === s;
-                return matchQ && matchS;
+                return s === 'all' || r.status === s;
             });
             currentPage = 1;
-            renderReports(filteredData);
+            renderReports();
         }
 
         function openReport(r) {

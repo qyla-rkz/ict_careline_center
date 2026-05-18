@@ -43,8 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('user', JSON.stringify(result.data));
                     alert(`Welcome back ${result.data.role} ${result.data.full_name}!`);
                     // Redirect based on role
-                    if (result.data.role === 'Staff') {
+                    if (result.data.role === 'Staff' || result.data.role === 'staff') {
                         window.location.replace('staff/dashboard.html');
+                    } else if (result.data.role === 'Super Admin' || result.data.role === 'superadmin') {
+                        window.location.replace('superadmin/dashboard.html');
                     } else {
                         window.location.replace('admin/dashboard.html');
                     }
