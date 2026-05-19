@@ -1,1 +1,7 @@
 .env
+uploads/*
+!uploads/.gitkeep
+uploads/reports/*
+!uploads/reports/.gitkeep
+session_debug.txt
+*.log

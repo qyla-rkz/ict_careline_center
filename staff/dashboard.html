@@ -45,8 +45,26 @@
             </header>
 
             <section id="section-overview">
-                <h1 id="welcome-msg">Selamat Datang Kembali, Staf</h1>
-                <p class="text-muted">Berikut adalah ringkasan aktiviti akaun anda.</p>
+                <!-- Premium Quick-Action Banner -->
+                <div class="card" style="background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%); color: white; border: none; padding: 2.25rem; position: relative; overflow: hidden; margin-bottom: 2rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(30, 64, 175, 0.15);">
+                    <div style="position: relative; z-index: 2;">
+                        <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; color: white;">Pusat Tindakan & Bantuan ICT</h2>
+                        <p style="opacity: 0.9; font-size: 0.95rem; max-width: 650px; margin-bottom: 1.5rem; line-height: 1.6;">
+                            Urus aset anda, laporkan kerosakan peralatan ICT melalui borang KEW.PA-9 dengan pantas, dan jejaki status tindakan laporan aktif anda secara langsung.
+                        </p>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <a href="report_form.html" style="background: white; color: var(--primary); font-weight: 700; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';">
+                                📝 Hantar Laporan Kerosakan
+                            </a>
+                            <a href="assets.html" style="background: rgba(255,255,255,0.15); color: white; font-weight: 600; border: 1px solid rgba(255,255,255,0.3); padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; backdrop-filter: blur(5px); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)';" onmouseout="this.style.background='rgba(255,255,255,0.15)';">
+                                🖥️ Senarai Aset Saya
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Decorative background shapes -->
+                    <div style="position: absolute; right: -50px; bottom: -50px; width: 250px; height: 250px; background: rgba(255,255,255,0.08); border-radius: 50%; pointer-events: none; z-index: 1;"></div>
+                    <div style="position: absolute; right: 100px; top: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%; pointer-events: none; z-index: 1;"></div>
+                </div>
 
                 <div class="stats-grid"
                     style="margin-top: 2.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
@@ -105,8 +123,6 @@
                 
                 const profile = await profileRes.json();
                 if (profile.status === 'success') {
-                    const name = profile.data.full_name || profile.data.username || 'Staf';
-                    document.getElementById('welcome-msg').textContent = `Selamat Datang Kembali, ${name}`;
                     localStorage.setItem('user', JSON.stringify(profile.data));
                 } else {
                     console.error('Profile fetch failed:', profile.message);
@@ -174,6 +190,7 @@
             }
         });
     </script>
+    <script src="../assets/js/global.js"></script>
 </body>
 
 </html>

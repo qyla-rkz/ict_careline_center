@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super Admin Dashboard - ICT Careline Center</title>
-    <link rel="stylesheet" href="../assets/css/style.css?v=9">
+    <link rel="stylesheet" href="../assets/css/style.css?v=10">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -16,6 +16,12 @@
             <div class="logo-area">
                 <div class="logo-icon">👑</div>
                 <h2>Super Admin</h2>
+            </div>
+            <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
+                <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super Admin</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem; margin-bottom: 0.15rem;">Dekan:</p>
+                <p id="sidebarDeanName" style="font-weight: 600; color: var(--text-main); font-size: 0.9rem;">-</p>
             </div>
             <nav class="nav-links">
                 <a href="dashboard.html" class="nav-link active">📊 Papan Pemuka</a>
@@ -35,8 +41,8 @@
                     <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Super Admin Portal</p>
                     <h2 style="font-size: 1.8rem; color: var(--text-main);">Papan Pemuka Utama</h2>
                 </div>
-                <div id="userGreeting" style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
-                    Sila Tunggu...
+                <div id="superadminDate" style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                    <!-- Date loaded via JS -->
                 </div>
             </header>
 
@@ -111,10 +117,32 @@
                 window.location.replace('../login.html');
                 return;
             }
-            document.getElementById('userGreeting').textContent = `Hi, ${user.full_name}`;
             
+            // Set date and name
+            const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('superadminDate').textContent = new Date().toLocaleDateString('ms-MY', opts);
+            if (user && user.full_name) {
+                document.getElementById('sidebarSuperadminName').textContent = user.full_name;
+            }
+            
+            loadDeanName();
             fetchStats();
         });
+
+        async function loadDeanName() {
+            try {
+                const res = await fetch('../api/superadmin/settings.php');
+                const data = await res.json();
+                if (data.status === 'success' && data.data.settings && data.data.settings.nama_dekan) {
+                    document.getElementById('sidebarDeanName').textContent = data.data.settings.nama_dekan;
+                } else {
+                    document.getElementById('sidebarDeanName').textContent = 'Tidak Ditetapkan';
+                }
+            } catch (e) {
+                console.error('Ralat mengambil nama dekan:', e);
+                document.getElementById('sidebarDeanName').textContent = '-';
+            }
+        }
 
         async function fetchStats() {
             try {
@@ -134,42 +162,121 @@
             }
         }
 
+        let mainChartInstance = null;
+
         function renderChart(stats) {
             const ctx = document.getElementById('mainChart').getContext('2d');
-            new Chart(ctx, {
+            
+            if (mainChartInstance) {
+                mainChartInstance.destroy();
+            }
+
+            const isDarkNow = document.body.classList.contains('dark-theme');
+            const textColor = isDarkNow ? '#94a3b8' : '#64748b';
+            const gridColor = isDarkNow ? '#334155' : '#f1f5f9';
+
+            const primaryGrad = ctx.createLinearGradient(0, 0, 0, 300);
+            primaryGrad.addColorStop(0, 'rgba(79, 70, 229, 0.85)');
+            primaryGrad.addColorStop(1, 'rgba(79, 70, 229, 0.05)');
+
+            const successGrad = ctx.createLinearGradient(0, 0, 0, 300);
+            successGrad.addColorStop(0, 'rgba(13, 148, 136, 0.85)');
+            successGrad.addColorStop(1, 'rgba(13, 148, 136, 0.05)');
+
+            const warningGrad = ctx.createLinearGradient(0, 0, 0, 300);
+            warningGrad.addColorStop(0, 'rgba(245, 158, 11, 0.85)');
+            warningGrad.addColorStop(1, 'rgba(245, 158, 11, 0.05)');
+
+            mainChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Pengguna', 'Aset', 'Tiket/Laporan'],
                     datasets: [{
                         label: 'Jumlah Keseluruhan',
                         data: [stats.total_users, stats.total_assets, stats.total_reports],
-                        backgroundColor: [
-                            'rgba(59, 130, 246, 0.5)',
-                            'rgba(16, 185, 129, 0.5)',
-                            'rgba(245, 158, 11, 0.5)'
-                        ],
-                        borderColor: [
-                            'rgb(59, 130, 246)',
-                            'rgb(16, 185, 129)',
-                            'rgb(245, 158, 11)'
-                        ],
-                        borderWidth: 1
+                        backgroundColor: [primaryGrad, successGrad, warningGrad],
+                        borderColor: ['#4f46e5', '#0d9488', '#f59e0b'],
+                        borderWidth: 2,
+                        borderRadius: 12,
+                        borderSkipped: false,
+                        barPercentage: 0.55
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: isDarkNow ? '#1e293b' : '#ffffff',
+                            titleColor: isDarkNow ? '#f8fafc' : '#0f172a',
+                            bodyColor: isDarkNow ? '#94a3b8' : '#64748b',
+                            borderColor: isDarkNow ? '#334155' : '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 14,
+                            cornerRadius: 12,
+                            displayColors: true,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
                     scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    family: 'Outfit, sans-serif',
+                                    size: 13,
+                                    weight: '600'
+                                }
+                            }
+                        },
                         y: {
                             beginAtZero: true,
+                            grid: {
+                                color: gridColor,
+                                drawBorder: false
+                            },
                             ticks: {
-                                precision: 0
+                                precision: 0,
+                                color: textColor,
+                                font: {
+                                    family: 'Outfit, sans-serif',
+                                    size: 12
+                                }
                             }
                         }
                     }
                 }
             });
         }
+
+        window.updateChartsTheme = (isDark) => {
+            if (mainChartInstance) {
+                const textColor = isDark ? '#94a3b8' : '#64748b';
+                const gridColor = isDark ? '#334155' : '#f1f5f9';
+
+                mainChartInstance.options.scales.x.ticks.color = textColor;
+                mainChartInstance.options.scales.y.ticks.color = textColor;
+                mainChartInstance.options.scales.y.grid.color = gridColor;
+
+                mainChartInstance.options.plugins.tooltip.backgroundColor = isDark ? '#1e293b' : '#ffffff';
+                mainChartInstance.options.plugins.tooltip.titleColor = isDark ? '#f8fafc' : '#0f172a';
+                mainChartInstance.options.plugins.tooltip.bodyColor = isDark ? '#94a3b8' : '#64748b';
+                mainChartInstance.options.plugins.tooltip.borderColor = isDark ? '#334155' : '#e2e8f0';
+
+                mainChartInstance.update();
+            }
+        };
 
         function renderRecentLogs(logs) {
             const list = document.getElementById('recentActivityList');
@@ -201,5 +308,6 @@
             }
         }
     </script>
+    <script src="../assets/js/global.js"></script>
 </body>
 </html>

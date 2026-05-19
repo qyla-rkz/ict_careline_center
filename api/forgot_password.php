@@ -3,11 +3,21 @@
 header('Content-Type: application/json');
 require_once 'config.php';
 
-// Load SMTP config from .env
-$smtp_host = getenv('SMTP_HOST') ?: 'smtp.gmail.com';
-$smtp_user = getenv('SMTP_USER') ?: '';
-$smtp_pass = getenv('SMTP_PASS') ?: '';
-$smtp_port = getenv('SMTP_PORT') ?: 587;
+// Load SMTP config (try Database system_settings first, then fallback to .env)
+$settings = [];
+try {
+    $stmt = $pdo->query("SELECT setting_key, setting_value FROM system_settings");
+    if ($stmt) {
+        $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+    }
+} catch (PDOException $e) {
+    // Fail silently if table doesn't exist yet
+}
+
+$smtp_host = !empty($settings['smtp_host']) ? $settings['smtp_host'] : (getenv('SMTP_HOST') ?: 'smtp.gmail.com');
+$smtp_user = !empty($settings['smtp_username']) ? $settings['smtp_username'] : (getenv('SMTP_USER') ?: '');
+$smtp_pass = !empty($settings['smtp_password']) ? $settings['smtp_password'] : (getenv('SMTP_PASS') ?: '');
+$smtp_port = !empty($settings['smtp_port']) ? $settings['smtp_port'] : (getenv('SMTP_PORT') ?: 587);
 $app_url   = getenv('APP_URL') ?: 'http://localhost/ict_careline_center';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

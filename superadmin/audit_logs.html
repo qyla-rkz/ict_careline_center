@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log Jejak Sistem (Audit) - Super Admin</title>
-    <link rel="stylesheet" href="../assets/css/style.css?v=9">
+    <link rel="stylesheet" href="../assets/css/style.css?v=10">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -24,6 +24,12 @@
                 <div class="logo-icon">👑</div>
                 <h2>Super Admin</h2>
             </div>
+            <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
+                <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super Admin</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem; margin-bottom: 0.15rem;">Dekan:</p>
+                <p id="sidebarDeanName" style="font-weight: 600; color: var(--text-main); font-size: 0.9rem;">-</p>
+            </div>
             <nav class="nav-links">
                 <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
                 <a href="users.html" class="nav-link">👥 Pengguna</a>
@@ -41,6 +47,9 @@
                 <div>
                     <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Super Admin Portal</p>
                     <h2 style="font-size: 1.8rem; color: var(--text-main);">Log Jejak Sistem (Audit Trails)</h2>
+                </div>
+                <div id="superadminDate" style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                    <!-- Date loaded via JS -->
                 </div>
             </header>
 
@@ -83,6 +92,26 @@
         let allLogsData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('user');
+            if (!userStr) {
+                window.location.replace('../login.html');
+                return;
+            }
+            const user = JSON.parse(userStr);
+            if (user.role !== 'Super Admin' && user.role !== 'superadmin') {
+                alert('Akses Ditolak. Anda bukan Super Admin.');
+                window.location.replace('../login.html');
+                return;
+            }
+            
+            // Set date and name
+            const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('superadminDate').textContent = new Date().toLocaleDateString('ms-MY', opts);
+            if (user && user.full_name) {
+                document.getElementById('sidebarSuperadminName').textContent = user.full_name;
+            }
+
+            loadDeanName();
             fetchLogs();
 
             document.getElementById('dateFilter').addEventListener('change', function(e) {
@@ -105,6 +134,21 @@
                 countDiv.textContent = `Jumlah Aktiviti: ${filteredLogs.length}`;
             });
         });
+
+        async function loadDeanName() {
+            try {
+                const res = await fetch('../api/superadmin/settings.php');
+                const data = await res.json();
+                if (data.status === 'success' && data.data.settings && data.data.settings.nama_dekan) {
+                    document.getElementById('sidebarDeanName').textContent = data.data.settings.nama_dekan;
+                } else {
+                    document.getElementById('sidebarDeanName').textContent = 'Tidak Ditetapkan';
+                }
+            } catch (e) {
+                console.error('Ralat mengambil nama dekan:', e);
+                document.getElementById('sidebarDeanName').textContent = '-';
+            }
+        }
 
         async function fetchLogs() {
             try {
@@ -153,5 +197,6 @@
             } catch (err) {}
         }
     </script>
+    <script src="../assets/js/global.js"></script>
 </body>
 </html>

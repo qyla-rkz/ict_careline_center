@@ -164,7 +164,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `staff_id`, `phone`, `office`, `department`, `password`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'Super Admin Nurul Aqilah Khairuni', '50130', '-', '-', 'Unit Teknologi Maklumat', 'rkz16102003', 'Super Admin', '2026-04-14 02:06:45', '2026-04-14 06:52:11'),
+(1, 'Super Admin Nurul Aqilah Khairuni', '50130', '-', '-', 'Unit Teknologi Maklumat', '$2y$10$cF4NWSWi5EG1a9.YHTVGl.ujqz7fIedfCA1zg.oD6D2gUAtIK7Trm', 'Super Admin', '2026-04-14 02:06:45', '2026-04-14 06:52:11'),
 (3, 'Nurul Aqilah Khairuni', '50000', '0103701610', '-', 'Unit Teknologi Maklumat', '$2y$10$E7YI2Uj/.G4g.4QNsel7X.5akU0KWyz4LLwpJkd8JaVeKAEhhwXu2', 'Staff', '2026-04-14 07:41:01', '2026-04-15 07:59:22'),
 (8, 'Nurul Aqilah Khairuni', '51000', '-', '-', 'teknologi maklumat', '$2y$10$ItYWLnf2MrUEWe8z7KjUKOHMxVHnc3tTzSaH/P1HUP7hay8J8vX1S', 'Admin', '2026-04-23 03:55:54', '2026-04-23 03:55:54');
 

@@ -22,6 +22,19 @@ try {
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
+        // Semak Mod Penyelenggaraan (Maintenance Mode)
+        try {
+            $settingsStmt = $pdo->query("SELECT setting_value FROM system_settings WHERE setting_key = 'maintenance_mode' LIMIT 1");
+            if ($settingsStmt) {
+                $maintenance = $settingsStmt->fetchColumn();
+                if ($maintenance === '1' && !in_array(strtolower($user['role']), ['super admin', 'superadmin', 'admin'])) {
+                    jsonResponse('error', 'Sistem sedang dalam penyelenggaraan (Maintenance Mode). Hanya pentadbir sahaja dibenarkan log masuk pada masa ini.');
+                }
+            }
+        } catch (PDOException $e) {
+            // Fail silently if table or setting doesn't exist
+        }
+
         // Clear old session
         session_unset();
         

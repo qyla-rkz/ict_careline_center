@@ -359,6 +359,22 @@
                 reportChartInstance.destroy();
             }
 
+            const isDarkNow = document.body.classList.contains('dark-theme');
+            const textColor = isDarkNow ? '#94a3b8' : '#64748b';
+            const gridColor = isDarkNow ? '#334155' : '#f1f5f9';
+
+            const warningGrad = ctx.createLinearGradient(0, 0, 0, 300);
+            warningGrad.addColorStop(0, 'rgba(245, 158, 11, 0.85)');
+            warningGrad.addColorStop(1, 'rgba(245, 158, 11, 0.05)');
+
+            const successGrad = ctx.createLinearGradient(0, 0, 0, 300);
+            successGrad.addColorStop(0, 'rgba(13, 148, 136, 0.85)');
+            successGrad.addColorStop(1, 'rgba(13, 148, 136, 0.05)');
+
+            const dangerGrad = ctx.createLinearGradient(0, 0, 0, 300);
+            dangerGrad.addColorStop(0, 'rgba(239, 68, 68, 0.85)');
+            dangerGrad.addColorStop(1, 'rgba(239, 68, 68, 0.05)');
+
             reportChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -366,34 +382,66 @@
                     datasets: [{
                         label: 'Jumlah Laporan',
                         data: [pending, resolved, rejected],
-                        backgroundColor: [
-                            'rgba(245, 158, 11, 0.7)',
-                            'rgba(16, 185, 129, 0.7)',
-                            'rgba(239, 68, 68, 0.7)'
-                        ],
-                        borderColor: [
-                            '#d97706',
-                            '#059669',
-                            '#dc2626'
-                        ],
-                        borderWidth: 1,
-                        borderRadius: 6
+                        backgroundColor: [warningGrad, successGrad, dangerGrad],
+                        borderColor: ['#f59e0b', '#0d9488', '#ef4444'],
+                        borderWidth: 2,
+                        borderRadius: 12,
+                        borderSkipped: false,
+                        barPercentage: 0.55
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    },
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            backgroundColor: isDarkNow ? '#1e293b' : '#ffffff',
+                            titleColor: isDarkNow ? '#f8fafc' : '#0f172a',
+                            bodyColor: isDarkNow ? '#94a3b8' : '#64748b',
+                            borderColor: isDarkNow ? '#334155' : '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 14,
+                            cornerRadius: 12,
+                            displayColors: true,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    family: 'Outfit, sans-serif',
+                                    size: 13,
+                                    weight: '600'
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: gridColor,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                color: textColor,
+                                font: {
+                                    family: 'Outfit, sans-serif',
+                                    size: 12
+                                }
+                            }
                         }
                     }
                 }
@@ -506,6 +554,14 @@
                 trendChartInstance.destroy();
             }
 
+            const isDarkNow = document.body.classList.contains('dark-theme');
+            const textColor = isDarkNow ? '#94a3b8' : '#64748b';
+            const gridColor = isDarkNow ? '#334155' : '#f1f5f9';
+
+            const lineGrad = ctx.createLinearGradient(0, 0, 0, 300);
+            lineGrad.addColorStop(0, 'rgba(79, 70, 229, 0.4)');
+            lineGrad.addColorStop(1, 'rgba(79, 70, 229, 0.01)');
+
             trendChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -513,35 +569,47 @@
                     datasets: [{
                         label: labelText,
                         data: data,
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        borderColor: '#3b82f6',
-                        borderWidth: 2,
+                        backgroundColor: lineGrad,
+                        borderColor: '#6366f1',
+                        borderWidth: 3,
                         fill: true,
                         tension: 0.4,
-                        pointBackgroundColor: '#2563eb',
-                        pointBorderColor: '#ffffff',
+                        pointBackgroundColor: '#4f46e5',
+                        pointBorderColor: isDarkNow ? '#1e293b' : '#ffffff',
                         pointBorderWidth: 2,
                         pointRadius: 4,
-                        pointHoverRadius: 6
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#4f46e5',
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    },
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'top'
+                            position: 'top',
+                            labels: {
+                                color: isDarkNow ? '#f8fafc' : '#0f172a',
+                                font: {
+                                    family: 'Outfit, sans-serif',
+                                    size: 12,
+                                    weight: '600'
+                                }
+                            }
                         },
                         tooltip: {
+                            backgroundColor: isDarkNow ? '#1e293b' : '#ffffff',
+                            titleColor: isDarkNow ? '#f8fafc' : '#0f172a',
+                            bodyColor: isDarkNow ? '#94a3b8' : '#64748b',
+                            borderColor: isDarkNow ? '#334155' : '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 14,
+                            cornerRadius: 12,
+                            displayColors: true,
+                            usePointStyle: true,
                             callbacks: {
                                 title: function(context) {
                                     if (monthVal === 'all') {
@@ -552,10 +620,72 @@
                                 }
                             }
                         }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    family: 'Outfit, sans-serif',
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: gridColor,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                color: textColor,
+                                font: {
+                                    family: 'Outfit, sans-serif',
+                                    size: 12
+                                }
+                            }
+                        }
                     }
                 }
             });
         }
+
+        window.updateChartsTheme = (isDark) => {
+            const textColor = isDark ? '#94a3b8' : '#64748b';
+            const gridColor = isDark ? '#334155' : '#f1f5f9';
+
+            if (reportChartInstance) {
+                reportChartInstance.options.scales.x.ticks.color = textColor;
+                reportChartInstance.options.scales.y.ticks.color = textColor;
+                reportChartInstance.options.scales.y.grid.color = gridColor;
+                
+                reportChartInstance.options.plugins.tooltip.backgroundColor = isDark ? '#1e293b' : '#ffffff';
+                reportChartInstance.options.plugins.tooltip.titleColor = isDark ? '#f8fafc' : '#0f172a';
+                reportChartInstance.options.plugins.tooltip.bodyColor = isDark ? '#94a3b8' : '#64748b';
+                reportChartInstance.options.plugins.tooltip.borderColor = isDark ? '#334155' : '#e2e8f0';
+                
+                reportChartInstance.update();
+            }
+
+            if (trendChartInstance) {
+                trendChartInstance.options.scales.x.ticks.color = textColor;
+                trendChartInstance.options.scales.y.ticks.color = textColor;
+                trendChartInstance.options.scales.y.grid.color = gridColor;
+                
+                trendChartInstance.options.plugins.legend.labels.color = isDark ? '#f8fafc' : '#0f172a';
+                
+                trendChartInstance.options.plugins.tooltip.backgroundColor = isDark ? '#1e293b' : '#ffffff';
+                trendChartInstance.options.plugins.tooltip.titleColor = isDark ? '#f8fafc' : '#0f172a';
+                trendChartInstance.options.plugins.tooltip.bodyColor = isDark ? '#94a3b8' : '#64748b';
+                trendChartInstance.options.plugins.tooltip.borderColor = isDark ? '#334155' : '#e2e8f0';
+                
+                trendChartInstance.update();
+            }
+        };
 
 
 
@@ -701,6 +831,7 @@
             window.location.reload(); // Refresh to restore JS event listeners
         };
     </script>
+    <script src="../assets/js/global.js"></script>
 </body>
 
 </html>
