@@ -6,6 +6,40 @@
  * 3. Dynamic Password Strength Meter
  */
 
+// Guest page redirection if already logged in
+(function() {
+    const path = window.location.pathname;
+    const isGuestPage = path.endsWith('/index.html') || 
+                        path.endsWith('/login.html') || 
+                        path.endsWith('/register.html') || 
+                        path.endsWith('/select-portal.html') ||
+                        path.endsWith('/reset_password.html') ||
+                        path.endsWith('/') || 
+                        path === '' ||
+                        (!path.includes('/staff/') && !path.includes('/admin/') && !path.includes('/superadmin/'));
+
+    if (isGuestPage) {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                if (user && user.role) {
+                    const role = user.role.toLowerCase();
+                    if (role === 'staff') {
+                        window.location.replace('staff/dashboard.html');
+                    } else if (role === 'super admin' || role === 'superadmin') {
+                        window.location.replace('superadmin/dashboard.html');
+                    } else if (role === 'admin') {
+                        window.location.replace('admin/dashboard.html');
+                    }
+                }
+            } catch (e) {
+                console.error('Error parsing session for redirection:', e);
+            }
+        }
+    }
+})();
+
 // Inactivity Session Logic
 let inactivityTimeout;
 let warningTimeout;
@@ -123,79 +157,17 @@ async function triggerGlobalLogout() {
     window.location.replace(loginPath);
 }
 
-// Premium Dark Theme Switcher & Persistence
+// Premium Dark Theme Switcher & Persistence (Disabled)
 function setupThemeToggle() {
-    const isDark = localStorage.getItem('theme') === 'dark';
-    if (isDark) {
-        document.body.classList.add('dark-theme');
-    }
-    
-    // Look for sidebar
-    const sidebar = document.querySelector('.sidebar');
-    
-    const themeBtnHtml = `
-        <button id="theme-toggle-btn" class="nav-link" style="background: none; border: none; cursor: pointer; width: 100%; text-align: left; display: flex; align-items: center; gap: 1rem; padding: 0.8rem 1rem; border-radius: 12px; margin-top: 1rem; font-family: inherit; font-size: inherit; color: var(--text-muted); transition: var(--transition);">
-            <span class="nav-icon" id="theme-toggle-icon" style="font-size: 1.25rem;">${isDark ? '☀️' : '🌙'}</span>
-            <span id="theme-toggle-text" style="font-weight: 500;">${isDark ? 'Mod Terang' : 'Mod Gelap'}</span>
-        </button>
-    `;
-    
-    if (sidebar) {
-        // Find logout container inside sidebar (usually at bottom)
-        const logoutBtn = sidebar.querySelector('button[onclick*="handleLogout"], a[onclick*="handleLogout"], .nav-link[onclick*="handleLogout"]');
-        if (logoutBtn) {
-            logoutBtn.insertAdjacentHTML('beforebegin', themeBtnHtml);
-        } else {
-            // Find nav-links and append
-            const navLinks = sidebar.querySelector('.nav-links');
-            if (navLinks) {
-                navLinks.insertAdjacentHTML('beforeend', themeBtnHtml);
-            }
-        }
-    } else {
-        // Floating Theme Button for landing/auth pages
-        const floatingBtn = `
-            <button id="theme-toggle-btn" style="position: fixed; bottom: 2rem; right: 2rem; width: 50px; height: 50px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; z-index: 9999; transition: var(--transition);">
-                ${isDark ? '☀️' : '🌙'}
-            </button>
-        `;
-        document.body.insertAdjacentHTML('beforeend', floatingBtn);
-    }
-    
-    // Add Event Listener
-    const themeBtn = document.getElementById('theme-toggle-btn');
-    if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-            const body = document.body;
-            body.classList.toggle('dark-theme');
-            const isDarkNow = body.classList.contains('dark-theme');
-            localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
-            
-            // Update icons/text
-            const icon = document.getElementById('theme-toggle-icon');
-            const text = document.getElementById('theme-toggle-text');
-            const btnEl = document.getElementById('theme-toggle-btn');
-            
-            if (isDarkNow) {
-                if (icon) icon.textContent = '☀️';
-                if (text) text.textContent = 'Mod Terang';
-                if (!sidebar && btnEl) btnEl.textContent = '☀️';
-            } else {
-                if (icon) icon.textContent = '🌙';
-                if (text) text.textContent = 'Mod Gelap';
-                if (!sidebar && btnEl) btnEl.textContent = '🌙';
-            }
-            
-            // Trigger Chart.js themes if applicable
-            if (window.updateChartsTheme) {
-                window.updateChartsTheme(isDarkNow);
-            }
-        });
-    }
+    localStorage.removeItem('theme');
+    document.body.classList.remove('dark-theme');
 }
 
 // Password Strength Meter Implementation
 function setupPasswordStrength() {
+    // Do not show password strength meter on the login page
+    if (document.getElementById('loginForm')) return;
+
     const passwordInput = document.querySelector('input[type="password"][name="password"], input[type="password"]#new_password, input[type="password"][name="new_password"]');
     if (!passwordInput) return;
     

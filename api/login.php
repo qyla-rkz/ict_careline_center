@@ -22,6 +22,20 @@ try {
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
+        // Semak peranan (role) yang dipilih sepadan dengan pangkalan data
+        $selected_role_lower = strtolower($selected_role);
+        $db_role_lower = strtolower($user['role']);
+        
+        if ($selected_role_lower === 'admin') {
+            if ($db_role_lower !== 'admin' && $db_role_lower !== 'super admin') {
+                jsonResponse('error', 'ID Staf ini didaftarkan sebagai Staf biasa. Sila pilih peranan Staf.');
+            }
+        } else { // default to Staff checking
+            if ($db_role_lower === 'admin' || $db_role_lower === 'super admin') {
+                jsonResponse('error', 'ID Staf ini didaftarkan sebagai Admin. Sila pilih peranan Admin.');
+            }
+        }
+
         // Semak Mod Penyelenggaraan (Maintenance Mode)
         try {
             $settingsStmt = $pdo->query("SELECT setting_value FROM system_settings WHERE setting_key = 'maintenance_mode' LIMIT 1");
