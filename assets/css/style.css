@@ -1085,3 +1085,23 @@ body.dark-theme #section-overview h1 {
     }
 }
 
+/* Disable card hover lift on cards containing tables or with .table-card */
+.card.table-card:hover,
+.card:has(table):hover,
+.card:has(.table-container):hover,
+.table-card:hover {
+    transform: none !important;
+    box-shadow: var(--shadow) !important;
+    border-color: var(--border) !important;
+}
+
+body.dark-theme .card.table-card:hover,
+body.dark-theme .card:has(table):hover,
+body.dark-theme .card:has(.table-container):hover,
+body.dark-theme .table-card:hover {
+    transform: none !important;
+    box-shadow: var(--shadow) !important;
+    border-color: var(--border) !important;
+}
+
+

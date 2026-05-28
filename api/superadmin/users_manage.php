@@ -18,7 +18,7 @@ function logAudit($pdo, $action, $details) {
 
 if ($method === 'GET') {
     try {
-        $stmt = $pdo->query("SELECT id, name, staff_id, phone, department, jawatan, role, status, created_at FROM users ORDER BY role ASC, name ASC");
+        $stmt = $pdo->query("SELECT id, name, staff_id, phone, department, jawatan, role, status, profile_picture, created_at FROM users ORDER BY role ASC, name ASC");
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         jsonResponse('success', 'Berjaya mengambil senarai pengguna', ['users' => $users]);
     } catch (PDOException $e) {
@@ -27,7 +27,7 @@ if ($method === 'GET') {
 } 
 elseif ($method === 'POST') {
     $id = $_POST['id'] ?? '';
-    $action = $_POST['action'] ?? ''; // 'update_role', 'update_status', 'reset_password'
+    $action = $_POST['action'] ?? ''; // 'update_role', 'update_status', 'reset_password', 'delete_profile_pic'
 
     if (empty($id) || empty($action)) {
         jsonResponse('error', 'ID dan tindakan (action) diperlukan.');

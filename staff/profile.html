@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=9">
+    <script src="../assets/js/global.js?v=3"></script>
 </head>
 <body>
     <div class="app-container">
@@ -41,7 +42,24 @@
             <section>
                 <h1>Maklumat Akaun</h1>
                 <div class="card" style="margin-top: 2rem; max-width: 600px;">
-                    <form id="profile-form">
+                    <form id="profile-form" enctype="multipart/form-data">
+                        <!-- Profile Picture Edit Section -->
+                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; padding: 1.5rem; background: rgba(79, 70, 229, 0.03); border: 1px solid var(--border); border-radius: 16px;">
+                            <div id="avatar-container" style="width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--primary); overflow: hidden; background: #e2e8f0; box-shadow: var(--shadow); margin-bottom: 1rem; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;" title="Klik untuk menukar gambar profil">
+                                <img id="p_profile_pic" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                <span id="p_profile_pic_placeholder" style="font-size: 3rem;">👤</span>
+                                <!-- Hover dark overlay -->
+                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                                    <span style="color: white; font-size: 0.8rem; font-weight: 600; text-align: center; padding: 5px;">Tukar Gambar</span>
+                                </div>
+                            </div>
+                            <input type="file" name="profile_picture" id="profile_picture_input" accept="image/*" style="display: none;">
+                            <span style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">Gambar Profil Formal</span>
+                            <div style="margin-top: 0.5rem; text-align: center; font-size: 0.8rem; color: var(--text-muted); max-width: 320px; line-height: 1.4;">
+                                Klik gambar di atas untuk memuat naik gambar profil baru anda.
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label>Nama Penuh</label>
                             <input type="text" id="p_name" name="full_name" class="form-control" required>
@@ -108,9 +126,31 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Display Current Date
             const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', dateOpts);
+
+            // Profile Picture Selection & Preview Logic
+            const avatarContainer = document.getElementById('avatar-container');
+            const profilePictureInput = document.getElementById('profile_picture_input');
+            const profilePicImg = document.getElementById('p_profile_pic');
+            const profilePicPlaceholder = document.getElementById('p_profile_pic_placeholder');
+
+            avatarContainer.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            profilePictureInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        profilePicImg.src = event.target.result;
+                        profilePicImg.style.display = 'block';
+                        profilePicPlaceholder.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
 
             const loadProfile = async () => {
                 try {
@@ -125,7 +165,19 @@
                         document.getElementById('p_office').value = result.data.office || '';
                         document.getElementById('p_jawatan').value = result.data.jawatan || '';
                         document.getElementById('p_dept').value = result.data.department || '';
+                        
+                        if (result.data.profile_picture) {
+                            const imgEl = document.getElementById('p_profile_pic');
+                            const placeholderEl = document.getElementById('p_profile_pic_placeholder');
+                            imgEl.src = '../' + result.data.profile_picture;
+                            imgEl.style.display = 'block';
+                            placeholderEl.style.display = 'none';
+                        }
+                        
                         localStorage.setItem('user', JSON.stringify(result.data));
+                        if (typeof setupStaffSidebarProfile === 'function') {
+                            setupStaffSidebarProfile();
+                        }
                     } else if (result.message === 'Not logged in') {
                         window.location.replace('../login.html');
                     } else {
@@ -208,6 +260,6 @@
             });
         });
     </script>
-    <script src="../assets/js/global.js"></script>
+
 </body>
 </html>

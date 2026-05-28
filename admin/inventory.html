@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card table-card">
                 <div class="table-container">
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
@@ -157,14 +157,6 @@
     </div>
 
     <script>
-        // ─── Block Back Button ───
-        for (let i = 0; i < 50; i++) {
-            window.history.pushState(null, null, window.location.href);
-        }
-        window.onpopstate = function() {
-            window.history.pushState(null, null, window.location.href);
-        };
-
         document.addEventListener('DOMContentLoaded', () => {
             const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', opts);

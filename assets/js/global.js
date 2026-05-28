@@ -265,7 +265,10 @@ function updateRequirement(id, isValid) {
 
 function setupStaffSidebarProfile() {
     const isStaffPage = window.location.pathname.includes('/staff/');
-    if (!isStaffPage) return;
+    const isAdminPage = window.location.pathname.includes('/admin/');
+    const isSuperAdminPage = window.location.pathname.includes('/superadmin/');
+    const isPortalPage = isStaffPage || isAdminPage || isSuperAdminPage;
+    if (!isPortalPage) return;
 
     const sidebar = document.querySelector('.sidebar');
     if (!sidebar) return;
@@ -273,31 +276,145 @@ function setupStaffSidebarProfile() {
     const logoArea = sidebar.querySelector('.logo-area');
     if (!logoArea) return;
 
-    // Check if user-profile already exists
-    if (sidebar.querySelector('.user-profile')) return;
-
-    // Get user info
+    // Get user info from localStorage first (instant render)
     const userStr = localStorage.getItem('user');
-    let staffName = 'Staf';
+    let staffName = 'Pengguna';
+    let profilePic = '';
     if (userStr) {
         try {
             const user = JSON.parse(userStr);
-            if (user && user.full_name) {
-                staffName = user.full_name;
+            if (user) {
+                if (user.full_name) staffName = user.full_name;
+                else if (user.name) staffName = user.name;
+                if (user.profile_picture) profilePic = user.profile_picture;
             }
-        } catch (e) {
-            console.error(e);
-        }
+        } catch (e) {}
     }
 
-    const profileHtml = `
-        <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
-            <p id="sidebarStaffName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">${staffName}</p>
-        </div>
-    `;
+    // Helper to build avatar HTML
+    function avatarHtml(pic, prefix) {
+        if (pic) return `<img src="${prefix}${pic}" style="width:100%;height:100%;object-fit:cover;">`;
+        return `<span style="font-size:2rem;">👤</span>`;
+    }
 
-    logoArea.insertAdjacentHTML('afterend', profileHtml);
+    // 1. Sidebar Profile Section (Size: 80px)
+    let userProfileEl = sidebar.querySelector('.user-profile');
+    if (userProfileEl) {
+        let avatarContainer = userProfileEl.querySelector('.sidebar-avatar-container');
+        if (!avatarContainer) {
+            // Get existing name element or dean element
+            const existingNameEl = userProfileEl.querySelector('#sidebarStaffName, #sidebarAdminName, #sidebarSuperadminName');
+            const nameHtml = existingNameEl ? existingNameEl.outerHTML : `<p style="font-weight: 700; color: var(--primary); font-size: 0.95rem; line-height: 1.2;">${staffName}</p>`;
+            const deanEl = userProfileEl.querySelector('#sidebarDeanName');
+            const deanHtml = deanEl ? `<p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 0.15rem;">Dekan:</p>${deanEl.outerHTML}` : '';
+
+            userProfileEl.style.display = 'flex';
+            userProfileEl.style.alignItems = 'center';
+            userProfileEl.style.gap = '1rem';
+            userProfileEl.style.paddingBottom = '1rem';
+            userProfileEl.style.borderBottom = '1px solid var(--border)';
+            userProfileEl.style.marginTop = '-1rem';
+            userProfileEl.style.marginBottom = '-1rem';
+
+            userProfileEl.innerHTML = `
+                <div class="sidebar-avatar-container" style="width: 80px; height: 80px; border-radius: 50%; border: 2.5px solid var(--primary); overflow: hidden; display: flex; justify-content: center; align-items: center; background: #e2e8f0; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+                    ${avatarHtml(profilePic, '../')}
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 0.15rem 0; padding: 0;">Selamat kembali,</p>
+                    ${nameHtml}
+                    ${deanHtml}
+                </div>
+            `;
+        } else {
+            avatarContainer.style.width = '80px';
+            avatarContainer.style.height = '80px';
+            avatarContainer.style.border = '2.5px solid var(--primary)';
+            avatarContainer.innerHTML = avatarHtml(profilePic, '../');
+        }
+    } else {
+        const profileHtml = `
+            <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem;">
+                <div class="sidebar-avatar-container" style="width: 80px; height: 80px; border-radius: 50%; border: 2.5px solid var(--primary); overflow: hidden; display: flex; justify-content: center; align-items: center; background: #e2e8f0; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+                    ${avatarHtml(profilePic, '../')}
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 0.15rem 0; padding: 0;">Selamat kembali,</p>
+                    <p id="sidebarStaffName" style="font-weight: 700; color: var(--primary); font-size: 0.95rem; line-height: 1.2;">${staffName}</p>
+                </div>
+            </div>
+        `;
+        logoArea.insertAdjacentHTML('afterend', profileHtml);
+    }
+
+    // 2. Header Profile Section (Size: 70px, top right next to date)
+    const currentDateEl = document.getElementById('current-date') || document.getElementById('adminDate') || document.getElementById('superadminDate');
+    if (currentDateEl) {
+        let picContainer = document.getElementById('header-profile-pic-container');
+        if (!picContainer) {
+            const parent = currentDateEl.parentNode;
+            const container = document.createElement('div');
+            container.style.cssText = 'display:flex;align-items:center;gap:1.25rem;';
+            parent.insertBefore(container, currentDateEl);
+            container.appendChild(currentDateEl);
+
+            picContainer = document.createElement('div');
+            picContainer.id = 'header-profile-pic-container';
+            picContainer.style.cssText = 'width:70px;height:70px;border-radius:50%;border:2.5px solid var(--primary);overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:flex;justify-content:center;align-items:center;background:#e2e8f0;flex-shrink:0;';
+            
+            if (isStaffPage) {
+                picContainer.style.cursor = 'pointer';
+                picContainer.title = 'Profil Saya';
+                picContainer.onclick = () => { window.location.href = 'profile.html'; };
+            }
+            container.appendChild(picContainer);
+        }
+        picContainer.innerHTML = avatarHtml(profilePic, '../');
+    }
+
+    // 3. Fetch FRESH profile from API to update picture (solves stale localStorage issue)
+    fetch('../api/staff_get_profile.php')
+        .then(r => r.json())
+        .then(result => {
+            if (result.status !== 'success') return;
+            const freshName = result.data.full_name || staffName;
+            const freshPic  = result.data.profile_picture || '';
+
+            // Update sidebar name
+            const nameEl = document.getElementById('sidebarStaffName') || document.getElementById('sidebarAdminName') || document.getElementById('sidebarSuperadminName');
+            if (nameEl) nameEl.textContent = freshName;
+
+            // Update sidebar avatar
+            const avatarEl = document.querySelector('.sidebar-avatar-container');
+            if (avatarEl) avatarEl.innerHTML = avatarHtml(freshPic, '../');
+
+            // Update header avatar
+            const headerPic = document.getElementById('header-profile-pic-container');
+            if (headerPic) headerPic.innerHTML = avatarHtml(freshPic, '../');
+
+            // Sync localStorage
+            try {
+                const stored = JSON.parse(localStorage.getItem('user') || '{}');
+                stored.full_name = freshName;
+                stored.profile_picture = freshPic;
+                localStorage.setItem('user', JSON.stringify(stored));
+            } catch(e) {}
+        })
+        .catch(e => console.error('Profile fetch error:', e));
+}
+
+// Block Back Button to prevent exiting portal on dashboard
+function setupBackButtonBlock() {
+    const path = window.location.pathname.toLowerCase();
+    const isDashboard = path.endsWith('/dashboard.html');
+    if (!isDashboard) return;
+
+    if (window.history && window.history.pushState) {
+        window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function() {
+            window.history.pushState(null, null, window.location.href);
+        };
+    }
 }
 
 // Initialise everything when DOM is ready
@@ -306,4 +423,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initInactivityTimer();
     setupPasswordStrength();
     setupStaffSidebarProfile();
+    setupBackButtonBlock();
 });

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Papan Pemuka Staf - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=9">
+    <script src="../assets/js/global.js?v=3"></script>
 </head>
 
 <body>
@@ -88,6 +89,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="stat-icon"
+                            style="background: #e0e7ff; color: #3730a3; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            📅</div>
+                        <div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Laporan Tahun Ini</div>
+                            <div id="stat-yearly" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card" style="margin-top: 2.5rem;">
@@ -124,6 +134,9 @@
                 const profile = await profileRes.json();
                 if (profile.status === 'success') {
                     localStorage.setItem('user', JSON.stringify(profile.data));
+                    if (typeof setupStaffSidebarProfile === 'function') {
+                        setupStaffSidebarProfile();
+                    }
                 } else {
                     console.error('Profile fetch failed:', profile.message);
                     // Show specific error to help user debug
@@ -147,6 +160,11 @@
                     document.getElementById('stat-total').textContent = history.data.length;
                     const pending = history.data.filter(r => r.status === 'Pending').length;
                     document.getElementById('stat-pending').textContent = pending;
+
+                    // Calculate reports for current year
+                    const currentYear = new Date().getFullYear();
+                    const yearly = history.data.filter(r => new Date(r.created_at).getFullYear() === currentYear).length;
+                    document.getElementById('stat-yearly').textContent = yearly;
                 }
             } catch (err) { console.error('Stats fetch error:', err); }
 
@@ -190,7 +208,6 @@
             }
         });
     </script>
-    <script src="../assets/js/global.js"></script>
 </body>
 
 </html>

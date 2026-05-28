@@ -229,8 +229,8 @@
                 
                 // Don't allow changing yourself
                 const currentUser = JSON.parse(localStorage.getItem('user'));
+                // Promote/Demote button
                 if (user.id != currentUser.id) {
-                    // Promote/Demote button
                     if (user.role.toLowerCase() === 'staff') {
                         actionsHTML += `<button class="action-btn btn-promote" onclick="updateRole(${user.id}, 'Admin')">⬆️ Naik ke Admin</button>`;
                     } else if (user.role.toLowerCase() === 'admin') {
@@ -247,7 +247,7 @@
                     // Reset Password
                     actionsHTML += `<button class="action-btn btn-reset" onclick="resetPassword(${user.id})">🔑 Set Semula</button>`;
                     
-                    // Delete
+                    // Delete User
                     actionsHTML += `<button class="action-btn btn-delete" onclick="deleteUser(${user.id})">🗑️ Padam</button>`;
                 } else {
                     actionsHTML = '<span style="color:var(--text-muted); font-size:0.85rem; font-style:italic; padding-left: 0.5rem;">Akaun Anda</span>';
@@ -263,8 +263,15 @@
                 tr.innerHTML = `
                     <td style="font-weight: 800; color: var(--text-main); font-size: 0.95rem;">${user.staff_id}</td>
                     <td>
-                        <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem; margin-bottom: 0.2rem;">${user.name}</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">${detailsText}</div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 45px; height: 45px; border-radius: 50%; border: 1.5px solid var(--primary); overflow: hidden; display: flex; justify-content: center; align-items: center; background: #f1f5f9; flex-shrink: 0; cursor: pointer; position: relative;" onclick="showProfilePicModal('${user.profile_picture ? '../' + user.profile_picture : ''}', '${user.name.replace(/'/g, "\\'")}')" title="Klik untuk lihat gambar penuh">
+                                ${user.profile_picture ? `<img src="../${user.profile_picture}" style="width:100%; height:100%; object-fit:cover;">` : `<span style="font-size: 1.4rem;">👤</span>`}
+                            </div>
+                            <div>
+                                <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem; margin-bottom: 0.2rem;">${user.name}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">${detailsText}</div>
+                            </div>
+                        </div>
                     </td>
                     <td><span class="badge ${roleClass}">${user.role}</span></td>
                     <td><span class="badge ${statusClass}">${(user.status || 'active').toUpperCase()}</span></td>
@@ -334,6 +341,41 @@
                 console.error(e);
                 alert('Ralat sistem.');
             }
+        }
+
+        function showProfilePicModal(src, name) {
+            if (!src) return;
+            // Create modal elements dynamically
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.background = 'rgba(15, 23, 42, 0.8)';
+            modal.style.backdropFilter = 'blur(10px)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '9999';
+            modal.style.cursor = 'pointer';
+            modal.style.transition = 'all 0.3s ease';
+
+            modal.innerHTML = `
+                <div style="background: var(--bg-card); padding: 2rem; border-radius: 24px; box-shadow: var(--shadow); position: relative; max-width: 400px; width: 90%; cursor: default; text-align: center; border: 1px solid var(--border);">
+                    <button style="position: absolute; top: 1rem; right: 1rem; border: none; background: #e2e8f0; width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; color: var(--text-main); font-weight: 700;" onclick="this.closest('.profile-pic-modal').remove()">✕</button>
+                    <h3 style="margin-bottom: 1.5rem; color: var(--text-main); font-weight: 700; font-size: 1.2rem;">${name}</h3>
+                    <div style="width: 280px; height: 280px; border-radius: 20px; overflow: hidden; margin: 0 auto 1rem auto; border: 2px solid var(--primary); box-shadow: var(--shadow);">
+                        <img src="${src}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Gambar Profil Formal</p>
+                </div>
+            `;
+            modal.className = 'profile-pic-modal';
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+            document.body.appendChild(modal);
         }
 
         async function logout() {
