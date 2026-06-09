@@ -6,39 +6,102 @@
  * 3. Dynamic Password Strength Meter
  */
 
-// Guest page redirection if already logged in
-(function() {
+// ─────────────────────────────────────────────────────────────
+// Navigation Guard — validates against PHP server session
+// This fires early to protect portal pages but uses the real
+// server session (not just sessionStorage) so that F5 / refresh
+// does NOT kick the user out.
+// ─────────────────────────────────────────────────────────────
+(function () {
     const path = window.location.pathname;
-    const isGuestPage = path.endsWith('/index.html') || 
-                        path.endsWith('/login.html') || 
-                        path.endsWith('/register.html') || 
-                        path.endsWith('/select-portal.html') ||
-                        path.endsWith('/reset_password.html') ||
-                        path.endsWith('/') || 
-                        path === '' ||
-                        (!path.includes('/staff/') && !path.includes('/admin/') && !path.includes('/superadmin/'));
+    const inSubdir = path.includes('/staff/') || path.includes('/admin/') || path.includes('/superadmin/');
+    const isWelcomePage = path.endsWith('/') || path.endsWith('index.html') || path === '/';
+    const isGuestPage = !inSubdir;
 
-    if (isGuestPage) {
-        const userStr = localStorage.getItem('user');
-        if (userStr) {
-            try {
-                const user = JSON.parse(userStr);
-                if (user && user.role) {
-                    const role = user.role.toLowerCase();
-                    if (role === 'staff') {
-                        window.location.replace('staff/dashboard.html');
-                    } else if (role === 'super admin' || role === 'superadmin') {
-                        window.location.replace('superadmin/dashboard.html');
-                    } else if (role === 'admin') {
-                        window.location.replace('admin/dashboard.html');
+    if (inSubdir) {
+        // ── Portal page: check server session ──
+        const apiPath = '../api/check_session.php';
+
+        fetch(apiPath, { cache: 'no-store' })
+            .then(function (r) { return r.json(); })
+            .then(function (result) {
+                if (result.status === 'success') {
+                    // Valid session — sync sessionStorage so page code has user data
+                    const existing = sessionStorage.getItem('user');
+                    if (!existing) {
+                        // Restore sessionStorage from server session (handles refresh / new tab)
+                        sessionStorage.setItem('user', JSON.stringify(result.data));
                     }
+                } else {
+                    // No server session — clear any stale client data and redirect
+                    sessionStorage.clear();
+                    window.location.replace('../login.html');
                 }
-            } catch (e) {
-                console.error('Error parsing session for redirection:', e);
-            }
+            })
+            .catch(function () {
+                // Network error: if no sessionStorage either, play it safe and redirect
+                if (!sessionStorage.getItem('user')) {
+                    window.location.replace('../login.html');
+                }
+            });
+
+    } else if (!isGuestPage) {
+        // Should not hit — covered by inSubdir above
+    } else if (!isWelcomePage) {
+        // ── Guest auth page (login, register, select-portal) ──
+        // If sessionStorage says logged in, verify with server then redirect to dashboard
+        const userStr = sessionStorage.getItem('user');
+        if (userStr) {
+            fetch('./api/check_session.php', { cache: 'no-store' })
+                .then(function (r) { return r.json(); })
+                .then(function (result) {
+                    if (result.status === 'success') {
+                        const role = (result.data.role || '').toLowerCase();
+                        if (role === 'staff') {
+                            window.location.replace('staff/dashboard.html');
+                        } else if (role === 'super admin' || role === 'superadmin') {
+                            window.location.replace('superadmin/dashboard.html');
+                        } else if (role === 'admin') {
+                            window.location.replace('admin/dashboard.html');
+                        }
+                    } else {
+                        // Server session expired — clear stale sessionStorage
+                        sessionStorage.clear();
+                    }
+                })
+                .catch(function () { /* network error, stay on page */ });
         }
     }
 })();
+
+// Handle back-forward cache (bfcache): re-check auth when browser restores a cached page
+window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+        const path = window.location.pathname;
+        const inSubdir = path.includes('/staff/') || path.includes('/admin/') || path.includes('/superadmin/');
+        if (inSubdir) {
+            // Re-validate with server when a cached portal page is shown
+            fetch('../api/check_session.php', { cache: 'no-store' })
+                .then(function (r) { return r.json(); })
+                .then(function (result) {
+                    if (result.status !== 'success') {
+                        sessionStorage.clear();
+                        window.location.replace('../login.html');
+                    } else {
+                        // Refresh sessionStorage in case it was stale
+                        sessionStorage.setItem('user', JSON.stringify(result.data));
+                    }
+                })
+                .catch(function () { /* network error, stay on page */ });
+        }
+    }
+});
+
+
+// ─────────────────────────────────────────────────────────────
+// Tab-Close Auto Logout removed because it interferes with F5 page reloads.
+// Session cookies naturally expire when the browser is closed.
+// ─────────────────────────────────────────────────────────────
 
 // Inactivity Session Logic
 let inactivityTimeout;
@@ -152,14 +215,17 @@ async function triggerGlobalLogout() {
     } catch (err) {
         console.error('Logout error:', err);
     }
-    localStorage.clear();
     sessionStorage.clear();
     window.location.replace(loginPath);
 }
 
+// Expose logout handlers globally so that they can be invoked from any page
+window.handleLogout = triggerGlobalLogout;
+window.logout = triggerGlobalLogout;
+
 // Premium Dark Theme Switcher & Persistence (Disabled)
 function setupThemeToggle() {
-    localStorage.removeItem('theme');
+    sessionStorage.removeItem('theme');
     document.body.classList.remove('dark-theme');
 }
 
@@ -276,8 +342,8 @@ function setupStaffSidebarProfile() {
     const logoArea = sidebar.querySelector('.logo-area');
     if (!logoArea) return;
 
-    // Get user info from localStorage first (instant render)
-    const userStr = localStorage.getItem('user');
+    // Get user info from sessionStorage first (instant render)
+    const userStr = sessionStorage.getItem('user');
     let staffName = 'Pengguna';
     let profilePic = '';
     if (userStr) {
@@ -362,7 +428,7 @@ function setupStaffSidebarProfile() {
             picContainer.id = 'header-profile-pic-container';
             picContainer.style.cssText = 'width:70px;height:70px;border-radius:50%;border:2.5px solid var(--primary);overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:flex;justify-content:center;align-items:center;background:#e2e8f0;flex-shrink:0;';
             
-            if (isStaffPage) {
+            if (isStaffPage || isAdminPage || isSuperAdminPage) {
                 picContainer.style.cursor = 'pointer';
                 picContainer.title = 'Profil Saya';
                 picContainer.onclick = () => { window.location.href = 'profile.html'; };
@@ -372,7 +438,7 @@ function setupStaffSidebarProfile() {
         picContainer.innerHTML = avatarHtml(profilePic, '../');
     }
 
-    // 3. Fetch FRESH profile from API to update picture (solves stale localStorage issue)
+    // 3. Fetch FRESH profile from API to update picture (solves stale sessionStorage issue)
     fetch('../api/staff_get_profile.php')
         .then(r => r.json())
         .then(result => {
@@ -392,30 +458,21 @@ function setupStaffSidebarProfile() {
             const headerPic = document.getElementById('header-profile-pic-container');
             if (headerPic) headerPic.innerHTML = avatarHtml(freshPic, '../');
 
-            // Sync localStorage
+            // Sync sessionStorage
             try {
-                const stored = JSON.parse(localStorage.getItem('user') || '{}');
+                const stored = JSON.parse(sessionStorage.getItem('user') || '{}');
                 stored.full_name = freshName;
                 stored.profile_picture = freshPic;
-                localStorage.setItem('user', JSON.stringify(stored));
+                sessionStorage.setItem('user', JSON.stringify(stored));
             } catch(e) {}
         })
         .catch(e => console.error('Profile fetch error:', e));
 }
 
-// Block Back Button to prevent exiting portal on dashboard
-function setupBackButtonBlock() {
-    const path = window.location.pathname.toLowerCase();
-    const isDashboard = path.endsWith('/dashboard.html');
-    if (!isDashboard) return;
-
-    if (window.history && window.history.pushState) {
-        window.history.pushState(null, null, window.location.href);
-        window.onpopstate = function() {
-            window.history.pushState(null, null, window.location.href);
-        };
-    }
-}
+// (setupBackButtonBlock removed: the navigation guard IIFE above already
+//  redirects logged-in users away from guest pages, making pushState loops
+//  unnecessary. Using replace() in the guard also keeps history clean so
+//  the back button works naturally after logout.)
 
 // Initialise everything when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -423,5 +480,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initInactivityTimer();
     setupPasswordStrength();
     setupStaffSidebarProfile();
-    setupBackButtonBlock();
 });

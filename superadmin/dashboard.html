@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="../assets/js/global.js?v=6"></script>
 </head>
 <body>
     <div class="app-container">
@@ -30,7 +31,7 @@
                 <a href="settings.html" class="nav-link">⚙️ Tetapan</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0)" onclick="logout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 
@@ -106,7 +107,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const userStr = localStorage.getItem('user');
+            const userStr = sessionStorage.getItem('user');
             if (!userStr) {
                 window.location.replace('../login.html');
                 return;
@@ -297,17 +298,6 @@
                 list.appendChild(li);
             });
         }
-
-        async function logout() {
-            try {
-                await fetch('../api/logout.php');
-                localStorage.removeItem('user');
-                window.location.replace('../login.html');
-            } catch (err) {
-                console.error(err);
-            }
-        }
     </script>
-    <script src="../assets/js/global.js"></script>
 </body>
 </html>

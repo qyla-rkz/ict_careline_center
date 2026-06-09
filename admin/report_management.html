@@ -136,6 +136,7 @@
             flex-shrink: 0;
         }
     </style>
+    <script src="../assets/js/global.js?v=6"></script>
 </head>
 
 <body>
@@ -151,6 +152,7 @@
             </div>
             <nav class="nav-links">
                 <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
                 <a href="report_management.html" class="nav-link active">📝 Pengurusan Laporan</a>
                 <a href="inventory.html" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.html" class="nav-link">👥 Aset Staf</a>
@@ -200,9 +202,11 @@
                                 <th style="padding: 1rem;">ID</th>
                                 <th style="padding: 1rem;">Maklumat Aset</th>
                                 <th style="padding: 1rem;">Pelapor</th>
-                                <th style="padding: 1rem;">Tarikh</th>
-                                <th style="padding: 1rem; text-align: center;">Status</th>
-                                <th style="padding: 1rem; text-align: center;">Tindakan</th>
+                                <th style="padding: 1rem; white-space: nowrap;">Tarikh Aduan</th>
+                                <th style="padding: 1rem; white-space: nowrap;">Tarikh Siap</th>
+                                <th style="padding: 1rem; white-space: nowrap;">Pematuhan ISO</th>
+                                <th style="padding: 1rem; text-align: center; white-space: nowrap;">Status</th>
+                                <th style="padding: 1rem; text-align: center; white-space: nowrap;">Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="reportTableBody">
@@ -282,6 +286,8 @@
                                 name="pegawai_teknikal_nama" id="v_admin_nama" class="form-control"></div>
                         <div class="form-group"><label>Jawatan Pegawai Teknikal</label><input type="text"
                                 name="pegawai_teknikal_jawatan" id="v_admin_jawatan" class="form-control"></div>
+                        <div class="form-group" id="tarikh_siap_group" style="display: none;"><label>Tarikh Siap (Admin ICT)</label><input type="text"
+                                id="v_admin_tarikh" class="form-control" readonly></div>
                     </div>
 
                     <!-- Bahagian III -->
@@ -301,6 +307,10 @@
                                     id="v_kep_nama" class="form-control"></div>
                             <div class="form-group"><label>Tarikh Keputusan</label><input type="date"
                                     name="keputusan_tarikh" id="v_kep_tarikh" class="form-control"></div>
+                            <div class="form-group" id="iso_badge_group" style="display: none;">
+                                <label>Pematuhan ISO (&lt;14 hari)</label>
+                                <div id="v_iso_badge" style="padding-top: 0.5rem;"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -441,7 +451,7 @@
     <script>
         async function handleLogout() {
             try { await fetch('../api/logout.php'); } catch (e) { }
-            localStorage.clear(); sessionStorage.clear();
+            sessionStorage.clear(); sessionStorage.clear();
             window.location.replace('../login.html');
         }
 
@@ -454,7 +464,7 @@
             const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('adminDate').textContent = new Date().toLocaleDateString('ms-MY', opts);
             
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = JSON.parse(sessionStorage.getItem('user'));
             if (user && user.full_name) {
                 document.getElementById('sidebarAdminName').textContent = user.full_name;
             }
@@ -477,10 +487,35 @@
             } catch (err) { console.error(err); }
         }
 
+        function calcIsoDays(createdAt, completedAt) {
+            if (!completedAt) return null;
+            const start = new Date(createdAt);
+            const end = new Date(completedAt);
+            const diffMs = end - start;
+            return Math.round(diffMs / (1000 * 60 * 60 * 24));
+        }
+
+        function isobadge(r) {
+            const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
+            if (!isCompleted || !r.admin_tarikh) {
+                return `<span style="color: var(--text-muted); font-size: 0.8rem;">—</span>`;
+            }
+            const days = calcIsoDays(r.created_at, r.admin_tarikh);
+            if (days === null) return `<span style="color: var(--text-muted); font-size: 0.8rem;">—</span>`;
+            const pass = days <= 14;
+            return `<span style="
+                display: inline-flex; align-items: center; gap: 0.4rem;
+                padding: 0.4rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+                background: ${pass ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)'};
+                color: ${pass ? '#059669' : '#dc2626'};
+                border: 1px solid ${pass ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};
+            ">${pass ? '✅' : '⚠️'} ${days} hari</span>`;
+        }
+
         function renderReports() {
             const tbody = document.getElementById('reportTableBody');
             if (!filteredData.length) {
-                tbody.innerHTML = '<tr><td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">Tiada laporan dijumpai.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="padding: 2rem; text-align: center; color: var(--text-muted);">Tiada laporan dijumpai.</td></tr>';
                 updatePagination(0);
                 return;
             }
@@ -491,6 +526,11 @@
 
             tbody.innerHTML = pageItems.map(r => {
                 const badgeClass = r.status === 'Resolved' ? 'badge-resolved' : r.status === 'Rejected' ? 'badge-rejected' : 'badge-pending';
+                const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
+                const tarikhSiap = (isCompleted && r.admin_tarikh)
+                    ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })
+                    : '<span style="color:var(--text-muted);font-size:0.85rem;">Belum Diproses</span>';
+
                 return `
                 <tr style="border-bottom: 1px solid var(--border);">
                     <td style="padding: 1rem; font-weight: 600; color: var(--primary);">#${r.id}</td>
@@ -502,9 +542,11 @@
                         <div style="font-weight: 600;">${r.nama_pelapor || r.full_name || '-'}</div>
                         <div style="font-size: 0.8rem; color: var(--text-muted);">${r.location || '-'}</div>
                     </td>
-                    <td style="padding: 1rem; font-size: 0.9rem; color: var(--text-muted);">${new Date(r.created_at).toLocaleDateString('ms-MY')}</td>
-                    <td style="padding: 1rem; text-align: center;"><span class="badge ${badgeClass}">${r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
-                    <td style="padding: 1rem; text-align: center;">
+                    <td style="padding: 1rem; font-size: 0.9rem; color: var(--text-muted); white-space: nowrap;">${new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td style="padding: 1rem; white-space: nowrap;">${tarikhSiap}</td>
+                    <td style="padding: 1rem; white-space: nowrap;">${isobadge(r)}</td>
+                    <td style="padding: 1rem; text-align: center; white-space: nowrap;"><span class="badge ${badgeClass}" style="white-space: nowrap;">${r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
+                    <td style="padding: 1rem; text-align: center; white-space: nowrap;">
                         <button onclick='openReport(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📋 Urus</button>
                     </td>
                 </tr>`;
@@ -566,6 +608,34 @@
             document.getElementById('v_keputusan').value = r.keputusan || 'Diluluskan';
             document.getElementById('v_kep_nama').value = r.keputusan_nama || '';
             document.getElementById('v_kep_tarikh').value = r.keputusan_tarikh || '';
+
+            const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
+            if (isCompleted) {
+                document.getElementById('tarikh_siap_group').style.display = 'block';
+                document.getElementById('v_admin_tarikh').value = r.admin_tarikh
+                    ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })
+                    : 'Belum Diproses';
+
+                document.getElementById('iso_badge_group').style.display = 'block';
+                const modalDays = r.admin_tarikh ? calcIsoDays(r.created_at, r.admin_tarikh) : null;
+                const isoEl = document.getElementById('v_iso_badge');
+                if (modalDays !== null) {
+                    const pass = modalDays <= 14;
+                    isoEl.innerHTML = `<span style="
+                        display:inline-flex;align-items:center;gap:0.4rem;
+                        padding:0.4rem 1rem;border-radius:20px;font-size:0.8rem;font-weight:700;
+                        background:${pass ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)'};
+                        color:${pass ? '#059669' : '#dc2626'};
+                        border:1px solid ${pass ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};
+                    ">${pass ? '✅ Memenuhi ISO' : '⚠️ Melebihi ISO'} (${modalDays} hari)</span>`;
+                } else {
+                    isoEl.innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem;">—</span>';
+                }
+            } else {
+                document.getElementById('tarikh_siap_group').style.display = 'none';
+                document.getElementById('iso_badge_group').style.display = 'none';
+            }
+
             document.getElementById('viewModal').style.display = 'flex';
         }
 
@@ -623,7 +693,6 @@
             document.getElementById('printableArea').style.display = 'none';
         }
     </script>
-    <script src="../assets/js/global.js"></script>
 </body>
 
 </html>

@@ -7,6 +7,7 @@
     <title>Admin Dashboard - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../assets/js/global.js?v=6"></script>
     <style>
         @media print {
             @page {
@@ -31,6 +32,7 @@
             </div>
             <nav class="nav-links">
                 <a href="dashboard.html" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
                 <a href="report_management.html" class="nav-link">📝 Pengurusan Laporan</a>
                 <a href="inventory.html" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.html" class="nav-link">👥 Aset Staf</a>
@@ -95,10 +97,36 @@
 
             <!-- Chart Section -->
             <section style="margin-top: 3.5rem;">
-                <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                    <span style="width: 4px; height: 24px; background: var(--primary); border-radius: 2px; display: inline-block;"></span>
-                    Analisis Status Laporan
-                </h3>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="width: 4px; height: 24px; background: var(--primary); border-radius: 2px; display: inline-block;"></span>
+                        Analisis Status Laporan
+                    </h3>
+                    <div style="display: flex; gap: 1rem;">
+                        <select id="filterStatusYear" class="form-control" style="width: auto; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); cursor: pointer;" onchange="updateStatusChart()">
+                            <!-- Years loaded via JS -->
+                        </select>
+                        <select id="filterStatusMonth" class="form-control" style="width: auto; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); cursor: pointer;" onchange="updateStatusChart()">
+                            <option value="all">Semua Bulan</option>
+                            <option value="q1">Suku Pertama (Jan-Mac)</option>
+                            <option value="q2">Suku Kedua (Apr-Jun)</option>
+                            <option value="q3">Suku Ketiga (Jul-Sep)</option>
+                            <option value="q4">Suku Keempat (Okt-Dis)</option>
+                            <option value="0">Januari</option>
+                            <option value="1">Februari</option>
+                            <option value="2">Mac</option>
+                            <option value="3">April</option>
+                            <option value="4">Mei</option>
+                            <option value="5">Jun</option>
+                            <option value="6">Julai</option>
+                            <option value="7">Ogos</option>
+                            <option value="8">September</option>
+                            <option value="9">Oktober</option>
+                            <option value="10">November</option>
+                            <option value="11">Disember</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="card" style="position: relative; height: 350px; padding: 1.5rem;">
                     <canvas id="reportChart"></canvas>
                 </div>
@@ -117,6 +145,10 @@
                         </select>
                         <select id="filterMonth" class="form-control" style="width: auto; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); cursor: pointer;" onchange="updateTrendChart()">
                             <option value="all">Semua Bulan</option>
+                            <option value="q1">Suku Pertama (Jan-Mac)</option>
+                            <option value="q2">Suku Kedua (Apr-Jun)</option>
+                            <option value="q3">Suku Ketiga (Jul-Sep)</option>
+                            <option value="q4">Suku Keempat (Okt-Dis)</option>
                             <option value="0">Januari</option>
                             <option value="1">Februari</option>
                             <option value="2">Mac</option>
@@ -454,25 +486,18 @@
             try {
                 await fetch('../api/logout.php');
             } catch (err) { }
-            localStorage.clear();
+            sessionStorage.clear();
             sessionStorage.clear();
             window.location.replace('../login.html');
         }
 
-        // ─── Block Back Button ───
-        for (let i = 0; i < 50; i++) {
-            window.history.pushState(null, null, window.location.href);
-        }
-        window.onpopstate = function () {
-            window.history.pushState(null, null, window.location.href);
-        };
 
         // ─── Date Display ───
         document.addEventListener('DOMContentLoaded', () => {
             const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('adminDate').textContent = new Date().toLocaleDateString('ms-MY', opts);
             
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = JSON.parse(sessionStorage.getItem('user'));
             if (user && user.full_name) {
                 document.getElementById('sidebarAdminName').textContent = user.full_name;
             }
@@ -480,12 +505,14 @@
             // Set default month to current month
             const currentMonth = new Date().getMonth();
             document.getElementById('filterMonth').value = currentMonth;
+            document.getElementById('filterStatusMonth').value = currentMonth;
             
             fetchReports();
         });
 
         function populateYearsDropdown() {
             const yearSelect = document.getElementById('filterYear');
+            const statusYearSelect = document.getElementById('filterStatusYear');
             const years = new Set();
             globalReports.forEach(r => {
                 if (r.created_at) {
@@ -498,15 +525,59 @@
 
             const sortedYears = Array.from(years).sort((a, b) => b - a);
             const selectedYear = yearSelect.value || currentYear.toString();
+            const selectedStatusYear = statusYearSelect.value || currentYear.toString();
             
             yearSelect.innerHTML = '';
+            statusYearSelect.innerHTML = '';
             sortedYears.forEach(year => {
                 const option = document.createElement('option');
                 option.value = year;
                 option.textContent = year;
                 if (year.toString() === selectedYear) option.selected = true;
                 yearSelect.appendChild(option);
+
+                const statusOption = document.createElement('option');
+                statusOption.value = year;
+                statusOption.textContent = year;
+                if (year.toString() === selectedStatusYear) statusOption.selected = true;
+                statusYearSelect.appendChild(statusOption);
             });
+        }
+
+        function updateStatusChart() {
+            const year = parseInt(document.getElementById('filterStatusYear').value) || new Date().getFullYear();
+            const monthVal = document.getElementById('filterStatusMonth').value;
+
+            let pending = 0, resolved = 0, rejected = 0;
+
+            globalReports.forEach(r => {
+                if (r.created_at) {
+                    const date = new Date(r.created_at);
+                    if (date.getFullYear() === year) {
+                        const m = date.getMonth();
+                        let inRange = false;
+
+                        if (monthVal === 'all') {
+                            inRange = true;
+                        } else if (monthVal.startsWith('q')) {
+                            if (monthVal === 'q1' && m >= 0 && m <= 2) inRange = true;
+                            if (monthVal === 'q2' && m >= 3 && m <= 5) inRange = true;
+                            if (monthVal === 'q3' && m >= 6 && m <= 8) inRange = true;
+                            if (monthVal === 'q4' && m >= 9 && m <= 11) inRange = true;
+                        } else {
+                            if (m === parseInt(monthVal)) inRange = true;
+                        }
+
+                        if (inRange) {
+                            if (r.status === 'Pending') pending++;
+                            if (r.status === 'Resolved') resolved++;
+                            if (r.status === 'Rejected') rejected++;
+                        }
+                    }
+                }
+            });
+
+            renderChart(pending, resolved, rejected);
         }
 
         function updateTrendChart() {
@@ -527,6 +598,42 @@
                         const date = new Date(r.created_at);
                         if (date.getFullYear() === year) {
                             data[date.getMonth()]++;
+                        }
+                    }
+                });
+            } else if (monthVal.startsWith('q')) {
+                let startMonth, endMonth;
+                if (monthVal === 'q1') {
+                    labels = ['Januari', 'Februari', 'Mac'];
+                    startMonth = 0;
+                    endMonth = 2;
+                    labelText = `Jumlah Laporan Diterima (Suku Pertama - Jan-Mac ${year})`;
+                } else if (monthVal === 'q2') {
+                    labels = ['April', 'Mei', 'Jun'];
+                    startMonth = 3;
+                    endMonth = 5;
+                    labelText = `Jumlah Laporan Diterima (Suku Kedua - Apr-Jun ${year})`;
+                } else if (monthVal === 'q3') {
+                    labels = ['Julai', 'Ogos', 'September'];
+                    startMonth = 6;
+                    endMonth = 8;
+                    labelText = `Jumlah Laporan Diterima (Suku Ketiga - Jul-Sep ${year})`;
+                } else if (monthVal === 'q4') {
+                    labels = ['Oktober', 'November', 'Disember'];
+                    startMonth = 9;
+                    endMonth = 11;
+                    labelText = `Jumlah Laporan Diterima (Suku Keempat - Okt-Dis ${year})`;
+                }
+
+                data = new Array(3).fill(0);
+                globalReports.forEach(r => {
+                    if (r.created_at) {
+                        const date = new Date(r.created_at);
+                        if (date.getFullYear() === year) {
+                            const m = date.getMonth();
+                            if (m >= startMonth && m <= endMonth) {
+                                data[m - startMonth]++;
+                            }
                         }
                     }
                 });
@@ -612,7 +719,7 @@
                             usePointStyle: true,
                             callbacks: {
                                 title: function(context) {
-                                    if (monthVal === 'all') {
+                                    if (monthVal === 'all' || monthVal.startsWith('q')) {
                                         return context[0].label + ' ' + year;
                                     } else {
                                         return context[0].label + ' ' + ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogo', 'Sep', 'Okt', 'Nov', 'Dis'][parseInt(monthVal)] + ' ' + year;
@@ -711,8 +818,8 @@
                     document.getElementById('stat-resolved').textContent = resolved;
                     document.getElementById('stat-rejected').textContent = rejected;
 
-                    renderChart(pending, resolved, rejected);
                     populateYearsDropdown();
+                    updateStatusChart();
                     updateTrendChart();
 
                     // Filter for TODAY'S reports only
@@ -831,7 +938,6 @@
             window.location.reload(); // Refresh to restore JS event listeners
         };
     </script>
-    <script src="../assets/js/global.js"></script>
 </body>
 
 </html>

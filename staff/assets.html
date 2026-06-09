@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aset Saya - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=9">
-    <script src="../assets/js/global.js?v=3"></script>
+    <script src="../assets/js/global.js?v=6"></script>
 </head>
 <body>
     <div class="app-container">
@@ -164,7 +164,7 @@
             try {
                 await fetch('../api/logout.php');
             } catch (err) {}
-            localStorage.clear();
+            sessionStorage.clear();
             sessionStorage.clear();
             window.location.replace('../login.html');
         }

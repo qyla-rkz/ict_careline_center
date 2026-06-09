@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    localStorage.setItem('user', JSON.stringify(result.data));
+                    sessionStorage.setItem('user', JSON.stringify(result.data));
                     alert(`Welcome back ${result.data.role} ${result.data.full_name}!`);
                     // Redirect based on role
                     if (result.data.role === 'Staff' || result.data.role === 'staff') {

@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="../assets/js/global.js?v=6"></script>
     <style>
         .table-container { overflow-x: auto; margin-top: 1.5rem; background: #fff; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
@@ -37,7 +38,7 @@
                 <a href="settings.html" class="nav-link">⚙️ Tetapan</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0)" onclick="logout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 
@@ -92,7 +93,7 @@
         let allLogsData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            const userStr = localStorage.getItem('user');
+            const userStr = sessionStorage.getItem('user');
             if (!userStr) {
                 window.location.replace('../login.html');
                 return;
@@ -189,14 +190,6 @@
             });
         }
 
-        async function logout() {
-            try {
-                await fetch('../api/logout.php');
-                localStorage.removeItem('user');
-                window.location.replace('../login.html');
-            } catch (err) {}
-        }
     </script>
-    <script src="../assets/js/global.js"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sejarah Laporan - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="../assets/js/global.js?v=6"></script>
     <style>
         @media print {
             @page {
@@ -150,6 +151,7 @@
             </div>
             <nav class="nav-links">
                 <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
                 <a href="report_management.html" class="nav-link">📝 Pengurusan Laporan</a>
                 <a href="inventory.html" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.html" class="nav-link">👥 Aset Staf</a>
@@ -199,8 +201,10 @@
                                 <th style="padding: 1rem;">Pengadu</th>
                                 <th style="padding: 1rem;">Keputusan</th>
                                 <th style="padding: 1rem;">Diproses Oleh</th>
-                                <th style="padding: 1rem;">Tarikh</th>
-                                <th style="padding: 1rem; text-align: center;">Tindakan</th>
+                                <th style="padding: 1rem; white-space: nowrap;">Tarikh Aduan</th>
+                                <th style="padding: 1rem; white-space: nowrap;">Tarikh Siap</th>
+                                <th style="padding: 1rem; white-space: nowrap;">Pematuhan ISO</th>
+                                <th style="padding: 1rem; text-align: center; white-space: nowrap;">Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="historyTableBody">
@@ -277,6 +281,8 @@
                                 name="pegawai_teknikal_nama" id="v_admin_nama" class="form-control" readonly></div>
                         <div class="form-group"><label>Jawatan Pegawai Teknikal</label><input type="text"
                                 name="pegawai_teknikal_jawatan" id="v_admin_jawatan" class="form-control" readonly></div>
+                        <div class="form-group"><label>Tarikh Siap (Admin ICT)</label><input type="text"
+                                id="v_admin_tarikh" class="form-control" readonly></div>
                     </div>
 
                     <!-- Bahagian III -->
@@ -293,6 +299,10 @@
                                     id="v_kep_nama" class="form-control" readonly></div>
                             <div class="form-group"><label>Tarikh Keputusan</label><input type="date"
                                     name="keputusan_tarikh" id="v_kep_tarikh" class="form-control" readonly></div>
+                            <div class="form-group">
+                                <label>Pematuhan ISO (&lt;14 hari)</label>
+                                <div id="v_iso_badge" style="padding-top: 0.5rem;"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -436,7 +446,7 @@
             try {
                 await fetch('../api/logout.php');
             } catch (err) {}
-            localStorage.clear();
+            sessionStorage.clear();
             sessionStorage.clear();
             window.location.replace('../login.html');
         }
@@ -445,7 +455,7 @@
             const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', opts);
             
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = JSON.parse(sessionStorage.getItem('user'));
             if (user && user.full_name) {
                 document.getElementById('sidebarAdminName').textContent = user.full_name;
             }
@@ -472,10 +482,35 @@
             } catch (err) { console.error(err); }
         }
 
+        function calcIsoDays(createdAt, completedAt) {
+            if (!completedAt) return null;
+            const start = new Date(createdAt);
+            const end = new Date(completedAt);
+            const diffMs = end - start;
+            return Math.round(diffMs / (1000 * 60 * 60 * 24));
+        }
+
+        function isobadge(r) {
+            const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
+            if (!isCompleted || !r.admin_tarikh) {
+                return `<span style="color: var(--text-muted); font-size: 0.8rem;">—</span>`;
+            }
+            const days = calcIsoDays(r.created_at, r.admin_tarikh);
+            if (days === null) return `<span style="color: var(--text-muted); font-size: 0.8rem;">—</span>`;
+            const pass = days <= 14;
+            return `<span style="
+                display: inline-flex; align-items: center; gap: 0.4rem;
+                padding: 0.4rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+                background: ${pass ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)'};
+                color: ${pass ? '#059669' : '#dc2626'};
+                border: 1px solid ${pass ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};
+            ">${pass ? '✅' : '⚠️'} ${days} hari</span>`;
+        }
+
         function renderHistory() {
             const tbody = document.getElementById('historyTableBody');
             if (!allHistory.length) {
-                tbody.innerHTML = '<tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--text-muted)">Tiada rekod ditemui.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text-muted)">Tiada rekod ditemui.</td></tr>';
                 updatePagination(0);
                 return;
             }
@@ -484,18 +519,27 @@
             const end = start + itemsPerPage;
             const pageItems = allHistory.slice(start, end);
 
-            tbody.innerHTML = pageItems.map(r => `
+            tbody.innerHTML = pageItems.map(r => {
+                const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
+                const tarikhSiap = (isCompleted && r.admin_tarikh)
+                    ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })
+                    : '<span style="color:var(--text-muted);font-size:0.85rem;">Belum Diproses</span>';
+
+                return `
                 <tr style="border-bottom: 1px solid var(--border);">
                     <td style="padding: 1rem; font-weight: 600; color: var(--primary);">#${r.id}</td>
                     <td style="padding: 1rem;">${r.nama_pelapor || r.full_name}</td>
-                    <td style="padding: 1rem;"><span class="badge badge-${r.keputusan === 'Diluluskan' ? 'resolved' : 'rejected'}">${r.keputusan || 'N/A'}</span></td>
+                    <td style="padding: 1rem;"><span class="badge badge-${r.keputusan === 'Diluluskan' ? 'resolved' : 'rejected'}" style="white-space: nowrap;">${r.keputusan || 'N/A'}</span></td>
                     <td style="padding: 1rem;">${r.admin_name_jawatan || 'System'}</td>
-                    <td style="padding: 1rem;">${new Date(r.created_at).toLocaleDateString('ms-MY')}</td>
-                    <td style="padding: 1rem; text-align: center;">
+                    <td style="padding: 1rem; white-space: nowrap;">${new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td style="padding: 1rem; white-space: nowrap;">${tarikhSiap}</td>
+                    <td style="padding: 1rem; white-space: nowrap;">${isobadge(r)}</td>
+                    <td style="padding: 1rem; text-align: center; white-space: nowrap;">
                         <button onclick='showReportDetails(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Lihat / Cetak</button>
                     </td>
                 </tr>
-            `).join('');
+            `;
+            }).join('');
 
             updatePagination(allHistory.length);
         }
@@ -542,9 +586,32 @@
             document.getElementById('v_syor').value = r.syor_ulasan || '';
             document.getElementById('v_admin_nama').value = r.admin_name_jawatan || '';
             document.getElementById('v_admin_jawatan').value = r.admin_jawatan || '';
+            
+            const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
+            document.getElementById('v_admin_tarikh').value = (isCompleted && r.admin_tarikh)
+                ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })
+                : 'Belum Diproses';
+                
             document.getElementById('v_keputusan').value = r.keputusan || 'Diluluskan';
             document.getElementById('v_kep_nama').value = r.keputusan_nama || '';
             document.getElementById('v_kep_tarikh').value = r.keputusan_tarikh || '';
+
+            // ISO badge
+            const modalDays = (isCompleted && r.admin_tarikh) ? calcIsoDays(r.created_at, r.admin_tarikh) : null;
+            const isoEl = document.getElementById('v_iso_badge');
+            if (modalDays !== null) {
+                const pass = modalDays <= 14;
+                isoEl.innerHTML = `<span style="
+                    display:inline-flex;align-items:center;gap:0.4rem;
+                    padding:0.4rem 1rem;border-radius:20px;font-size:0.8rem;font-weight:700;
+                    background:${pass ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)'};
+                    color:${pass ? '#059669' : '#dc2626'};
+                    border:1px solid ${pass ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};
+                ">${pass ? '✅ Memenuhi ISO' : '⚠️ Melebihi ISO'} (${modalDays} hari)</span>`;
+            } else {
+                isoEl.innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem;">—</span>';
+            }
+
             document.getElementById('viewModal').style.display = 'flex';
         }
 
@@ -587,6 +654,5 @@
             document.getElementById('printableArea').style.display = 'none';
         }
     </script>
-    <script src="../assets/js/global.js"></script>
 </body>
 </html>
