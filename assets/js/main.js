@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (result.status === 'success') {
                     sessionStorage.setItem('user', JSON.stringify(result.data));
                     alert(`Welcome back ${result.data.role} ${result.data.full_name}!`);
-                    // Redirect based on role
+                    // Redirect based on role and replace login history entry
                     if (result.data.role === 'Staff' || result.data.role === 'staff') {
                         window.location.replace('staff/dashboard.html');
                     } else if (result.data.role === 'Super Admin' || result.data.role === 'superadmin') {

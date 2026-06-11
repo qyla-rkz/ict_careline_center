@@ -18,11 +18,20 @@
     const isWelcomePage = path.endsWith('/') || path.endsWith('index.html') || path === '/';
     const isGuestPage = !inSubdir;
 
+    function hidePortalUntilAuth() {
+        document.documentElement.style.visibility = 'hidden';
+    }
+
+    function restorePortalVisibility() {
+        document.documentElement.style.visibility = '';
+    }
+
     if (inSubdir) {
-        // ── Portal page: check server session ──
+        // ── Portal page: hide stale content and check server session ──
+        hidePortalUntilAuth();
         const apiPath = '../api/check_session.php';
 
-        fetch(apiPath, { cache: 'no-store' })
+        fetch(apiPath, { cache: 'no-store', credentials: 'same-origin' })
             .then(function (r) { return r.json(); })
             .then(function (result) {
                 if (result.status === 'success') {
@@ -32,6 +41,7 @@
                         // Restore sessionStorage from server session (handles refresh / new tab)
                         sessionStorage.setItem('user', JSON.stringify(result.data));
                     }
+                    restorePortalVisibility();
                 } else {
                     // No server session — clear any stale client data and redirect
                     sessionStorage.clear();
@@ -42,6 +52,8 @@
                 // Network error: if no sessionStorage either, play it safe and redirect
                 if (!sessionStorage.getItem('user')) {
                     window.location.replace('../login.html');
+                } else {
+                    restorePortalVisibility();
                 }
             });
 
@@ -50,8 +62,10 @@
     } else if (!isWelcomePage) {
         // ── Guest auth page (login, register, select-portal) ──
         // If sessionStorage says logged in, verify with server then redirect to dashboard
+        // UNLESS we are on the login page (user may have hit back button from dashboard)
+        const isLoginPage = path.endsWith('/login.html');
         const userStr = sessionStorage.getItem('user');
-        if (userStr) {
+        if (userStr && !isLoginPage) {
             fetch('./api/check_session.php', { cache: 'no-store' })
                 .then(function (r) { return r.json(); })
                 .then(function (result) {
@@ -76,24 +90,30 @@
 
 // Handle back-forward cache (bfcache): re-check auth when browser restores a cached page
 window.addEventListener('pageshow', function (event) {
-    if (event.persisted) {
-        const path = window.location.pathname;
-        const inSubdir = path.includes('/staff/') || path.includes('/admin/') || path.includes('/superadmin/');
-        if (inSubdir) {
-            // Re-validate with server when a cached portal page is shown
-            fetch('../api/check_session.php', { cache: 'no-store' })
-                .then(function (r) { return r.json(); })
-                .then(function (result) {
-                    if (result.status !== 'success') {
-                        sessionStorage.clear();
-                        window.location.replace('../login.html');
-                    } else {
-                        // Refresh sessionStorage in case it was stale
-                        sessionStorage.setItem('user', JSON.stringify(result.data));
-                    }
-                })
-                .catch(function () { /* network error, stay on page */ });
-        }
+    const path = window.location.pathname;
+    const inSubdir = path.includes('/staff/') || path.includes('/admin/') || path.includes('/superadmin/');
+    if (inSubdir) {
+        document.documentElement.style.visibility = 'hidden';
+        fetch('../api/check_session.php', { cache: 'no-store', credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (result) {
+                if (result.status !== 'success') {
+                    sessionStorage.clear();
+                    window.location.replace('../login.html');
+                } else {
+                    // Refresh sessionStorage in case it was stale
+                    sessionStorage.setItem('user', JSON.stringify(result.data));
+                    document.documentElement.style.visibility = '';
+                }
+            })
+            .catch(function () {
+                // On network error, restore visibility only if we still have a cached session
+                if (sessionStorage.getItem('user')) {
+                    document.documentElement.style.visibility = '';
+                } else {
+                    window.location.replace('../login.html');
+                }
+            });
     }
 });
 
@@ -216,12 +236,50 @@ async function triggerGlobalLogout() {
         console.error('Logout error:', err);
     }
     sessionStorage.clear();
+
+    // Replace current history entry with login, then push a clean login entry
+    // to remove any forward history that may still point back to the portal.
     window.location.replace(loginPath);
 }
 
 // Expose logout handlers globally so that they can be invoked from any page
 window.handleLogout = triggerGlobalLogout;
 window.logout = triggerGlobalLogout;
+
+function setupDashboardBackGuard() {
+    const path = window.location.pathname.toLowerCase();
+    const isDashboardPage = path.endsWith('/dashboard.html');
+    if (!isDashboardPage) return;
+
+    if (window.history && window.history.pushState) {
+        window.history.pushState({ dashboardBackGuard: true }, '', window.location.href);
+    }
+
+    window.addEventListener('popstate', function (event) {
+        // Back button pressed on dashboard: logout and redirect to select-portal,
+        // replacing the current history entry so forward cannot return to dashboard.
+        if (event.state && event.state.dashboardBackGuard) {
+            return;
+        }
+
+        fetch('../api/logout.php').finally(() => {
+            sessionStorage.clear();
+            window.location.replace('../select-portal.html');
+        });
+    });
+}
+
+function setupSelectPortalHistoryGuard() {
+    const path = window.location.pathname.toLowerCase();
+    const isSelectPortal = path.endsWith('/select-portal.html');
+    if (!isSelectPortal) return;
+
+    if (window.history && window.history.pushState && window.history.replaceState) {
+        // Clear any forward history by pushing a new state and then replacing it.
+        window.history.pushState(null, '', window.location.href);
+        window.history.replaceState(null, '', window.location.href);
+    }
+}
 
 // Premium Dark Theme Switcher & Persistence (Disabled)
 function setupThemeToggle() {
@@ -371,8 +429,7 @@ function setupStaffSidebarProfile() {
             // Get existing name element or dean element
             const existingNameEl = userProfileEl.querySelector('#sidebarStaffName, #sidebarAdminName, #sidebarSuperadminName');
             const nameHtml = existingNameEl ? existingNameEl.outerHTML : `<p style="font-weight: 700; color: var(--primary); font-size: 0.95rem; line-height: 1.2;">${staffName}</p>`;
-            const deanEl = userProfileEl.querySelector('#sidebarDeanName');
-            const deanHtml = deanEl ? `<p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 0.15rem;">Dekan:</p>${deanEl.outerHTML}` : '';
+            const deanHtml = '';
 
             userProfileEl.style.display = 'flex';
             userProfileEl.style.alignItems = 'center';
@@ -480,4 +537,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initInactivityTimer();
     setupPasswordStrength();
     setupStaffSidebarProfile();
+    setupDashboardBackGuard();
+    setupSelectPortalHistoryGuard();
 });

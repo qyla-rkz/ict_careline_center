@@ -18,7 +18,14 @@ function logAudit($pdo, $action, $details) {
 
 if ($method === 'GET') {
     try {
-        $stmt = $pdo->query("SELECT id, name, staff_id, phone, department, jawatan, role, status, profile_picture, created_at FROM users ORDER BY role ASC, name ASC");
+        // Optional department filter from query string
+        $department = $_GET['department'] ?? '';
+        if (!empty($department) && $department !== 'all') {
+            $stmt = $pdo->prepare("SELECT id, name, staff_id, phone, department, jawatan, role, status, profile_picture, created_at FROM users WHERE department = ? ORDER BY role ASC, name ASC");
+            $stmt->execute([$department]);
+        } else {
+            $stmt = $pdo->query("SELECT id, name, staff_id, phone, department, jawatan, role, status, profile_picture, created_at FROM users ORDER BY role ASC, name ASC");
+        }
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         jsonResponse('success', 'Berjaya mengambil senarai pengguna', ['users' => $users]);
     } catch (PDOException $e) {

@@ -80,6 +80,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upload_dir = '../uploads/';
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
+            // If editing and new images were uploaded, remove previous image records first
+            if ($id) {
+                $oldImagesStmt = $pdo->prepare("SELECT image_path FROM asset_images WHERE asset_id = ?");
+                $oldImagesStmt->execute([$asset_id]);
+                $oldImages = $oldImagesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+                foreach ($oldImages as $oldImage) {
+                    $oldPath = __DIR__ . '/../' . $oldImage['image_path'];
+                    if (is_file($oldPath)) {
+                        @unlink($oldPath);
+                    }
+                }
+
+                $deleteStmt = $pdo->prepare("DELETE FROM asset_images WHERE asset_id = ?");
+                $deleteStmt->execute([$asset_id]);
+            }
+
             // Limit to 5
             $image_count = count($_FILES['images']['name']);
             if ($image_count > 5) $image_count = 5;

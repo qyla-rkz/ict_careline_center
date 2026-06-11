@@ -74,6 +74,12 @@
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
             outline: none;
         }
+        /* Ensure department select dropdown appears above other elements */
+        #deptFilter {
+            position: relative;
+            z-index: 99999;
+            -webkit-appearance: menulist; /* keep native look */
+        }
     </style>
 </head>
 <body>
@@ -87,16 +93,14 @@
             <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
                 <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super Admin</p>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem; margin-bottom: 0.15rem;">Dekan:</p>
-                <p id="sidebarDeanName" style="font-weight: 600; color: var(--text-main); font-size: 0.9rem;">-</p>
             </div>
             <nav class="nav-links">
                 <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
                 <a href="users.html" class="nav-link active">👥 Pengguna</a>
                 <a href="audit_logs.html" class="nav-link">📜 Jejak Audit</a>
-                <a href="settings.html" class="nav-link">⚙️ Tetapan</a>
             </nav>
-            <div style="margin-top: auto;">
+            <div style="margin-top: auto;"
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
@@ -119,9 +123,32 @@
                         <h3 style="color: var(--text-main); font-weight: 700; margin: 0; font-size: 1.25rem;">Senarai Pengguna Sistem</h3>
                         <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.25rem 0 0 0;">Kemas kini peranan, kawal status akses, atau set semula kata laluan pengguna sistem.</p>
                     </div>
-                    <div style="position: relative; width: 320px;">
-                        <input type="text" id="searchInput" placeholder="Cari nama atau ID staf..." style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #cbd5e1; border-radius: 24px; outline: none; font-family: 'Outfit', sans-serif; font-size: 0.9rem; background: #fff;">
-                        <span style="position: absolute; left: 0.95rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;">🔍</span>
+                    <div style="display:flex; gap:0.75rem; align-items:center;">
+                        <select id="deptFilter" style="padding:0.6rem 0.75rem; border:1px solid #cbd5e1; border-radius:12px; background:#fff; font-family: 'Outfit', sans-serif; font-size:0.9rem;">
+                            <option value="all">Semua Jabatan / Unit</option>
+                            <option value="Jabatan Bangunan">Jabatan Bangunan</option>
+                            <option value="Jabatan Kejuruteraan">Jabatan Kejuruteraan</option>
+                            <option value="Jabatan Kesihatan dan Pelesenan">Jabatan Kesihatan dan Pelesenan</option>
+                            <option value="Jabatan Kewangan">Jabatan Kewangan</option>
+                            <option value="Jabatan Khidmat Pengurusan">Jabatan Khidmat Pengurusan</option>
+                            <option value="Jabatan Komunikasi Koprat dan Kemasyarakatan">Jabatan Komunikasi Koprat dan Kemasyarakatan</option>
+                            <option value="Jabatan Penguatkuasaan">Jabatan Penguatkuasaan</option>
+                            <option value="Jabatan Penilaian dan Pengurusan Harta">Jabatan Penilaian dan Pengurusan Harta</option>
+                            <option value="Jabatan Perancangan dan Pembangunan Landskap">Jabatan Perancangan dan Pembangunan Landskap</option>
+                            <option value="Kaunter Hasil">Kaunter Hasil</option>
+                            <option value="Pejabat Setiausaha">Pejabat Setiausaha</option>
+                            <option value="Pejabat YDP">Pejabat YDP</option>
+                            <option value="Unit Audit Dalaman">Unit Audit Dalaman</option>
+                            <option value="Unit Perolehan dan Pengurusan Kontrak">Unit Perolehan dan Pengurusan Kontrak</option>
+                            <option value="Unit Persuruhjaya Bangunan">Unit Persuruhjaya Bangunan</option>
+                            <option value="Unit Pusat Setempat">Unit Pusat Setempat</option>
+                            <option value="Unit Teknologi Maklumat">Unit Teknologi Maklumat</option>
+                            <option value="Unit Undang-Undang">Unit Undang-Undang</option>
+                        </select>
+                        <div style="position: relative; width: 320px;">
+                            <input type="text" id="searchInput" placeholder="Cari nama atau ID staf..." style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #cbd5e1; border-radius: 24px; outline: none; font-family: 'Outfit', sans-serif; font-size: 0.9rem; background: #fff;">
+                            <span style="position: absolute; left: 0.95rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;">🔍</span>
+                        </div>
                     </div>
                 </div>
                 <div class="table-container" style="margin-top: 0;">
@@ -170,6 +197,12 @@
             loadDeanName();
             fetchUsers();
             
+            // Department filter change
+            const deptFilterEl = document.getElementById('deptFilter');
+            if (deptFilterEl) {
+                deptFilterEl.addEventListener('change', function() { fetchUsers(); });
+            }
+
             document.getElementById('searchInput').addEventListener('input', function(e) {
                 const searchTerm = e.target.value.toLowerCase();
                 const filteredUsers = allUsersData.filter(user => {
@@ -185,25 +218,32 @@
             try {
                 const res = await fetch('../api/superadmin/settings.php');
                 const data = await res.json();
-                if (data.status === 'success' && data.data.settings && data.data.settings.nama_dekan) {
-                    document.getElementById('sidebarDeanName').textContent = data.data.settings.nama_dekan;
-                } else {
-                    document.getElementById('sidebarDeanName').textContent = 'Tidak Ditetapkan';
-                }
             } catch (e) {
                 console.error('Ralat mengambil nama dekan:', e);
-                document.getElementById('sidebarDeanName').textContent = '-';
             }
         }
 
         async function fetchUsers() {
             try {
-                const res = await fetch('../api/superadmin/users_manage.php');
+                let url = '../api/superadmin/users_manage.php';
+                const deptEl = document.getElementById('deptFilter');
+                if (deptEl && deptEl.value && deptEl.value !== 'all') {
+                    url += '?department=' + encodeURIComponent(deptEl.value);
+                }
+
+                const res = await fetch(url);
                 const data = await res.json();
-                
+
                 if (data.status === 'success') {
                     allUsersData = data.data.users;
-                    renderUsers(allUsersData);
+                    // If there is a search term, apply it
+                    const searchVal = document.getElementById('searchInput').value || '';
+                    if (searchVal.trim() !== '') {
+                        const st = searchVal.toLowerCase();
+                        renderUsers(allUsersData.filter(user => ((user.name||'').toLowerCase().includes(st) || (user.staff_id||'').toLowerCase().includes(st))));
+                    } else {
+                        renderUsers(allUsersData);
+                    }
                 } else {
                     alert(data.message);
                 }
