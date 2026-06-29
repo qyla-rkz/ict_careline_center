@@ -100,3 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Re-trigger animations when returning via back button (bfcache)
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted || (window.performance && window.performance.navigation && window.performance.navigation.type === 2)) {
+        document.querySelectorAll('.fade-in, .fade-in-delay').forEach(el => {
+            el.style.animation = 'none';
+            void el.offsetHeight; // trigger reflow
+            el.style.animation = null; 
+        });
+    }
+});

@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super Admin Dashboard - ICT Careline Center</title>
-    <link rel="stylesheet" href="../assets/css/style.css?v=10">
+    <link rel="stylesheet" href="../assets/css/style.css?v=15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <script src="../assets/js/global.js?v=7"></script>
+    <script src="../assets/js/global.js?v=10"></script>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo-area">
-                <div class="logo-icon">👑</div>
-                <h2>Super Admin</h2>
+                <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
+                <h2>ICT Careline Center</h2>
             </div>
-            <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+            <div class="user-profile"
+                style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
-                <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super Admin</p>
+                <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super
+                    Admin</p>
             </div>
             <nav class="nav-links">
                 <a href="dashboard.html" class="nav-link active">📊 Papan Pemuka</a>
@@ -29,52 +33,65 @@
                 <a href="audit_logs.html" class="nav-link">📜 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
+                    Log Keluar</a>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
+            <header
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
                 <div>
-                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Super Admin Portal</p>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Super Admin Portal
+                    </p>
                     <h2 style="font-size: 1.8rem; color: var(--text-main);">Papan Pemuka Utama</h2>
                 </div>
-                <div id="superadminDate" style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                <div id="superadminDate"
+                    style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
                     <!-- Date loaded via JS -->
                 </div>
             </header>
 
             <section id="section-overview">
-                <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-main);">Selamat Datang ke Super Admin</h1>
+                <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-main);">Selamat
+                    Datang ke Super Admin</h1>
                 <p class="text-muted">Pantau dan urus keseluruhan sistem daripada satu tempat berpusat.</p>
 
-                <div class="stats-grid" style="margin-top: 2.5rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                <div class="stats-grid"
+                    style="margin-top: 2.5rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
                     <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
-                        <div class="stat-icon" style="background: #eff6ff; color: #1e40af; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        <div class="stat-icon"
+                            style="background: #eff6ff; color: #1e40af; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                             👥
                         </div>
                         <div>
                             <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Pengguna</div>
-                            <div id="totalUsers" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">-</div>
+                            <div id="totalUsers" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">-
+                            </div>
                         </div>
                     </div>
                     <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
-                        <div class="stat-icon" style="background: #dcfce7; color: #166534; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        <div class="stat-icon"
+                            style="background: #dcfce7; color: #166534; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                             🖥️
                         </div>
                         <div>
                             <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Aset</div>
-                            <div id="totalAssets" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">-</div>
+                            <div id="totalAssets" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">
+                                -</div>
                         </div>
                     </div>
                     <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
-                        <div class="stat-icon" style="background: #fef3c7; color: #92400e; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        <div class="stat-icon"
+                            style="background: #fef3c7; color: #92400e; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                             📝
                         </div>
                         <div>
-                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Laporan/Tiket</div>
-                            <div id="totalReports" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">-</div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Laporan/Tiket
+                            </div>
+                            <div id="totalReports"
+                                style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">-</div>
                         </div>
                     </div>
                 </div>
@@ -93,10 +110,14 @@
                     <div class="card" style="padding: 1.5rem;">
                         <h3 style="margin-bottom: 1rem; color: var(--text-main);">Jejak Audit Terkini</h3>
                         <ul id="recentActivityList" style="list-style: none; padding: 0; margin: 0;">
-                            <li style="padding: 1rem 0; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; color: #64748b;">Memuatkan...</li>
+                            <li
+                                style="padding: 1rem 0; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; color: #64748b;">
+                                Memuatkan...</li>
                         </ul>
                         <div style="margin-top: 1.5rem; text-align: center;">
-                            <a href="audit_logs.html" class="btn btn-outline" style="width: 100%; display: block; font-size: 0.9rem;">Lihat Semua Jejak Audit &rarr;</a>
+                            <a href="audit_logs.html" class="btn btn-outline"
+                                style="width: 100%; display: block; font-size: 0.9rem;">Lihat Semua Jejak Audit
+                                &rarr;</a>
                         </div>
                     </div>
                 </div>
@@ -118,17 +139,17 @@
                 window.location.replace('../login.html');
                 return;
             }
-            
+
             // Set date and name
             const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('superadminDate').textContent = new Date().toLocaleDateString('ms-MY', opts);
             if (user && user.full_name) {
                 document.getElementById('sidebarSuperadminName').textContent = user.full_name;
             }
-            
+
             loadDeanName();
-                loadProfileSummary();
-                fetchStats();
+            loadProfileSummary();
+            fetchStats();
         });
 
         function loadProfileSummary() {
@@ -155,16 +176,16 @@
             try {
                 const res = await fetch('../api/superadmin/system_stats.php');
                 const data = await res.json();
-                
+
                 if (data.status === 'success') {
                     document.getElementById('totalUsers').textContent = data.data.total_users;
                     document.getElementById('totalAssets').textContent = data.data.total_assets;
                     document.getElementById('totalReports').textContent = data.data.total_reports;
-                    
+
                     renderChart(data.data);
                     renderRecentLogs(data.data.recent_logs);
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error("Gagal mengambil statistik:", e);
             }
         }
@@ -173,7 +194,7 @@
 
         function renderChart(stats) {
             const ctx = document.getElementById('mainChart').getContext('2d');
-            
+
             if (mainChartInstance) {
                 mainChartInstance.destroy();
             }
@@ -227,7 +248,7 @@
                             displayColors: true,
                             usePointStyle: true,
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     return ` ${context.dataset.label}: ${context.raw}`;
                                 }
                             }
@@ -288,8 +309,8 @@
         function renderRecentLogs(logs) {
             const list = document.getElementById('recentActivityList');
             list.innerHTML = '';
-            
-            if(!logs || logs.length === 0) {
+
+            if (!logs || logs.length === 0) {
                 list.innerHTML = '<li style="padding: 1rem 0; font-size: 0.9rem; color: #64748b;">Tiada aktiviti.</li>';
                 return;
             }
@@ -306,4 +327,5 @@
         }
     </script>
 </body>
+
 </html>

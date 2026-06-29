@@ -1,98 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengurusan Pengguna - Super Admin</title>
-    <link rel="stylesheet" href="../assets/css/style.css?v=10">
+    <link rel="stylesheet" href="../assets/css/style.css?v=15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <script src="../assets/js/global.js?v=6"></script>
+    <script src="../assets/js/global.js?v=10"></script>
     <style>
-        .table-container { 
-            overflow-x: auto; 
-            margin-top: 1.5rem; 
-            background: #fff; 
-            padding: 1.5rem; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.01);
-            border: 1px solid rgba(0,0,0,0.04);
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.01);
+            border: 1px solid rgba(0, 0, 0, 0.04);
         }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 1.1rem 1.25rem; text-align: left; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-        th { background: #f8fafc; font-weight: 700; color: #475569; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        tr { transition: background-color 0.2s ease; }
-        tr:hover { background-color: #f8fafc; }
-        
-        .badge { 
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 1.1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: #475569;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr {
+            transition: background-color 0.2s ease;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0.35rem 0.85rem; 
-            border-radius: 20px; 
-            font-size: 0.75rem; 
-            font-weight: 700; 
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
             white-space: nowrap;
             letter-spacing: 0.02em;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
             border: 1px solid transparent;
         }
-        .badge-active { background: #e6fbf1; color: #0d9488; border-color: #a7f3d0; }
-        .badge-suspended { background: #fdf2f2; color: #e11d48; border-color: #fecaca; }
-        .badge-superadmin { background: #fffbeb; color: #d97706; border-color: #fde68a; }
-        .badge-admin { background: #f0f9ff; color: #0284c7; border-color: #bae6fd; }
-        .badge-staff { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
-        
-        .action-btn { 
+
+        .badge-active {
+            background: #e6fbf1;
+            color: #0d9488;
+            border-color: #a7f3d0;
+        }
+
+        .badge-suspended {
+            background: #fdf2f2;
+            color: #e11d48;
+            border-color: #fecaca;
+        }
+
+        .badge-superadmin {
+            background: #fffbeb;
+            color: #d97706;
+            border-color: #fde68a;
+        }
+
+        .badge-admin {
+            background: #f0f9ff;
+            color: #0284c7;
+            border-color: #bae6fd;
+        }
+
+        .badge-staff {
+            background: #f8fafc;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .action-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            border: 1px solid transparent; 
-            cursor: pointer; 
-            padding: 0.5rem 0.85rem; 
-            border-radius: 20px; 
-            font-weight: 600; 
-            font-size: 0.8rem; 
+            border: 1px solid transparent;
+            cursor: pointer;
+            padding: 0.5rem 0.85rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
             transition: all 0.2s ease;
             white-space: nowrap;
         }
-        .btn-promote { background: #f0f9ff; color: #0284c7; border-color: #e0f2fe; }
-        .btn-promote:hover { background: #0284c7; color: #fff; transform: translateY(-1px); }
-        .btn-suspend { background: #fff5f5; color: #e53e3e; border-color: #fed7d7; }
-        .btn-suspend:hover { background: #e53e3e; color: #fff; transform: translateY(-1px); }
-        .btn-reset { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
-        .btn-reset:hover { background: #475569; color: #fff; transform: translateY(-1px); }
-        .btn-delete { background: #fff5f5; color: #e53e3e; border: 1px dashed #fecaca; }
-        .btn-delete:hover { background: #e53e3e; color: #fff; border-style: solid; transform: translateY(-1px); }
+
+        .btn-promote {
+            background: #f0f9ff;
+            color: #0284c7;
+            border-color: #e0f2fe;
+        }
+
+        .btn-promote:hover {
+            background: #0284c7;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-suspend {
+            background: #fff5f5;
+            color: #e53e3e;
+            border-color: #fed7d7;
+        }
+
+        .btn-suspend:hover {
+            background: #e53e3e;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-reset {
+            background: #f8fafc;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .btn-reset:hover {
+            background: #475569;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background: #fff5f5;
+            color: #e53e3e;
+            border: 1px dashed #fecaca;
+        }
+
+        .btn-delete:hover {
+            background: #e53e3e;
+            color: #fff;
+            border-style: solid;
+            transform: translateY(-1px);
+        }
 
         #searchInput {
             transition: all 0.2s ease;
         }
+
         #searchInput:focus {
             border-color: var(--primary) !important;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
             outline: none;
         }
+
         /* Ensure department select dropdown appears above other elements */
         #deptFilter {
             position: relative;
-            z-index: 99999;
-            -webkit-appearance: menulist; /* keep native look */
+            z-index: 10;
+            -webkit-appearance: menulist;
+            appearance: menulist;
+            /* keep native look */
         }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo-area">
-                <div class="logo-icon">👑</div>
-                <h2>Super Admin</h2>
+                <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
+                <h2>ICT Careline Center</h2>
             </div>
-            <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+            <div class="user-profile"
+                style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
-                <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super Admin</p>
+                <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super
+                    Admin</p>
             </div>
             <nav class="nav-links">
                 <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
@@ -100,54 +199,67 @@
                 <a href="users.html" class="nav-link active">👥 Pengguna</a>
                 <a href="audit_logs.html" class="nav-link">📜 Jejak Audit</a>
             </nav>
-            <div style="margin-top: auto;"
-                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
+            <div style="margin-top: auto;" <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link"
+                style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
+            <header
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
                 <div>
-                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Super Admin Portal</p>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Super Admin Portal
+                    </p>
                     <h2 style="font-size: 1.8rem; color: var(--text-main);">Pengurusan Pengguna</h2>
                 </div>
-                <div id="superadminDate" style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                <div id="superadminDate"
+                    style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
                     <!-- Date loaded via JS -->
                 </div>
             </header>
 
             <section>
-                <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div
+                    style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                     <div>
-                        <h3 style="color: var(--text-main); font-weight: 700; margin: 0; font-size: 1.25rem;">Senarai Pengguna Sistem</h3>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.25rem 0 0 0;">Kemas kini peranan, kawal status akses, atau set semula kata laluan pengguna sistem.</p>
+                        <h3 style="color: var(--text-main); font-weight: 700; margin: 0; font-size: 1.25rem;">Senarai
+                            Pengguna Sistem</h3>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.25rem 0 0 0;">Kemas kini
+                            peranan, kawal status akses, atau set semula kata laluan pengguna sistem.</p>
                     </div>
                     <div style="display:flex; gap:0.75rem; align-items:center;">
-                        <select id="deptFilter" style="padding:0.6rem 0.75rem; border:1px solid #cbd5e1; border-radius:12px; background:#fff; font-family: 'Outfit', sans-serif; font-size:0.9rem;">
+                        <select id="deptFilter"
+                            style="padding:0.6rem 0.75rem; border:1px solid #cbd5e1; border-radius:12px; background:#fff; font-family: 'Outfit', sans-serif; font-size:0.9rem;">
                             <option value="all">Semua Jabatan / Unit</option>
                             <option value="Jabatan Bangunan">Jabatan Bangunan</option>
                             <option value="Jabatan Kejuruteraan">Jabatan Kejuruteraan</option>
                             <option value="Jabatan Kesihatan dan Pelesenan">Jabatan Kesihatan dan Pelesenan</option>
                             <option value="Jabatan Kewangan">Jabatan Kewangan</option>
                             <option value="Jabatan Khidmat Pengurusan">Jabatan Khidmat Pengurusan</option>
-                            <option value="Jabatan Komunikasi Koprat dan Kemasyarakatan">Jabatan Komunikasi Koprat dan Kemasyarakatan</option>
+                            <option value="Jabatan Komunikasi Koprat dan Kemasyarakatan">Jabatan Komunikasi Koprat dan
+                                Kemasyarakatan</option>
                             <option value="Jabatan Penguatkuasaan">Jabatan Penguatkuasaan</option>
-                            <option value="Jabatan Penilaian dan Pengurusan Harta">Jabatan Penilaian dan Pengurusan Harta</option>
-                            <option value="Jabatan Perancangan dan Pembangunan Landskap">Jabatan Perancangan dan Pembangunan Landskap</option>
+                            <option value="Jabatan Penilaian dan Pengurusan Harta">Jabatan Penilaian dan Pengurusan
+                                Harta</option>
+                            <option value="Jabatan Perancangan dan Pembangunan Landskap">Jabatan Perancangan dan
+                                Pembangunan Landskap</option>
                             <option value="Kaunter Hasil">Kaunter Hasil</option>
                             <option value="Pejabat Setiausaha">Pejabat Setiausaha</option>
                             <option value="Pejabat YDP">Pejabat YDP</option>
                             <option value="Unit Audit Dalaman">Unit Audit Dalaman</option>
-                            <option value="Unit Perolehan dan Pengurusan Kontrak">Unit Perolehan dan Pengurusan Kontrak</option>
+                            <option value="Unit Perolehan dan Pengurusan Kontrak">Unit Perolehan dan Pengurusan Kontrak
+                            </option>
                             <option value="Unit Persuruhjaya Bangunan">Unit Persuruhjaya Bangunan</option>
                             <option value="Unit Pusat Setempat">Unit Pusat Setempat</option>
                             <option value="Unit Teknologi Maklumat">Unit Teknologi Maklumat</option>
                             <option value="Unit Undang-Undang">Unit Undang-Undang</option>
                         </select>
                         <div style="position: relative; width: 320px;">
-                            <input type="text" id="searchInput" placeholder="Cari nama atau ID staf..." style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #cbd5e1; border-radius: 24px; outline: none; font-family: 'Outfit', sans-serif; font-size: 0.9rem; background: #fff;">
-                            <span style="position: absolute; left: 0.95rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;">🔍</span>
+                            <input type="text" id="searchInput" placeholder="Cari nama atau ID staf..."
+                                style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #cbd5e1; border-radius: 24px; outline: none; font-family: 'Outfit', sans-serif; font-size: 0.9rem; background: #fff;">
+                            <span
+                                style="position: absolute; left: 0.95rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;">🔍</span>
                         </div>
                     </div>
                 </div>
@@ -163,7 +275,9 @@
                             </tr>
                         </thead>
                         <tbody id="usersTableBody">
-                            <tr><td colspan="5" style="text-align:center;">Memuatkan data...</td></tr>
+                            <tr>
+                                <td colspan="5" style="text-align:center;">Memuatkan data...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -186,7 +300,7 @@
                 window.location.replace('../login.html');
                 return;
             }
-            
+
             // Set date and name
             const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('superadminDate').textContent = new Date().toLocaleDateString('ms-MY', opts);
@@ -196,14 +310,14 @@
 
             loadDeanName();
             fetchUsers();
-            
+
             // Department filter change
             const deptFilterEl = document.getElementById('deptFilter');
             if (deptFilterEl) {
-                deptFilterEl.addEventListener('change', function() { fetchUsers(); });
+                deptFilterEl.addEventListener('change', function () { fetchUsers(); });
             }
 
-            document.getElementById('searchInput').addEventListener('input', function(e) {
+            document.getElementById('searchInput').addEventListener('input', function (e) {
                 const searchTerm = e.target.value.toLowerCase();
                 const filteredUsers = allUsersData.filter(user => {
                     const name = (user.name || '').toLowerCase();
@@ -240,7 +354,7 @@
                     const searchVal = document.getElementById('searchInput').value || '';
                     if (searchVal.trim() !== '') {
                         const st = searchVal.toLowerCase();
-                        renderUsers(allUsersData.filter(user => ((user.name||'').toLowerCase().includes(st) || (user.staff_id||'').toLowerCase().includes(st))));
+                        renderUsers(allUsersData.filter(user => ((user.name || '').toLowerCase().includes(st) || (user.staff_id || '').toLowerCase().includes(st))));
                     } else {
                         renderUsers(allUsersData);
                     }
@@ -265,9 +379,9 @@
             users.forEach(user => {
                 const roleClass = user.role.toLowerCase().includes('super') ? 'badge-superadmin' : (user.role.toLowerCase() === 'admin' ? 'badge-admin' : 'badge-staff');
                 const statusClass = (user.status || 'active') === 'active' ? 'badge-active' : 'badge-suspended';
-                
+
                 let actionsHTML = '';
-                
+
                 // Don't allow changing yourself
                 const currentUser = JSON.parse(sessionStorage.getItem('user'));
                 // Promote/Demote button
@@ -277,7 +391,7 @@
                     } else if (user.role.toLowerCase() === 'admin') {
                         actionsHTML += `<button class="action-btn btn-promote" onclick="updateRole(${user.id}, 'Staff')">⬇️ Turun ke Staf</button>`;
                     }
-                    
+
                     // Suspend/Activate button
                     if ((user.status || 'active') === 'active') {
                         actionsHTML += `<button class="action-btn btn-suspend" onclick="updateStatus(${user.id}, 'suspended')">⏸️ Gantung</button>`;
@@ -287,7 +401,7 @@
 
                     // Reset Password
                     actionsHTML += `<button class="action-btn btn-reset" onclick="resetPassword(${user.id})">🔑 Set Semula</button>`;
-                    
+
                     // Delete User
                     actionsHTML += `<button class="action-btn btn-delete" onclick="deleteUser(${user.id})">🗑️ Padam</button>`;
                 } else {
@@ -421,4 +535,5 @@
 
     </script>
 </body>
+
 </html>

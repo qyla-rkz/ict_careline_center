@@ -57,15 +57,11 @@
                 }
             });
 
-    } else if (!isGuestPage) {
-        // Should not hit — covered by inSubdir above
     } else if (!isWelcomePage) {
         // ── Guest auth page (login, register, select-portal) ──
         // If sessionStorage says logged in, verify with server then redirect to dashboard
-        // UNLESS we are on the login page (user may have hit back button from dashboard)
-        const isLoginPage = path.endsWith('/login.html');
         const userStr = sessionStorage.getItem('user');
-        if (userStr && !isLoginPage) {
+        if (userStr) {
             fetch('./api/check_session.php', { cache: 'no-store' })
                 .then(function (r) { return r.json(); })
                 .then(function (result) {
@@ -246,40 +242,6 @@ async function triggerGlobalLogout() {
 window.handleLogout = triggerGlobalLogout;
 window.logout = triggerGlobalLogout;
 
-function setupDashboardBackGuard() {
-    const path = window.location.pathname.toLowerCase();
-    const isDashboardPage = path.endsWith('/dashboard.html');
-    if (!isDashboardPage) return;
-
-    if (window.history && window.history.pushState) {
-        window.history.pushState({ dashboardBackGuard: true }, '', window.location.href);
-    }
-
-    window.addEventListener('popstate', function (event) {
-        // Back button pressed on dashboard: logout and redirect to select-portal,
-        // replacing the current history entry so forward cannot return to dashboard.
-        if (event.state && event.state.dashboardBackGuard) {
-            return;
-        }
-
-        fetch('../api/logout.php').finally(() => {
-            sessionStorage.clear();
-            window.location.replace('../select-portal.html');
-        });
-    });
-}
-
-function setupSelectPortalHistoryGuard() {
-    const path = window.location.pathname.toLowerCase();
-    const isSelectPortal = path.endsWith('/select-portal.html');
-    if (!isSelectPortal) return;
-
-    if (window.history && window.history.pushState && window.history.replaceState) {
-        // Clear any forward history by pushing a new state and then replacing it.
-        window.history.pushState(null, '', window.location.href);
-        window.history.replaceState(null, '', window.location.href);
-    }
-}
 
 // Premium Dark Theme Switcher & Persistence (Disabled)
 function setupThemeToggle() {
@@ -531,6 +493,25 @@ function setupStaffSidebarProfile() {
 //  unnecessary. Using replace() in the guard also keeps history clean so
 //  the back button works naturally after logout.)
 
+function setupDashboardBackGuard() {
+    const path = window.location.pathname.toLowerCase();
+    const isDashboardPage = path.endsWith('/dashboard.html');
+    if (!isDashboardPage) return;
+
+    // Push a state so that when user hits back, we can intercept it
+    if (window.history && window.history.pushState) {
+        window.history.pushState({ dashboardGuard: true }, '', window.location.href);
+    }
+
+    window.addEventListener('popstate', function (event) {
+        // When back is pressed, log out and redirect
+        fetch('../api/logout.php').finally(() => {
+            sessionStorage.clear();
+            window.history.back();
+        });
+    });
+}
+
 // Initialise everything when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     setupThemeToggle();
@@ -538,5 +519,4 @@ document.addEventListener('DOMContentLoaded', () => {
     setupPasswordStrength();
     setupStaffSidebarProfile();
     setupDashboardBackGuard();
-    setupSelectPortalHistoryGuard();
 });

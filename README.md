@@ -37,8 +37,10 @@ ict_careline_center/
 ├── uploads/             # Folder simpanan imej kerosakan/aset yang dimuat naik
 ├── .env                 # Konfigurasi persekitaran (DB host, user, password)
 ├── index.html           # Halaman utama (Landing Page)
+├── select-portal.html   # Halaman Pemilihan Portal Pengguna
 ├── login.html           # Halaman Log Masuk (dengan suis peranan Staf/Admin)
-└── register.html        # Halaman Pendaftaran Staf
+├── register.html        # Halaman Pendaftaran Staf
+└── reset_password.html  # Halaman Tetapan Semula Kata Laluan
 ```
 
 ---
