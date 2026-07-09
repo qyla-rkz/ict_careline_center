@@ -70,6 +70,8 @@ try {
 
     $stmt = $pdo->prepare("INSERT INTO users (name, email, staff_id, phone, office, department, jawatan, password, role, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Staff', ?)");
     if ($stmt->execute([$name, $email, $staff_id, $phone, $office, $department, $jawatan, $hashed_password, $db_profile_pic_path])) {
+        $newUserId = $pdo->lastInsertId();
+        logAudit($pdo, $newUserId, 'Pendaftaran Akaun', "Akaun baru didaftarkan: '$name' (ID Staf: $staff_id, Jabatan: $department).");
         jsonResponse('success', 'Registration successful');
     } else {
         // Remove uploaded file on failure

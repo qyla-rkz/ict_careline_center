@@ -3,7 +3,7 @@
 session_start();
 require_once '../config.php';
 
-if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role']) !== 'super admin' && strtolower($_SESSION['role']) !== 'superadmin') {
+if (!isset($_SESSION['user_id']) || !(strtolower($_SESSION['role']) === 'super admin' || strtolower($_SESSION['role']) === 'superadmin')) {
     jsonResponse('error', 'Akses ditolak.');
 }
 

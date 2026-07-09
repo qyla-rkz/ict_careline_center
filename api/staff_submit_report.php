@@ -60,9 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Log Activity
-        $logStmt = $pdo->prepare("INSERT INTO activity_logs (user_id, activity_type, description) VALUES (?, 'Report Submitted', ?)");
-        $logStmt->execute([$_SESSION['user_id'], "Submitted KEW.PA-9 for $jenis_aset ($nombor_siri)"]);
+        // Log Activity ke audit_logs
+        logAudit($pdo, $_SESSION['user_id'], 'Hantar Laporan', "Laporan KEW.PA-9 baru dihantar untuk aset '$jenis_aset' (S/N: $nombor_siri). ID Laporan: $report_id.");
 
         $pdo->commit();
         jsonResponse('success', 'Report submitted successfully');

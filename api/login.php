@@ -64,6 +64,8 @@ try {
         session_write_close();
         session_start();
 
+        logAudit($pdo, $user['id'], 'Log Masuk', "Pengguna '{$user['name']}' ({$user['staff_id']}) berjaya log masuk sebagai {$user['role']}.");
+
         jsonResponse('success', 'Login successful', [
             'id'        => $user['id'],
             'username'  => $user['staff_id'] ?? $user['name'],
@@ -72,6 +74,7 @@ try {
             'jawatan'   => $user['jawatan'] ?? ''
         ]);
     } else {
+        logAudit($pdo, null, 'Log Masuk Gagal', "Cubaan log masuk gagal untuk ID: '$username'.");
         jsonResponse('error', 'Invalid Staff ID or password');
     }
 } catch (PDOException $e) {

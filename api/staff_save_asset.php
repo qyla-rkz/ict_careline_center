@@ -116,6 +116,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $pdo->commit();
+
+        $auditAction = $id ? 'Kemaskini Aset' : 'Tambah Aset';
+        $auditDetail = ($id ? "Aset dikemaskini" : "Aset baru ditambah") . ": $asset_type (S/N: $serial_number). ID Aset: $asset_id.";
+        logAudit($pdo, $_SESSION['user_id'], $auditAction, $auditDetail);
+
         jsonResponse('success', 'Asset information saved successfully');
 
     } catch (Exception $e) {

@@ -64,4 +64,16 @@ if (!function_exists('jsonResponse')) {
         exit;
     }
 }
+
+if (!function_exists('logAudit')) {
+    function logAudit($pdo, $user_id, $action, $details = null) {
+        try {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
+            $stmt = $pdo->prepare("INSERT INTO audit_logs (user_id, action, details, ip_address) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$user_id, $action, $details, $ip]);
+        } catch (Exception $e) {
+            // Fail silently — jangan ganggu response utama
+        }
+    }
+}
 ?>

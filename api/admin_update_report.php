@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $kos_dahulu, $anggaran_kos, $syor_ulasan, $keputusan, 
             $kep_nama, $kep_tarikh, $status, $admin_nama, $admin_jawatan, $id
         ])) {
+            logAudit($pdo, $_SESSION['user_id'], 'Proses Laporan', "Admin '{$_SESSION['full_name']}' telah memproses Laporan ID $id. Keputusan: '$keputusan' ($status).");
             jsonResponse('success', 'Report updated successfully');
         } else {
             jsonResponse('error', 'Failed to update report');
