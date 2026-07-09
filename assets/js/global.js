@@ -233,7 +233,7 @@ async function triggerGlobalLogout() {
     }
     sessionStorage.clear();
 
-    // Replace current history entry with login, then push a clean login entry
+    // Replace current history entry with login, then push a clean entry
     // to remove any forward history that may still point back to the portal.
     window.location.replace(loginPath);
 }
@@ -504,11 +504,9 @@ function setupDashboardBackGuard() {
     }
 
     window.addEventListener('popstate', function (event) {
-        // When back is pressed, log out and redirect
-        fetch('../api/logout.php').finally(() => {
-            sessionStorage.clear();
-            window.history.back();
-        });
+        // When back is pressed, trigger global logout which clears session
+        // and uses location.replace() to destroy the forward history
+        triggerGlobalLogout();
     });
 }
 
