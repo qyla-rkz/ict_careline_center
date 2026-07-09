@@ -478,6 +478,7 @@ h1, h2, h3, h4 {
 .badge-progress { background: #dbeafe; color: #1e40af; }
 .badge-resolved { background: #dcfce7; color: #166534; }
 .badge-rejected { background: #fee2e2; color: #991b1b; }
+.badge-disposed { background: #e2e8f0; color: #475569; }
 
 /* Dashboard Cards */
 .stats-grid {

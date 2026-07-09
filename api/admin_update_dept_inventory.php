@@ -11,21 +11,17 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['Admin', 'Supe
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'] ?? '';
     $dept_name = $_POST['department_name'] ?? '';
-    $pc = $_POST['pc_count'] ?? 0;
-    $laptop = $_POST['laptop_count'] ?? 0;
-    $printer = $_POST['printer_count'] ?? 0;
-    $monitor = $_POST['monitor_count'] ?? 0;
-    $wifi = $_POST['wifi_count'] ?? 0;
+    $assets_data = $_POST['assets_data'] ?? '{}'; // Expecting a JSON string
 
     try {
         if ($id) {
             // Update
-            $stmt = $pdo->prepare("UPDATE department_inventory SET department_name=?, pc_count=?, laptop_count=?, printer_count=?, monitor_count=?, wifi_count=? WHERE id=?");
-            $stmt->execute([$dept_name, $pc, $laptop, $printer, $monitor, $wifi, $id]);
+            $stmt = $pdo->prepare("UPDATE department_inventory SET department_name=?, assets_data=? WHERE id=?");
+            $stmt->execute([$dept_name, $assets_data, $id]);
         } else {
             // Insert
-            $stmt = $pdo->prepare("INSERT INTO department_inventory (department_name, pc_count, laptop_count, printer_count, monitor_count, wifi_count) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$dept_name, $pc, $laptop, $printer, $monitor, $wifi]);
+            $stmt = $pdo->prepare("INSERT INTO department_inventory (department_name, assets_data) VALUES (?, ?)");
+            $stmt->execute([$dept_name, $assets_data]);
         }
         jsonResponse('success', 'Inventory updated');
     } catch (PDOException $e) {

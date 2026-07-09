@@ -55,11 +55,7 @@ CREATE TABLE `assets` (
 CREATE TABLE `department_inventory` (
   `id` int(11) NOT NULL,
   `department_name` varchar(255) NOT NULL,
-  `pc_count` int(11) DEFAULT 0,
-  `printer_count` int(11) DEFAULT 0,
-  `monitor_count` int(11) DEFAULT 0,
-  `wifi_count` int(11) DEFAULT 0,
-  `laptop_count` int(11) DEFAULT 0,
+  `assets_data` text DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -67,8 +63,7 @@ CREATE TABLE `department_inventory` (
 -- Dumping data for table `department_inventory`
 --
 
-INSERT INTO `department_inventory` (`id`, `department_name`, `pc_count`, `printer_count`, `monitor_count`, `wifi_count`, `laptop_count`, `updated_at`) VALUES
-(1, 'Unit Teknologi Maklumat', 9, 6, 7, 11, 7, '2026-04-24 12:43:59');
+-- No data yet for department_inventory
 
 -- --------------------------------------------------------
 
@@ -106,7 +101,7 @@ CREATE TABLE `kewpa9_reports` (
   `syor_ulasan` text DEFAULT NULL,
   `admin_name_jawatan` varchar(255) DEFAULT NULL,
   `admin_tarikh` date DEFAULT NULL,
-  `keputusan` enum('Pending','Diluluskan','Tidak Diluluskan') DEFAULT 'Pending',
+  `keputusan` enum('Pending','Diluluskan','Tidak Diluluskan','Syor Dilupuskan') DEFAULT 'Pending',
   `keputusan_nama` varchar(255) DEFAULT NULL,
   `keputusan_jawatan` varchar(255) DEFAULT NULL,
   `keputusan_tarikh` date DEFAULT NULL,

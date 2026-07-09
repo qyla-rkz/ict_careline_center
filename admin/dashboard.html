@@ -37,6 +37,7 @@
                 <a href="inventory.html" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.html" class="nav-link">👥 Aset Staf</a>
                 <a href="history_reports.html" class="nav-link">📜 Log Sejarah</a>
+                <a href="print_settings.html" class="nav-link">🖨️ Tetapan Cetakan</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -63,7 +64,7 @@
                 <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-main);">Ringkasan Statistik</h1>
                 <p class="text-muted">Pantau statistik keseluruhan untuk laporan dan aset staf.</p>
 
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 2.5rem;">
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; margin-top: 2.5rem;">
                     <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
                         <div class="stat-icon" style="background: #eff6ff; color: #1e40af; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📥</div>
                         <div>
@@ -92,80 +93,13 @@
                             <div id="stat-rejected" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <!-- Chart Section -->
-            <section style="margin-top: 3.5rem;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
-                    <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
-                        <span style="width: 4px; height: 24px; background: var(--primary); border-radius: 2px; display: inline-block;"></span>
-                        Analisis Status Laporan
-                    </h3>
-                    <div style="display: flex; gap: 1rem;">
-                        <select id="filterStatusYear" class="form-control" style="width: auto; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); cursor: pointer;" onchange="updateStatusChart()">
-                            <!-- Years loaded via JS -->
-                        </select>
-                        <select id="filterStatusMonth" class="form-control" style="width: auto; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); cursor: pointer;" onchange="updateStatusChart()">
-                            <option value="all">Semua Bulan</option>
-                            <option value="q1">Suku Pertama (Jan-Mac)</option>
-                            <option value="q2">Suku Kedua (Apr-Jun)</option>
-                            <option value="q3">Suku Ketiga (Jul-Sep)</option>
-                            <option value="q4">Suku Keempat (Okt-Dis)</option>
-                            <option value="0">Januari</option>
-                            <option value="1">Februari</option>
-                            <option value="2">Mac</option>
-                            <option value="3">April</option>
-                            <option value="4">Mei</option>
-                            <option value="5">Jun</option>
-                            <option value="6">Julai</option>
-                            <option value="7">Ogos</option>
-                            <option value="8">September</option>
-                            <option value="9">Oktober</option>
-                            <option value="10">November</option>
-                            <option value="11">Disember</option>
-                        </select>
+                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
+                        <div class="stat-icon" style="background: #e2e8f0; color: #475569; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🗂️</div>
+                        <div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Syor Dilupuskan</div>
+                            <div id="stat-disposed" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                        </div>
                     </div>
-                </div>
-                <div class="card" style="position: relative; height: 350px; padding: 1.5rem;">
-                    <canvas id="reportChart"></canvas>
-                </div>
-            </section>
-
-            <!-- Trend Chart Section -->
-            <section style="margin-top: 3.5rem;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
-                    <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
-                        <span style="width: 4px; height: 24px; background: var(--primary); border-radius: 2px; display: inline-block;"></span>
-                        Statistik Penerimaan Laporan
-                    </h3>
-                    <div style="display: flex; gap: 1rem;">
-                        <select id="filterYear" class="form-control" style="width: auto; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); cursor: pointer;" onchange="updateTrendChart()">
-                            <!-- Years loaded via JS -->
-                        </select>
-                        <select id="filterMonth" class="form-control" style="width: auto; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); cursor: pointer;" onchange="updateTrendChart()">
-                            <option value="all">Semua Bulan</option>
-                            <option value="q1">Suku Pertama (Jan-Mac)</option>
-                            <option value="q2">Suku Kedua (Apr-Jun)</option>
-                            <option value="q3">Suku Ketiga (Jul-Sep)</option>
-                            <option value="q4">Suku Keempat (Okt-Dis)</option>
-                            <option value="0">Januari</option>
-                            <option value="1">Februari</option>
-                            <option value="2">Mac</option>
-                            <option value="3">April</option>
-                            <option value="4">Mei</option>
-                            <option value="5">Jun</option>
-                            <option value="6">Julai</option>
-                            <option value="7">Ogos</option>
-                            <option value="8">September</option>
-                            <option value="9">Oktober</option>
-                            <option value="10">November</option>
-                            <option value="11">Disember</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="card" style="position: relative; height: 350px; padding: 1.5rem;">
-                    <canvas id="trendChart"></canvas>
                 </div>
             </section>
 
@@ -210,6 +144,48 @@
                     </table>
                 </div>
             </section>
+
+            <!-- Trend Chart Section -->
+            <section style="margin-top: 3.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="width: 4px; height: 24px; background: var(--primary); border-radius: 2px; display: inline-block;"></span>
+                        Statistik Penerimaan Laporan
+                    </h3>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <select id="filterYear" class="form-control" style="width: auto; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); cursor: pointer;" onchange="updateTrendChart()">
+                            <!-- Years loaded via JS -->
+                        </select>
+                        <select id="filterMonth" class="form-control" style="width: auto; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); cursor: pointer;" onchange="updateTrendChart()">
+                            <option value="all">Semua Bulan</option>
+                            <option value="q1">Suku Pertama (Jan-Mac)</option>
+                            <option value="q2">Suku Kedua (Apr-Jun)</option>
+                            <option value="q3">Suku Ketiga (Jul-Sep)</option>
+                            <option value="q4">Suku Keempat (Okt-Dis)</option>
+                            <option value="0">Januari</option>
+                            <option value="1">Februari</option>
+                            <option value="2">Mac</option>
+                            <option value="3">April</option>
+                            <option value="4">Mei</option>
+                            <option value="5">Jun</option>
+                            <option value="6">Julai</option>
+                            <option value="7">Ogos</option>
+                            <option value="8">September</option>
+                            <option value="9">Oktober</option>
+                            <option value="10">November</option>
+                            <option value="11">Disember</option>
+                        </select>
+                        <button onclick="printTrendChart()" class="btn btn-primary" style="padding: 0.5rem 1rem; border-radius: 8px; border: none; background: var(--primary); color: white; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 600;" title="Cetak Statistik">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/><path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/></svg>
+                            Cetak
+                        </button>
+                    </div>
+                </div>
+                <div class="card" style="position: relative; height: 350px; padding: 1.5rem;">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </section>
+
         </main>
     </div>
 
@@ -277,6 +253,7 @@
                             <select name="keputusan" id="edit_keputusan" class="form-control">
                                 <option value="Diluluskan">Diluluskan</option>
                                 <option value="Tidak Diluluskan">Tidak Diluluskan</option>
+                                <option value="Syor Dilupuskan">Syor Dilupuskan</option>
                             </select>
                         </div>
                         <div class="form-group"><label>Nama Ketua Jabatan</label><input type="text"
@@ -360,7 +337,7 @@
 
             <div style="font-weight: bold; margin-top: 30px; margin-bottom: 10px;">Bahagian III (Keputusan Ketua Jabatan
                 / Bahagian / Seksyen / Unit)</div>
-            <div id="p_keputusan_line" style="margin-bottom: 20px;">Diluluskan/ Tidak Diluluskan*</div>
+            <div id="p_keputusan_line" style="margin-bottom: 20px;">Diluluskan/ Tidak Diluluskan/ Syor Dilupuskan*</div>
 
             <div style="margin-top: 40px; width: 350px;">
                 <div style="border-bottom: 1px dotted #000; height: 30px; margin-bottom: 5px;"></div>
@@ -380,105 +357,8 @@
     </div>
 
     <script>
-        let reportChartInstance = null;
         let trendChartInstance = null;
         let globalReports = [];
-
-        function renderChart(pending, resolved, rejected) {
-            const ctx = document.getElementById('reportChart').getContext('2d');
-            
-            if (reportChartInstance) {
-                reportChartInstance.destroy();
-            }
-
-            const isDarkNow = document.body.classList.contains('dark-theme');
-            const textColor = isDarkNow ? '#94a3b8' : '#64748b';
-            const gridColor = isDarkNow ? '#334155' : '#f1f5f9';
-
-            const warningGrad = ctx.createLinearGradient(0, 0, 0, 300);
-            warningGrad.addColorStop(0, 'rgba(245, 158, 11, 0.85)');
-            warningGrad.addColorStop(1, 'rgba(245, 158, 11, 0.05)');
-
-            const successGrad = ctx.createLinearGradient(0, 0, 0, 300);
-            successGrad.addColorStop(0, 'rgba(13, 148, 136, 0.85)');
-            successGrad.addColorStop(1, 'rgba(13, 148, 136, 0.05)');
-
-            const dangerGrad = ctx.createLinearGradient(0, 0, 0, 300);
-            dangerGrad.addColorStop(0, 'rgba(239, 68, 68, 0.85)');
-            dangerGrad.addColorStop(1, 'rgba(239, 68, 68, 0.05)');
-
-            reportChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Menunggu Kelulusan', 'Selesai', 'Ditolak'],
-                    datasets: [{
-                        label: 'Jumlah Laporan',
-                        data: [pending, resolved, rejected],
-                        backgroundColor: [warningGrad, successGrad, dangerGrad],
-                        borderColor: ['#f59e0b', '#0d9488', '#ef4444'],
-                        borderWidth: 2,
-                        borderRadius: 12,
-                        borderSkipped: false,
-                        barPercentage: 0.55
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: isDarkNow ? '#1e293b' : '#ffffff',
-                            titleColor: isDarkNow ? '#f8fafc' : '#0f172a',
-                            bodyColor: isDarkNow ? '#94a3b8' : '#64748b',
-                            borderColor: isDarkNow ? '#334155' : '#e2e8f0',
-                            borderWidth: 1,
-                            padding: 14,
-                            cornerRadius: 12,
-                            displayColors: true,
-                            usePointStyle: true,
-                            callbacks: {
-                                label: function(context) {
-                                    return ` ${context.dataset.label}: ${context.raw}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: textColor,
-                                font: {
-                                    family: 'Outfit, sans-serif',
-                                    size: 13,
-                                    weight: '600'
-                                }
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: gridColor,
-                                drawBorder: false
-                            },
-                            ticks: {
-                                stepSize: 1,
-                                color: textColor,
-                                font: {
-                                    family: 'Outfit, sans-serif',
-                                    size: 12
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
 
 
 
@@ -505,14 +385,12 @@
             // Set default month to current month
             const currentMonth = new Date().getMonth();
             document.getElementById('filterMonth').value = currentMonth;
-            document.getElementById('filterStatusMonth').value = currentMonth;
             
             fetchReports();
         });
 
         function populateYearsDropdown() {
             const yearSelect = document.getElementById('filterYear');
-            const statusYearSelect = document.getElementById('filterStatusYear');
             const years = new Set();
             globalReports.forEach(r => {
                 if (r.created_at) {
@@ -525,60 +403,17 @@
 
             const sortedYears = Array.from(years).sort((a, b) => b - a);
             const selectedYear = yearSelect.value || currentYear.toString();
-            const selectedStatusYear = statusYearSelect.value || currentYear.toString();
             
             yearSelect.innerHTML = '';
-            statusYearSelect.innerHTML = '';
             sortedYears.forEach(year => {
                 const option = document.createElement('option');
                 option.value = year;
                 option.textContent = year;
                 if (year.toString() === selectedYear) option.selected = true;
                 yearSelect.appendChild(option);
-
-                const statusOption = document.createElement('option');
-                statusOption.value = year;
-                statusOption.textContent = year;
-                if (year.toString() === selectedStatusYear) statusOption.selected = true;
-                statusYearSelect.appendChild(statusOption);
             });
         }
 
-        function updateStatusChart() {
-            const year = parseInt(document.getElementById('filterStatusYear').value) || new Date().getFullYear();
-            const monthVal = document.getElementById('filterStatusMonth').value;
-
-            let pending = 0, resolved = 0, rejected = 0;
-
-            globalReports.forEach(r => {
-                if (r.created_at) {
-                    const date = new Date(r.created_at);
-                    if (date.getFullYear() === year) {
-                        const m = date.getMonth();
-                        let inRange = false;
-
-                        if (monthVal === 'all') {
-                            inRange = true;
-                        } else if (monthVal.startsWith('q')) {
-                            if (monthVal === 'q1' && m >= 0 && m <= 2) inRange = true;
-                            if (monthVal === 'q2' && m >= 3 && m <= 5) inRange = true;
-                            if (monthVal === 'q3' && m >= 6 && m <= 8) inRange = true;
-                            if (monthVal === 'q4' && m >= 9 && m <= 11) inRange = true;
-                        } else {
-                            if (m === parseInt(monthVal)) inRange = true;
-                        }
-
-                        if (inRange) {
-                            if (r.status === 'Pending') pending++;
-                            if (r.status === 'Resolved') resolved++;
-                            if (r.status === 'Rejected') rejected++;
-                        }
-                    }
-                }
-            });
-
-            renderChart(pending, resolved, rejected);
-        }
 
         function updateTrendChart() {
             const year = parseInt(document.getElementById('filterYear').value) || new Date().getFullYear();
@@ -765,19 +600,6 @@
             const textColor = isDark ? '#94a3b8' : '#64748b';
             const gridColor = isDark ? '#334155' : '#f1f5f9';
 
-            if (reportChartInstance) {
-                reportChartInstance.options.scales.x.ticks.color = textColor;
-                reportChartInstance.options.scales.y.ticks.color = textColor;
-                reportChartInstance.options.scales.y.grid.color = gridColor;
-                
-                reportChartInstance.options.plugins.tooltip.backgroundColor = isDark ? '#1e293b' : '#ffffff';
-                reportChartInstance.options.plugins.tooltip.titleColor = isDark ? '#f8fafc' : '#0f172a';
-                reportChartInstance.options.plugins.tooltip.bodyColor = isDark ? '#94a3b8' : '#64748b';
-                reportChartInstance.options.plugins.tooltip.borderColor = isDark ? '#334155' : '#e2e8f0';
-                
-                reportChartInstance.update();
-            }
-
             if (trendChartInstance) {
                 trendChartInstance.options.scales.x.ticks.color = textColor;
                 trendChartInstance.options.scales.y.ticks.color = textColor;
@@ -806,20 +628,21 @@
                     const allReports = result.data;
 
                     // Stats reflect ALL reports
-                    let pending = 0, resolved = 0, rejected = 0;
+                    let pending = 0, resolved = 0, rejected = 0, disposed = 0;
                     allReports.forEach(r => {
                         if (r.status === 'Pending') pending++;
-                        if (r.status === 'Resolved') resolved++;
+                        if (r.status === 'Resolved' && r.keputusan !== 'Syor Dilupuskan') resolved++;
                         if (r.status === 'Rejected') rejected++;
+                        if (r.keputusan === 'Syor Dilupuskan') disposed++;
                     });
 
                     document.getElementById('stat-total').textContent = allReports.length;
                     document.getElementById('stat-pending').textContent = pending;
                     document.getElementById('stat-resolved').textContent = resolved;
                     document.getElementById('stat-rejected').textContent = rejected;
+                    document.getElementById('stat-disposed').textContent = disposed;
 
                     populateYearsDropdown();
-                    updateStatusChart();
                     updateTrendChart();
 
                     // Filter for TODAY'S reports only
@@ -847,7 +670,7 @@
                                 <td style="padding: 1.25rem 1.5rem; color: var(--text-main); font-weight: 500;">${r.nama_pelapor || r.full_name || '-'}</td>
                                 <td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">${r.jenis_aset}</td>
                                 <td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">${new Date(r.created_at).toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })}</td>
-                                <td style="padding: 1.25rem 1.5rem;"><span class="badge badge-${r.status.toLowerCase().replace(' ', '')}">${r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
+                                <td style="padding: 1.25rem 1.5rem;"><span class="badge badge-${r.keputusan === 'Syor Dilupuskan' ? 'disposed' : r.status === 'Resolved' ? 'resolved' : r.status === 'Rejected' ? 'rejected' : 'pending'}">${r.keputusan === 'Syor Dilupuskan' ? 'Syor Dilupuskan' : r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
                             `;
                             tbody.appendChild(tr);
                         });
@@ -878,6 +701,21 @@
             document.getElementById('edit_keputusan').value = r.keputusan || 'Diluluskan';
             document.getElementById('edit_keputusan_nama').value = r.keputusan_nama || '';
             document.getElementById('edit_keputusan_tarikh').value = r.keputusan_tarikh || new Date().toISOString().split('T')[0];
+
+            const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected' || r.keputusan === 'Syor Dilupuskan';
+            const saveBtn = document.querySelector('#manageForm button[type="submit"]');
+            
+            if (isCompleted) {
+                if (saveBtn) saveBtn.style.display = 'none';
+                document.querySelectorAll('#manageForm input, #manageForm textarea, #manageForm select').forEach(el => {
+                    if (el.id !== 'edit_id') el.disabled = true;
+                });
+            } else {
+                if (saveBtn) saveBtn.style.display = 'block';
+                document.querySelectorAll('#manageForm input, #manageForm textarea, #manageForm select').forEach(el => {
+                    if (el.id !== 'edit_id') el.disabled = false;
+                });
+            }
 
             document.getElementById('reportModal').style.display = 'flex';
         }
@@ -924,7 +762,13 @@
             document.getElementById('p_admin_tarikh').textContent = new Date().toLocaleDateString('ms-MY');
 
             const kep = document.getElementById('edit_keputusan').value;
-            document.getElementById('p_keputusan_line').innerHTML = kep === 'Diluluskan' ? '<strong>Diluluskan</strong>/ Tidak Diluluskan*' : 'Diluluskan/ <strong>Tidak Diluluskan*</strong>';
+            document.getElementById('p_keputusan_line').innerHTML = kep === 'Diluluskan' 
+                ? '<strong>Diluluskan</strong>/ Tidak Diluluskan/ Syor Dilupuskan*' 
+                : kep === 'Tidak Diluluskan'
+                ? 'Diluluskan/ <strong>Tidak Diluluskan</strong>/ Syor Dilupuskan*' 
+                : kep === 'Syor Dilupuskan'
+                ? 'Diluluskan/ Tidak Diluluskan/ <strong>Syor Dilupuskan</strong>*'
+                : 'Diluluskan/ Tidak Diluluskan/ Syor Dilupuskan*';
 
             document.getElementById('p_kep_nama').textContent = ': ' + document.getElementById('edit_keputusan_nama').value;
             document.getElementById('p_kep_jawatan').textContent = ': Ketua Jabatan';
@@ -936,6 +780,151 @@
             window.print();
             document.body.innerHTML = originalContent;
             window.location.reload(); // Refresh to restore JS event listeners
+        };
+        window.printTrendChart = function () {
+            const canvas = document.getElementById('trendChart');
+            const dataUrl = canvas.toDataURL('image/png');
+
+            const yearSelect = document.getElementById('filterYear');
+            const monthSelect = document.getElementById('filterMonth');
+            const yearText = yearSelect.options[yearSelect.selectedIndex].text;
+            const monthText = monthSelect.options[monthSelect.selectedIndex].text;
+
+            const year = parseInt(yearSelect.value) || new Date().getFullYear();
+            const monthVal = monthSelect.value;
+
+            const monthNames = ['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+
+            // Build detail periods
+            let periods = [];
+            if (monthVal === 'all') {
+                for (let i = 0; i < 12; i++) periods.push({ label: monthNames[i], start: i, end: i });
+            } else if (monthVal === 'q1') {
+                periods = [{label:'Januari',start:0,end:0},{label:'Februari',start:1,end:1},{label:'Mac',start:2,end:2}];
+            } else if (monthVal === 'q2') {
+                periods = [{label:'April',start:3,end:3},{label:'Mei',start:4,end:4},{label:'Jun',start:5,end:5}];
+            } else if (monthVal === 'q3') {
+                periods = [{label:'Julai',start:6,end:6},{label:'Ogos',start:7,end:7},{label:'September',start:8,end:8}];
+            } else if (monthVal === 'q4') {
+                periods = [{label:'Oktober',start:9,end:9},{label:'November',start:10,end:10},{label:'Disember',start:11,end:11}];
+            } else {
+                const m = parseInt(monthVal);
+                const daysInMonth = new Date(year, m + 1, 0).getDate();
+                periods = [
+                    { label: 'Minggu 1 (1-7)',   start: m, end: m, dayStart: 1,  dayEnd: 7 },
+                    { label: 'Minggu 2 (8-14)',  start: m, end: m, dayStart: 8,  dayEnd: 14 },
+                    { label: 'Minggu 3 (15-21)', start: m, end: m, dayStart: 15, dayEnd: 21 },
+                    { label: 'Minggu 4 (22-' + daysInMonth + ')', start: m, end: m, dayStart: 22, dayEnd: daysInMonth },
+                ];
+            }
+
+            periods.forEach(p => { p.total = 0; p.resolved = 0; p.rejected = 0; p.pending = 0; p.disposed = 0; });
+            let grandTotal = 0, grandResolved = 0, grandRejected = 0, grandPending = 0, grandDisposed = 0;
+
+            if (typeof globalReports !== 'undefined') {
+                globalReports.forEach(r => {
+                    if (!r.created_at) return;
+                    const date = new Date(r.created_at);
+                    if (date.getFullYear() !== year) return;
+                    const m = date.getMonth();
+                    const d = date.getDate();
+
+                    periods.forEach(p => {
+                        if (m < p.start || m > p.end) return;
+                        if (p.dayStart !== undefined && (d < p.dayStart || d > p.dayEnd)) return;
+                        p.total++;
+                        if (r.keputusan === 'Syor Dilupuskan') p.disposed++;
+                        else if (r.status === 'Resolved') p.resolved++;
+                        else if (r.status === 'Rejected') p.rejected++;
+                        else p.pending++;
+                    });
+                });
+
+                periods.forEach(p => {
+                    grandTotal    += p.total;
+                    grandResolved += p.resolved;
+                    grandRejected += p.rejected;
+                    grandPending  += p.pending;
+                    grandDisposed += p.disposed;
+                });
+            }
+
+            const rowsHtml = periods.map(p => `
+                <tr>
+                    <td style="padding:10px 14px; border-bottom:1px solid #f1f5f9;">${p.label}</td>
+                    <td style="padding:10px 14px; border-bottom:1px solid #f1f5f9; font-weight:700;">${p.total}</td>
+                    <td style="padding:10px 14px; border-bottom:1px solid #f1f5f9; color:#16a34a; font-weight:700;">${p.resolved}</td>
+                    <td style="padding:10px 14px; border-bottom:1px solid #f1f5f9; color:#dc2626; font-weight:700;">${p.rejected}</td>
+                    <td style="padding:10px 14px; border-bottom:1px solid #f1f5f9; color:#475569; font-weight:700;">${p.disposed}</td>
+                </tr>
+            `).join('');
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Cetak Statistik Penerimaan Laporan</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; text-align: center; padding: 40px; color: #1e293b; background: white; margin: 0; }
+                            h2 { margin-bottom: 5px; font-size: 22px; color: #0f172a; }
+                            .subtitle { color: #64748b; margin-bottom: 20px; font-size: 14px; }
+                            img { max-width: 100%; height: auto; border: 1px solid #e2e8f0; border-radius: 8px; }
+                            .stats-container { margin-top: 24px; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+                            .stat-box { padding: 12px 20px; border-radius: 8px; border: 1.5px solid #e2e8f0; text-align: center; min-width: 100px; }
+                            .stat-box h3 { margin: 0 0 4px 0; font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+                            .stat-box .val { font-size: 24px; font-weight: bold; color: #0f172a; }
+                            .stat-box.resolved .val { color: #16a34a; }
+                            .stat-box.rejected .val { color: #dc2626; }
+                            .stat-box.pending .val { color: #92400e; }
+                            .breakdown { margin-top: 28px; text-align: left; }
+                            .breakdown-title { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0; }
+                            table { width: 100%; border-collapse: collapse; font-size: 13px; }
+                            thead tr { background: #f8fafc; }
+                            th { padding: 10px 14px; text-align: left; font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; }
+                            .total-row td { font-weight: 700; background: #f8fafc; border-top: 2px solid #e2e8f0; padding: 10px 14px; }
+                            @media print { body { padding: 10px; } img { border: none; } }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>Statistik Penerimaan Laporan</h2>
+                        <p class="subtitle">Tahun: ${yearText} &nbsp;|&nbsp; Tempoh: ${monthText}</p>
+
+                        <img src="${dataUrl}" />
+
+                        <div class="breakdown">
+                            <p class="breakdown-title">&#128204; Pecahan Terperinci Mengikut Tempoh</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Tempoh</th>
+                                        <th>Jumlah</th>
+                                        <th>Selesai</th>
+                                        <th>Ditolak</th>
+                                        <th>Syor Dilupuskan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rowsHtml}
+                                    <tr class="total-row">
+                                        <td>JUMLAH KESELURUHAN</td>
+                                        <td>${grandTotal}</td>
+                                        <td style="color:#16a34a;">${grandResolved}</td>
+                                        <td style="color:#dc2626;">${grandRejected}</td>
+                                        <td style="color:#475569;">${grandDisposed}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <script>
+                            window.onload = function() {
+                                setTimeout(() => { window.print(); window.close(); }, 500);
+                            };
+                        <\/script>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
         };
     </script>
 </body>

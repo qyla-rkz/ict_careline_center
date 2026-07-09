@@ -246,7 +246,7 @@
             <div class="pa9-row"><div class="pa9-bahagian2-label">5. Tarikh</div><div class="pa9-colon">:</div><div class="pa9-value" id="pr_admin_tarikh"></div></div>
         </div>
         <div class="pa9-section-title">Bahagian III (Keputusan Ketua Jabatan / Bahagian / Seksyen / Unit dari ICT)</div>
-        <div id="pr_keputusan_line" style="font-size: 10pt; margin-bottom: 25px; font-weight: bold;">Diluluskan/ Tidak Diluluskan*</div>
+        <div id="pr_keputusan_line" style="font-size: 10pt; margin-bottom: 25px; font-weight: bold;">Diluluskan/ Tidak Diluluskan/ Syor Dilupuskan*</div>
         <div class="pa9-sign-block">
             <div style="text-align: center; width: 250px;">
                 <div style="border-bottom: 1px solid #000; height: 120px; margin-bottom: 3px;"></div>
@@ -354,8 +354,8 @@
                     <td style="padding: 1.25rem 1rem;">${tarikhSiap}</td>
                     <td style="padding: 1.25rem 1rem;">${isobadge(r)}</td>
                     <td style="padding: 1.25rem 1rem;">
-                        <span class="badge badge-${r.status.toLowerCase().replace(' ', '')}" style="padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">
-                            ${r.status === 'Pending' ? 'Belum Selesai' : r.status === 'In Progress' ? 'Dalam Proses' : r.status === 'Completed' ? 'Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status}
+                        <span class="badge badge-${r.keputusan === 'Syor Dilupuskan' ? 'disposed' : r.status === 'Resolved' ? 'resolved' : r.status === 'Rejected' ? 'rejected' : 'pending'}" style="padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">
+                            ${r.keputusan === 'Syor Dilupuskan' ? 'Syor Dilupuskan' : r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Completed' || r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}
                         </span>
                     </td>
                     <td style="padding: 1.25rem 1rem; text-align: center;">
@@ -516,10 +516,12 @@
 
             const kep = r.keputusan || '';
             document.getElementById('pr_keputusan_line').innerHTML = kep === 'Diluluskan'
-                ? '<u><strong>Diluluskan</strong></u>/ Tidak Diluluskan*'
+                ? '<u><strong>Diluluskan</strong></u>/ Tidak Diluluskan/ Syor Dilupuskan*'
                 : kep === 'Tidak Diluluskan'
-                ? 'Diluluskan/ <u><strong>Tidak Diluluskan</strong></u>*'
-                : 'Diluluskan/ Tidak Diluluskan*';
+                ? 'Diluluskan/ <u><strong>Tidak Diluluskan</strong></u>/ Syor Dilupuskan*'
+                : kep === 'Syor Dilupuskan'
+                ? 'Diluluskan/ Tidak Diluluskan/ <u><strong>Syor Dilupuskan</strong></u>*'
+                : 'Diluluskan/ Tidak Diluluskan/ Syor Dilupuskan*';
 
             document.getElementById('pr_kep_nama').textContent = r.keputusan_nama || '';
             document.getElementById('pr_kep_jawatan').textContent = r.keputusan_nama || '';

@@ -157,6 +157,7 @@
                 <a href="inventory.html" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.html" class="nav-link">👥 Aset Staf</a>
                 <a href="history_reports.html" class="nav-link">📜 Log Sejarah</a>
+                <a href="print_settings.html" class="nav-link">🖨️ Tetapan Cetakan</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -188,6 +189,7 @@
                             <option value="all">Semua Status</option>
                             <option value="Resolved">Selesai</option>
                             <option value="Rejected">Ditolak</option>
+                            <option value="Syor Dilupuskan">Syor Dilupuskan</option>
                         </select>
                     </div>
                 </div>
@@ -301,6 +303,7 @@
                                 <select name="keputusan" id="v_keputusan" class="form-control">
                                     <option value="Diluluskan">Diluluskan</option>
                                     <option value="Tidak Diluluskan">Tidak Diluluskan</option>
+                                    <option value="Syor Dilupuskan">Syor Dilupuskan</option>
                                 </select>
                             </div>
                             <div class="form-group"><label>Nama Ketua</label><input type="text" name="keputusan_nama"
@@ -325,6 +328,7 @@
             </form>
         </div>
     </div>
+
 
     <div id="printableArea" style="display: none; padding: 10px;">
         <div class="pa9-title">KEW.PA-9</div>
@@ -361,12 +365,7 @@
                 <div class="pa9-row">
                     <div class="pa9-label">6. Nama Dan Jawatan</div>
                     <div class="pa9-colon">:</div>
-                    <div class="pa9-value" id="pr_nama_jawatan"></div>
-                </div>
-                <div class="pa9-row">
-                    <div class="pa9-label"></div>
-                    <div class="pa9-colon"></div>
-                    <div class="pa9-value">&nbsp;</div>
+                    <div style="flex:1; display:flex; flex-direction:column;" id="pr_nama_jawatan"></div>
                 </div>
                 <div class="pa9-row">
                     <div class="pa9-label">7. Tarikh</div>
@@ -380,7 +379,7 @@
                     atas telah selesai dibaiki / diselenggara.</div>
                 <div style="margin-top: auto; text-align: center;">
                     <div style="border-bottom: 1px solid #000; height: 25px; margin-bottom: 2px;"></div>
-                    <div style="font-size: 8pt;">(Tandatangan & Cop)</div>
+                    <div style="font-size: 8pt;">(Tandatangan &amp; Cop)</div>
                     <div style="font-size: 8pt; margin-top: 5px; text-align: left;">Tarikh:</div>
                 </div>
             </div>
@@ -388,7 +387,7 @@
 
         <div class="pa9-section-title">Bahagian II (Untuk diisi oleh Pegawai Aset / Pegawai Teknikal)</div>
         <div style="margin-bottom: 8px;">
-            <div class="pa9-row">
+            <div class="pa9-row" style="align-items: flex-start;">
                 <div class="pa9-bahagian2-label">1. Jumlah Kos Penyelenggaraan<br>&nbsp;&nbsp;&nbsp;Terdahulu</div>
                 <div class="pa9-colon">:</div>
                 <div class="pa9-value" id="pr_kos_dahulu"></div>
@@ -423,8 +422,7 @@
         </div>
 
         <div class="pa9-section-title">Bahagian III (Keputusan Ketua Jabatan / Bahagian / Seksyen / Unit dari ICT)</div>
-        <div id="pr_keputusan_line" style="font-size: 10pt; margin-bottom: 25px; font-weight: bold;">Diluluskan/ Tidak
-            Diluluskan*</div>
+        <div id="pr_keputusan_line" style="font-size: 10pt; margin-bottom: 25px; font-weight: bold;">Diluluskan/ Tidak Diluluskan/ Syor Dilupuskan*</div>
 
         <div class="pa9-sign-block">
             <div style="text-align: center; width: 250px;">
@@ -447,6 +445,7 @@
 
         <div class="pa9-nota">Nota: * Potong mana yang berkenaan</div>
     </div>
+
 
     <script>
         async function handleLogout() {
@@ -525,7 +524,7 @@
             const pageItems = filteredData.slice(start, end);
 
             tbody.innerHTML = pageItems.map(r => {
-                const badgeClass = r.status === 'Resolved' ? 'badge-resolved' : r.status === 'Rejected' ? 'badge-rejected' : 'badge-pending';
+                const badgeClass = r.keputusan === 'Syor Dilupuskan' ? 'badge-disposed' : r.status === 'Resolved' ? 'badge-resolved' : r.status === 'Rejected' ? 'badge-rejected' : 'badge-pending';
                 const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
                 const tarikhSiap = (isCompleted && r.admin_tarikh)
                     ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -545,7 +544,7 @@
                     <td style="padding: 1rem; font-size: 0.9rem; color: var(--text-muted); white-space: nowrap;">${new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${tarikhSiap}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${isobadge(r)}</td>
-                    <td style="padding: 1rem; text-align: center; white-space: nowrap;"><span class="badge ${badgeClass}" style="white-space: nowrap;">${r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
+                    <td style="padding: 1rem; text-align: center; white-space: nowrap;"><span class="badge ${badgeClass}" style="white-space: nowrap;">${r.keputusan === 'Syor Dilupuskan' ? 'Syor Dilupuskan' : r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
                     <td style="padding: 1rem; text-align: center; white-space: nowrap;">
                         <button onclick='openReport(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📋 Urus</button>
                     </td>
@@ -583,7 +582,9 @@
         function filterReports() {
             const s = document.getElementById('statusFilter').value;
             filteredData = allReports.filter(r => {
-                return s === 'all' || r.status === s;
+                if (s === 'all') return true;
+                if (s === 'Syor Dilupuskan') return r.keputusan === 'Syor Dilupuskan';
+                return r.status === s && r.keputusan !== 'Syor Dilupuskan';
             });
             currentPage = 1;
             renderReports();
@@ -609,7 +610,8 @@
             document.getElementById('v_kep_nama').value = r.keputusan_nama || '';
             document.getElementById('v_kep_tarikh').value = r.keputusan_tarikh || '';
 
-            const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
+            const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected' || r.keputusan === 'Syor Dilupuskan';
+            const saveBtn = document.querySelector('#processForm button[type="submit"]');
             if (isCompleted) {
                 document.getElementById('tarikh_siap_group').style.display = 'block';
                 document.getElementById('v_admin_tarikh').value = r.admin_tarikh
@@ -631,9 +633,19 @@
                 } else {
                     isoEl.innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem;">—</span>';
                 }
+                
+                if (saveBtn) saveBtn.style.display = 'none';
+                document.querySelectorAll('#processForm input, #processForm textarea, #processForm select').forEach(el => {
+                    if(el.id !== 'p_id') el.disabled = true;
+                });
             } else {
                 document.getElementById('tarikh_siap_group').style.display = 'none';
                 document.getElementById('iso_badge_group').style.display = 'none';
+                
+                if (saveBtn) saveBtn.style.display = 'block';
+                document.querySelectorAll('#processForm input, #processForm textarea, #processForm select').forEach(el => {
+                    if(el.id !== 'p_id') el.disabled = false;
+                });
             }
 
             document.getElementById('viewModal').style.display = 'flex';
@@ -659,38 +671,68 @@
             } catch (err) { console.error(err); }
         });
 
-        function printKEWPA9() {
-            document.getElementById('pr_jenis').textContent = document.getElementById('v_jenis').value;
-            document.getElementById('pr_siri').textContent = document.getElementById('v_siri').value;
-            document.getElementById('pr_pengguna').textContent = document.getElementById('v_pengguna').value;
-            document.getElementById('pr_tarikh_rosak').textContent = document.getElementById('v_tarikh_rosak').value;
-            document.getElementById('pr_perihal').textContent = document.getElementById('v_perihal').value;
-            document.getElementById('pr_nama_jawatan').textContent = document.getElementById('v_nama_jawatan').value;
-            document.getElementById('pr_tarikh_aduan').textContent = new Date(document.getElementById('p_created_at').value).toLocaleDateString('ms-MY');
+        async function printKEWPA9() {
+            try {
+                const response = await fetch('../api/admin_get_print_template.php?name=kewpa9');
+                const result = await response.json();
 
-            const kosDahulu = parseFloat(document.getElementById('v_kos_dahulu').value) || 0;
-            const anggaranKos = parseFloat(document.getElementById('v_anggaran_kos').value) || 0;
-            document.getElementById('pr_kos_dahulu').textContent = 'RM ' + kosDahulu.toFixed(2);
-            document.getElementById('pr_anggaran_kos').textContent = 'RM ' + anggaranKos.toFixed(2);
-            document.getElementById('pr_syor').textContent = document.getElementById('v_syor').value || '-';
+                if (result.status === 'success') {
+                    let html = result.data.template_html;
 
-            const adminNama = document.getElementById('v_admin_nama').value;
-            const adminJawatan = document.getElementById('v_admin_jawatan').value;
-            document.getElementById('pr_admin_nama').textContent = adminJawatan ? adminNama + ' / ' + adminJawatan : adminNama;
-            document.getElementById('pr_admin_tarikh').textContent = new Date().toLocaleDateString('ms-MY');
+                    const njParts = document.getElementById('v_nama_jawatan').value.split(' / ');
+                    const prNama = njParts[0] || '';
+                    const prJawatan = njParts[1] || '';
 
-            const kep = document.getElementById('v_keputusan').value;
-            document.getElementById('pr_keputusan_line').innerHTML = kep === 'Diluluskan'
-                ? '<u><strong>Diluluskan</strong></u>/ Tidak Diluluskan*'
-                : 'Diluluskan/ <u><strong>Tidak Diluluskan</strong></u>*';
+                    const kosDahulu = parseFloat(document.getElementById('v_kos_dahulu').value) || 0;
+                    const anggaranKos = parseFloat(document.getElementById('v_anggaran_kos').value) || 0;
+                    const adminNama = document.getElementById('v_admin_nama').value;
+                    const adminJawatan = document.getElementById('v_admin_jawatan').value;
+                    const kep = document.getElementById('v_keputusan').value;
+                    const kepLine = kep === 'Diluluskan'
+                        ? '<u><strong>Diluluskan</strong></u>/ Tidak Diluluskan/ Syor Dilupuskan*'
+                        : kep === 'Tidak Diluluskan'
+                        ? 'Diluluskan/ <u><strong>Tidak Diluluskan</strong></u>/ Syor Dilupuskan*'
+                        : kep === 'Syor Dilupuskan'
+                        ? 'Diluluskan/ Tidak Diluluskan/ <u><strong>Syor Dilupuskan</strong></u>*'
+                        : 'Diluluskan/ Tidak Diluluskan/ Syor Dilupuskan*';
 
-            document.getElementById('pr_kep_nama').textContent = document.getElementById('v_kep_nama').value;
-            document.getElementById('pr_kep_jawatan').textContent = document.getElementById('v_kep_nama').value;
-            document.getElementById('pr_kep_tarikh').textContent = document.getElementById('v_kep_tarikh').value;
+                    html = html.replace(/{{jenis_aset}}/g, document.getElementById('v_jenis').value || '');
+                    html = html.replace(/{{no_siri}}/g, document.getElementById('v_siri').value || '');
+                    html = html.replace(/{{pengguna_terakhir}}/g, document.getElementById('v_pengguna').value || '');
+                    html = html.replace(/{{tarikh_kerosakan}}/g, document.getElementById('v_tarikh_rosak').value || '');
+                    html = html.replace(/{{perihal_kerosakan}}/g, document.getElementById('v_perihal').value || '');
+                    html = html.replace(/{{pengadu_nama}}/g, prNama);
+                    html = html.replace(/{{pengadu_jawatan}}/g, prJawatan);
+                    html = html.replace(/{{tarikh_aduan}}/g, new Date(document.getElementById('p_created_at').value).toLocaleDateString('ms-MY'));
+                    html = html.replace(/{{kos_dahulu}}/g, 'RM ' + kosDahulu.toFixed(2));
+                    html = html.replace(/{{anggaran_kos}}/g, 'RM ' + anggaranKos.toFixed(2));
+                    html = html.replace(/{{syor_ulasan}}/g, document.getElementById('v_syor').value || '-');
+                    html = html.replace(/{{admin_nama}}/g, adminJawatan ? adminNama + ' / ' + adminJawatan : adminNama);
+                    html = html.replace(/{{admin_tarikh}}/g, new Date().toLocaleDateString('ms-MY'));
+                    html = html.replace(/{{keputusan_line}}/g, kepLine);
+                    html = html.replace(/{{kep_nama}}/g, document.getElementById('v_kep_nama').value || '');
+                    html = html.replace(/{{kep_jawatan}}/g, document.getElementById('v_kep_nama').value || '');
+                    html = html.replace(/{{kep_tarikh}}/g, document.getElementById('v_kep_tarikh').value || '');
 
-            document.getElementById('printableArea').style.display = 'block';
-            window.print();
-            document.getElementById('printableArea').style.display = 'none';
+                    const printWindow = window.open('', '_blank');
+                    printWindow.document.write('<!DOCTYPE html><html><head><title>Cetak KEW.PA-9</title>');
+                    printWindow.document.write('<style>@page { size: A4 portrait; margin: 15mm 18mm; } body { margin: 0; padding: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }</style>');
+                    printWindow.document.write('</head><body>');
+                    printWindow.document.write(html);
+                    printWindow.document.write('</body></html>');
+                    printWindow.document.close();
+
+                    setTimeout(() => {
+                        printWindow.print();
+                        printWindow.close();
+                    }, 500);
+                } else {
+                    alert('Gagal memuat turun format cetakan: ' + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Ralat teknikal semasa mencetak.');
+            }
         }
     </script>
 </body>
