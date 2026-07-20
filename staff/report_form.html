@@ -111,7 +111,7 @@
                             <label>Lampiran Gambar (Optional)</label>
                             <div style="border: 2px dashed var(--border); padding: 1.5rem; border-radius: 12px; text-align: center; background: #fafafa;">
                                 <input type="file" name="images[]" multiple accept="image/*" class="form-control" style="margin-bottom: 0.5rem;">
-                                <p class="text-muted" style="font-size: 0.8rem;">Maksimum 5 gambar. Pilih beberapa fail untuk dimuat naik.</p>
+                                <p class="text-muted" style="font-size: 0.8rem;">Maksimum 3 gambar. Format: JPEG, JPG, PNG, WEBP.</p>
                             </div>
                         </div>
 
@@ -164,8 +164,8 @@
             const imageInput = e.target.querySelector('input[type="file"]');
             
             // Validate image count
-            if (imageInput.files.length > 5) {
-                alert('Anda hanya boleh memuat naik maksimum 5 gambar.');
+            if (imageInput.files.length > 3) {
+                alert('Anda hanya boleh memuat naik maksimum 3 gambar.');
                 return;
             }
 

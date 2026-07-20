@@ -97,9 +97,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $deleteStmt->execute([$asset_id]);
             }
 
-            // Limit to 5
+            // Limit to 3
             $image_count = count($_FILES['images']['name']);
-            if ($image_count > 5) $image_count = 5;
+            if ($image_count > 3) $image_count = 3;
 
             for ($i = 0; $i < $image_count; $i++) {
                 if ($_FILES['images']['error'][$i] === UPLOAD_ERR_OK) {

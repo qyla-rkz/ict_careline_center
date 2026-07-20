@@ -46,7 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upload_dir = '../uploads/';
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
+            $image_count = 0;
             foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
+                if ($image_count >= 3) break;
                 if ($_FILES['images']['error'][$key] === UPLOAD_ERR_OK) {
                     $file_ext = pathinfo($_FILES['images']['name'][$key], PATHINFO_EXTENSION);
                     $file_name = "report_" . $report_id . "_" . $key . "_" . time() . "." . $file_ext;
@@ -55,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (move_uploaded_file($tmp_name, $target_file)) {
                         $img_stmt = $pdo->prepare("INSERT INTO report_images (report_id, image_path) VALUES (?, ?)");
                         $img_stmt->execute([$report_id, 'uploads/' . $file_name]);
+                        $image_count++;
                     }
                 }
             }
