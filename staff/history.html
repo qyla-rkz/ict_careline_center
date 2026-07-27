@@ -101,10 +101,12 @@
                             <option value="11">Disember</option>
                         </select>
                     </div>
-                    <div style="margin-left: auto;">
-                        <button onclick="resetFilters()" class="btn btn-secondary" style="padding: 0.6rem 1.25rem; font-size: 0.85rem; border-radius: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid var(--border);">
-                            🔄 Set Semula
-                        </button>
+                    <div style="margin-left: auto; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.75rem; font-weight: 600; background: #fff; padding: 0.75rem 1.25rem; border-radius: 12px; border: 1px solid var(--border);">
+                        <span style="color: var(--text-muted); border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; margin-bottom: 0.25rem;">Petunjuk Proses/Keputusan:</span>
+                        <span style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span> Baru / Dalam Proses</span>
+                        <span style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:50%;background:#10b981;"></span> Selesai / Diluluskan</span>
+                        <span style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;"></span> Ditolak / Tidak Diluluskan</span>
+                        <span style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:50%;background:#64748b;"></span> Syor Dilupuskan</span>
                     </div>
                 </div>
 
@@ -118,7 +120,8 @@
                                     <th style="padding: 1.25rem 1rem;">Tarikh Dihantar</th>
                                     <th style="padding: 1.25rem 1rem;">Tarikh Siap</th>
                                     <th style="padding: 1.25rem 1rem;">Pematuhan ISO</th>
-                                    <th style="padding: 1.25rem 1rem;">Status</th>
+                                    <th style="padding: 1.25rem 1rem;">Proses</th>
+                                    <th style="padding: 1.25rem 1rem;">Keputusan</th>
                                     <th style="padding: 1.25rem 1rem; text-align:center;">Tindakan</th>
                                 </tr>
                             </thead>
@@ -181,6 +184,14 @@
                     <div class="form-group"><label>Tarikh Siap (Admin ICT)</label><input type="text" id="d_admin_tarikh" class="form-control" readonly></div>
                 </div>
 
+                <!-- Proses Semasa (Web Only) -->
+                <div style="background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(168,85,247,0.05)); border: 1px solid rgba(99,102,241,0.2); border-radius: 12px; padding: 1.25rem;">
+                    <h4 style="color: #6366f1; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                        🔄 Proses Semasa <span style="font-size: 0.7rem; background: #6366f1; color: white; padding: 0.15rem 0.5rem; border-radius: 20px; font-weight: 600;">WEB SAHAJA</span>
+                    </h4>
+                    <div id="d_proses_semasa" style="font-size: 0.95rem; font-weight: 600; color: var(--text-main);">—</div>
+                </div>
+
                 <!-- Bahagian III -->
                 <div>
                     <h4 style="color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">
@@ -222,7 +233,14 @@
                 <div class="pa9-row"><div class="pa9-label">3. Pengguna Terakhir</div><div class="pa9-colon">:</div><div class="pa9-value" id="pr_pengguna"></div></div>
                 <div class="pa9-row"><div class="pa9-label">4. Tarikh Kerosakan</div><div class="pa9-colon">:</div><div class="pa9-value" id="pr_tarikh_rosak"></div></div>
                 <div class="pa9-row"><div class="pa9-label">5. Perihal Kerosakan</div><div class="pa9-colon">:</div><div class="pa9-value" id="pr_perihal"></div></div>
-                <div class="pa9-row"><div class="pa9-label">6. Nama Dan Jawatan</div><div class="pa9-colon">:</div><div class="pa9-value" id="pr_nama_jawatan"></div></div>
+                <div class="pa9-row">
+                    <div class="pa9-label">6. Nama Dan Jawatan</div>
+                    <div class="pa9-colon">:</div>
+                    <div style="flex:1; display:flex; flex-direction:column;">
+                        <div class="pa9-value" id="pr_nama" style="min-height: 18px; margin-bottom: 5px;"></div>
+                        <div class="pa9-value" id="pr_jawatan" style="min-height: 18px;"></div>
+                    </div>
+                </div>
                 <div class="pa9-row"><div class="pa9-label">7. Tarikh</div><div class="pa9-colon">:</div><div class="pa9-value" id="pr_tarikh_aduan"></div></div>
             </div>
             <div class="pa9-box">
@@ -245,8 +263,8 @@
             <div class="pa9-row"><div class="pa9-bahagian2-label">4. Nama Dan Jawatan</div><div class="pa9-colon">:</div><div class="pa9-value" id="pr_admin_nama"></div></div>
             <div class="pa9-row"><div class="pa9-bahagian2-label">5. Tarikh</div><div class="pa9-colon">:</div><div class="pa9-value" id="pr_admin_tarikh"></div></div>
         </div>
-        <div class="pa9-section-title">Bahagian III (Keputusan Ketua Jabatan / Bahagian / Seksyen / Unit dari ICT)</div>
-        <div id="pr_keputusan_line" style="font-size: 10pt; margin-bottom: 25px; font-weight: bold;">Diluluskan/ Tidak Diluluskan/ Syor Dilupuskan*</div>
+        <div class="pa9-section-title">Bahagian III (Keputusan Ketua Jabatan / Bahagian / Seksyen / Unit)</div>
+        <div id="pr_keputusan_line" style="font-size: 10pt; margin-bottom: 25px;">Diluluskan/ Tidak Diluluskan/ Syor Dilupuskan*</div>
         <div class="pa9-sign-block">
             <div style="text-align: center; width: 250px;">
                 <div style="border-bottom: 1px solid #000; height: 120px; margin-bottom: 3px;"></div>
@@ -354,15 +372,21 @@
                     <td style="padding: 1.25rem 1rem;">${tarikhSiap}</td>
                     <td style="padding: 1.25rem 1rem;">${isobadge(r)}</td>
                     <td style="padding: 1.25rem 1rem;">
-                        <span class="badge badge-${r.keputusan === 'Syor Dilupuskan' ? 'disposed' : r.status === 'Resolved' ? 'resolved' : r.status === 'Rejected' ? 'rejected' : 'pending'}" style="padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">
-                            ${r.keputusan === 'Syor Dilupuskan' ? 'Syor Dilupuskan' : r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Completed' || r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}
+                        ${r.proses_semasa
+                            ? `<span style="display:inline-flex;align-items:center;gap:0.35rem;padding:0.35rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:700;background:#f1f5f9;color:#475569;">${r.proses_semasa}</span>`
+                            : `<span style="color:var(--text-muted);font-size:0.82rem;">—</span>`
+                        }
+                    </td>
+                    <td style="padding: 1.25rem 1rem;">
+                        <span style="font-weight: 700; font-size: 0.85rem; color: ${r.keputusan === 'Diluluskan' ? '#15803d' : r.keputusan === 'Tidak Diluluskan' ? '#b91c1c' : r.keputusan === 'Syor Dilupuskan' ? '#475569' : 'var(--text-muted)'};">
+                            ${r.keputusan || 'Menunggu'}
                         </span>
                     </td>
                     <td style="padding: 1.25rem 1rem; text-align: center;">
                         <button onclick='viewDetails(${JSON.stringify(r).replace(/'/g, "&apos;")})' class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.75rem; border-radius: 8px;">🔍 Lihat</button>
                     </td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="7" style="padding: 3rem; text-align: center; color: var(--text-muted);">Tiada laporan dijumpai.</td></tr>';
+            }).join('') || '<tr><td colspan="8" style="padding: 3rem; text-align: center; color: var(--text-muted);">Tiada laporan dijumpai.</td></tr>';
 
             // Pagination info
             const from = totalItems === 0 ? 0 : start + 1;
@@ -459,6 +483,22 @@
             document.getElementById('d_kep_nama').value = r.keputusan_nama || '-';
             document.getElementById('d_kep_tarikh').value = r.keputusan_tarikh ? new Date(r.keputusan_tarikh).toLocaleDateString('ms-MY') : '-';
 
+            // Proses Semasa
+            const prosesEl = document.getElementById('d_proses_semasa');
+            if (r.proses_semasa) {
+                const prosesColors = {
+                    'Diterima': { bg: '#e0f2fe', color: '#0369a1' },
+                    'Sedang Dibaikpulih': { bg: '#fef9c3', color: '#854d0e' },
+                    'Tunggu Panel / Alat Ganti': { bg: '#ffedd5', color: '#9a3412' },
+                    'Dihantar ke Panel Lantikan': { bg: '#ede9fe', color: '#6d28d9' },
+                    'Siap - Sedia Diambil': { bg: '#dcfce7', color: '#166534' },
+                };
+                const pc = prosesColors[r.proses_semasa] || { bg: '#f1f5f9', color: '#475569' };
+                prosesEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:20px;font-size:0.85rem;font-weight:700;background:${pc.bg};color:${pc.color};">${r.proses_semasa}</span>`;
+            } else {
+                prosesEl.innerHTML = '<span style="color:var(--text-muted);font-size:0.9rem;">⏳ Menunggu tindakan admin...</span>';
+            }
+
             // ISO Badge
             const modalDays = (isCompleted && r.admin_tarikh) ? calcIsoDays(r.created_at, r.admin_tarikh) : null;
             const isoEl = document.getElementById('d_iso_badge');
@@ -500,7 +540,8 @@
             document.getElementById('pr_pengguna').textContent = r.pengguna_terakhir || '';
             document.getElementById('pr_tarikh_rosak').textContent = r.tarikh_kerosakan ? new Date(r.tarikh_kerosakan).toLocaleDateString('ms-MY') : '';
             document.getElementById('pr_perihal').textContent = r.perihal_kerosakan || '';
-            document.getElementById('pr_nama_jawatan').textContent = (r.nama_pelapor || '') + (r.jawatan_pelapor ? ' / ' + r.jawatan_pelapor : '');
+            document.getElementById('pr_nama').textContent = r.nama_pelapor || '';
+            document.getElementById('pr_jawatan').textContent = r.jawatan_pelapor || '';
             document.getElementById('pr_tarikh_aduan').textContent = r.created_at ? new Date(r.created_at).toLocaleDateString('ms-MY') : '';
 
             const kos = parseFloat(r.kos_penyelenggaraan_dahulu) || 0;

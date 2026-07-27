@@ -28,6 +28,13 @@
 
     if (inSubdir) {
         // ── Portal page: hide stale content and check server session ──
+        if (sessionStorage.getItem('pending_inactivity_logout') === 'true') {
+            sessionStorage.clear();
+            fetch('../api/logout.php', { cache: 'no-store' }).catch(() => {});
+            window.location.replace('../login.html');
+            return;
+        }
+
         hidePortalUntilAuth();
         const apiPath = '../api/check_session.php';
 
@@ -159,6 +166,8 @@ function resetInactivityTimer() {
 }
 
 function showInactivityWarning() {
+    sessionStorage.setItem('pending_inactivity_logout', 'true');
+    
     // If modal already exists, don't recreate
     if (document.getElementById('inactivity-modal')) {
         document.getElementById('inactivity-modal').style.display = 'flex';
@@ -188,6 +197,7 @@ function showInactivityWarning() {
     
     // Wire up keep alive button
     document.getElementById('inactivity-keep-alive').addEventListener('click', () => {
+        sessionStorage.removeItem('pending_inactivity_logout');
         hideInactivityModal();
         startInactivityTimer();
     });

@@ -125,9 +125,28 @@
         </main>
     </div>
 
+
+    <!-- ===== PASSWORD REMINDER MODAL ===== -->
+    <div id="pwReminderModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:24px; padding:2.5rem; max-width:440px; width:90%; box-shadow:0 25px 60px rgba(0,0,0,0.15); animation:modalSlide 0.4s cubic-bezier(0.34,1.56,0.64,1); text-align:center; position:relative;">
+            <div style="width:64px; height:64px; background:linear-gradient(135deg,#fee2e2,#fecaca); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 1.25rem;">🔑</div>
+            <h3 style="font-size:1.3rem; color:#0f172a; margin-bottom:0.5rem;">Peringatan Kata Laluan</h3>
+            <p style="color:#64748b; font-size:0.9rem; line-height:1.6; margin-bottom:0.5rem;">
+                Kata laluan anda telah melebihi <strong>90 hari</strong> dan perlu dikemas kini.
+            </p>
+            <p id="pwReminderDays" style="color:#dc2626; font-weight:700; font-size:0.95rem; margin-bottom:1.75rem;"></p>
+            <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+                <a href="profile.html" style="background:linear-gradient(135deg,#dc2626,#2563eb); color:white; font-weight:700; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none; font-size:0.9rem; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🔒 Tukar Kata Laluan Sekarang</a>
+                <button onclick="document.getElementById('pwReminderModal').style.display='none'" style="background:#f1f5f9; color:#475569; font-weight:600; padding:0.75rem 1.5rem; border-radius:12px; border:none; cursor:pointer; font-size:0.9rem;">Abaikan Buat Masa Ini</button>
+            </div>
+            <p style="color:#94a3b8; font-size:0.75rem; margin-top:1.25rem;">Peringatan ini akan terus muncul sehingga kata laluan anda dikemas kini.</p>
+        </div>
+    </div>
+    <!-- ===== END PASSWORD REMINDER MODAL ===== -->
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const userStr = sessionStorage.getItem('user');
             if (!userStr) {
                 window.location.replace('../login.html');
@@ -147,10 +166,34 @@
                 document.getElementById('sidebarSuperadminName').textContent = user.full_name;
             }
 
+            // Fetch profile to check password age
+            try {
+                const profileRes = await fetch('../api/admin_get_profile.php');
+                const profile = await profileRes.json();
+                if (profile.status === 'success') {
+                    sessionStorage.setItem('user', JSON.stringify(profile.data));
+                    document.getElementById('sidebarSuperadminName').textContent = profile.data.full_name || user.full_name || 'Super Admin';
+                    checkPasswordAge(profile.data.updated_at);
+                }
+            } catch (err) { console.error('Superadmin profile fetch error:', err); }
+
             loadDeanName();
             loadProfileSummary();
             fetchStats();
         });
+
+        function checkPasswordAge(updatedAt) {
+            if (!updatedAt) return;
+            const lastChanged = new Date(updatedAt);
+            const now = new Date();
+            const diffDays = Math.floor((now - lastChanged) / (1000 * 60 * 60 * 24));
+            if (diffDays >= 90) {
+                const modal = document.getElementById('pwReminderModal');
+                const daysEl = document.getElementById('pwReminderDays');
+                daysEl.textContent = `Kata laluan anda telah ${diffDays} hari tidak ditukar.`;
+                modal.style.display = 'flex';
+            }
+        }
 
         function loadProfileSummary() {
             const user = JSON.parse(sessionStorage.getItem('user') || '{}');

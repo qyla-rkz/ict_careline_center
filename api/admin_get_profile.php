@@ -22,7 +22,8 @@ try {
             'department'      => $user['department'] ?? '',
             'jawatan'         => $user['jawatan'] ?? '',
             'role'            => $user['role'] ?? 'Admin',
-            'profile_picture' => $user['profile_picture'] ?? ''
+            'profile_picture' => $user['profile_picture'] ?? '',
+            'updated_at'      => $user['updated_at'] ?? ''
         ]);
     } else {
         jsonResponse('error', 'User record not found in database');

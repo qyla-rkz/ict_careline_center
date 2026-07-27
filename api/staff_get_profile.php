@@ -19,15 +19,16 @@ try {
     if ($user) {
         // Map fields safely with defaults to avoid JS "undefined"
         jsonResponse('success', 'Profile fetched', [
-            'id'         => $user['id'] ?? 0,
-            'username'   => $user['staff_id'] ?? $user['username'] ?? '',
-            'full_name'  => $user['name'] ?? $user['full_name'] ?? '',
-            'phone'      => $user['phone'] ?? '',
-            'office'     => $user['office'] ?? '',
-            'department' => $user['department'] ?? '',
-            'jawatan'    => $user['jawatan'] ?? '',
-            'role'       => $user['role'] ?? 'Staff',
-            'profile_picture' => $user['profile_picture'] ?? ''
+            'id'              => $user['id'] ?? 0,
+            'username'        => $user['staff_id'] ?? $user['username'] ?? '',
+            'full_name'       => $user['name'] ?? $user['full_name'] ?? '',
+            'phone'           => $user['phone'] ?? '',
+            'office'          => $user['office'] ?? '',
+            'department'      => $user['department'] ?? '',
+            'jawatan'         => $user['jawatan'] ?? '',
+            'role'            => $user['role'] ?? 'Staff',
+            'profile_picture' => $user['profile_picture'] ?? '',
+            'updated_at'      => $user['updated_at'] ?? ''
         ]);
     } else {
         jsonResponse('error', 'User record not found in database');

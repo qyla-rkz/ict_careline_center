@@ -7,6 +7,20 @@
     <title>Papan Pemuka Staf - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=15">
     <script src="../assets/js/global.js?v=10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({ startOnLoad: true });</script>
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        /* Fix double scrollbar */
+        .mermaid svg {
+            width: 100% !important;
+            max-width: 550px !important;
+            height: auto !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -128,190 +142,72 @@
                     </div>
                 </div>
 
+                <!-- Real-Time Status Tracking -->
+                <div class="card" style="margin-top: 2.5rem; border-left: 4px solid var(--primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="margin: 0; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+                            📡 Status Semasa Laporan KEW.PA-9
+                        </h3>
+                        <a href="history.html" style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600;">Lihat Semua &rarr;</a>
+                    </div>
+                    
+                    <div id="liveTrackingContainer" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <p class="text-muted" style="text-align: center; padding: 1rem;">Memuatkan status laporan...</p>
+                    </div>
+                </div>
+
+
                 <div class="card" style="margin-top: 2.5rem;">
                     <h3 style="margin-bottom: 1.5rem; color: var(--text-main);">Carta Alir Proses KEW.PA-9</h3>
+                    <div style="overflow: auto; text-align: center; width: 100%;">
+                        <pre class="mermaid">
+flowchart TD
+    %% Define styles
+    classDef default fill:#ffffff,stroke:#3b82f6,stroke-width:2px,color:#1e40af,font-family:sans-serif,font-weight:600;
+    classDef diamond fill:#ffffff,stroke:#3b82f6,stroke-width:2px,color:#1e40af,font-family:sans-serif,font-weight:600;
 
-                    <div
-                        style="width: 100%; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; font-family: sans-serif; overflow: hidden; padding: 20px 0;">
-                        <svg viewBox="-20 -20 1200 700" width="100%" height="100%"
-                            style="display: block; max-height: 80vh;" stroke="#3b82f6" stroke-width="2" fill="none">
-                            <style>
-                                .fnode {
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    text-align: center;
-                                    font-size: 14px;
-                                    font-weight: 700;
-                                    color: #1e40af;
-                                    background: #ffffff;
-                                    border: 2px solid #3b82f6;
-                                    box-sizing: border-box;
-                                    padding: 10px;
-                                    width: 100%;
-                                    height: 100%;
-                                    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
-                                    line-height: 1.3;
-                                }
+    %% Nodes
+    A([Mula])
+    B[Isi Maklumat Laporan<br />Kerosakan Aset]
+    C[Hantar Laporan<br />Kerosakan Aset]
+    D[Semak Laporan<br />Kerosakan Aset]
+    E[Ambil Aset yang<br />dilaporkan rosak]
+    F[Mengenalpasti masalah<br />aset yang dilaporkan rosak]
+    G{Adakah aset tersebut<br />boleh dibaikpulih?}
+    H[Hantar aset tersebut<br />ke panel lantikan]
+    I[Mencari dan mengganti<br />alat komponen yang rosak]
+    J[Penyelenggaran dan<br />pembaikian selesai]
+    K{Adakah aset telah<br />dibaikpulihkan?}
+    L[Melupuskan aset yang<br />tidak dapat dibaiki]
+    M[Kembalikan aset<br />yang dibaiki]
+    N[Kemaskini keputusan<br />laporan kerosakan aset]
+    O[Menjana laporan<br />kerosakan aset]
+    P[Tandatangan laporan<br />pengesahan kerosakan aset]
+    Q([Tamat])
 
-                                .frect {
-                                    border-radius: 6px;
-                                }
+    %% Edges
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G -- No --> H
+    G -- Yes --> I
+    H --> J
+    I --> J
+    J --> K
+    K -- No --> L
+    K -- Yes --> M
+    L --> N
+    M --> N
+    N --> O
+    O --> P
+    P --> Q
 
-                                .foval {
-                                    border-radius: 50px;
-                                }
-
-                                .fdiamond-container {
-                                    position: relative;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    width: 100%;
-                                    height: 100%;
-                                }
-
-                                .fdiamond-bg {
-                                    position: absolute;
-                                    width: 75px;
-                                    height: 75px;
-                                    border: 2px solid #3b82f6;
-                                    transform: rotate(45deg);
-                                    background: #ffffff;
-                                    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
-                                }
-
-                                .fdiamond-text {
-                                    position: relative;
-                                    z-index: 3;
-                                    font-size: 12px;
-                                    font-weight: 700;
-                                    color: #1e40af;
-                                    text-align: center;
-                                    width: 100px;
-                                    line-height: 1.2;
-                                }
-                            </style>
-                            <defs>
-                                <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
-                                    <polygon points="0 0, 10 5, 0 10" fill="#3b82f6" />
-                                </marker>
-                            </defs>
-
-                            <!-- Lines -->
-                            <line x1="160" y1="50" x2="200" y2="50" marker-end="url(#arrow)" />
-                            <line x1="360" y1="50" x2="400" y2="50" marker-end="url(#arrow)" />
-                            <line x1="560" y1="50" x2="600" y2="50" marker-end="url(#arrow)" />
-                            <line x1="760" y1="50" x2="800" y2="50" marker-end="url(#arrow)" />
-                            <line x1="960" y1="50" x2="1000" y2="50" marker-end="url(#arrow)" />
-
-                            <line x1="1080" y1="100" x2="1080" y2="135" marker-end="url(#arrow)" />
-
-                            <line x1="1025" y1="190" x2="960" y2="190" marker-end="url(#arrow)" />
-                            <text x="992" y="180" fill="#3b82f6" stroke="none" font-weight="bold" font-size="14" text-anchor="middle">No</text>
-
-                            <line x1="1080" y1="245" x2="1080" y2="280" marker-end="url(#arrow)" />
-                            <text x="1090" y="267" fill="#3b82f6" stroke="none" font-weight="bold" font-size="14">Yes</text>
-
-                            <line x1="880" y1="240" x2="880" y2="280" marker-end="url(#arrow)" />
-                            <line x1="1000" y1="330" x2="960" y2="330" marker-end="url(#arrow)" />
-
-                            <line x1="800" y1="330" x2="735" y2="330" marker-end="url(#arrow)" />
-
-                            <line x1="680" y1="275" x2="680" y2="240" marker-end="url(#arrow)" />
-                            <text x="690" y="262" fill="#3b82f6" stroke="none" font-weight="bold" font-size="14">No</text>
-
-                            <line x1="625" y1="330" x2="560" y2="330" marker-end="url(#arrow)" />
-                            <text x="592" y="320" fill="#3b82f6" stroke="none" font-weight="bold" font-size="14" text-anchor="middle">Yes</text>
-
-                            <line x1="400" y1="330" x2="360" y2="330" marker-end="url(#arrow)" />
-
-                            <path d="M 600 190 L 280 190 L 280 280" marker-end="url(#arrow)" stroke-linejoin="round" />
-
-                            <line x1="280" y1="380" x2="280" y2="420" marker-end="url(#arrow)" />
-                            <line x1="280" y1="520" x2="280" y2="560" marker-end="url(#arrow)" />
-                            <line x1="360" y1="610" x2="400" y2="610" marker-end="url(#arrow)" />
-
-                            <!-- Row 1 -->
-                            <foreignObject x="0" y="0" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode foval">Mula</div>
-                            </foreignObject>
-                            <foreignObject x="200" y="0" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Isi Maklumat Laporan
-                                    Kerosakan Aset</div>
-                            </foreignObject>
-                            <foreignObject x="400" y="0" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Hantar Laporan Kerosakan
-                                    Aset</div>
-                            </foreignObject>
-                            <foreignObject x="600" y="0" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Semak Laporan Kerosakan
-                                    Aset</div>
-                            </foreignObject>
-                            <foreignObject x="800" y="0" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Ambil Aset yang dilaporkan
-                                    rosak</div>
-                            </foreignObject>
-                            <foreignObject x="1000" y="0" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Mengenalpasti masalah aset
-                                    yang dilaporkan rosak</div>
-                            </foreignObject>
-
-                            <!-- Row 2 -->
-                            <foreignObject x="600" y="140" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Melupuskan aset yang tidak
-                                    dapat dibaiki</div>
-                            </foreignObject>
-                            <foreignObject x="800" y="140" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Hantar aset tersebut ke
-                                    panel lantikan</div>
-                            </foreignObject>
-                            <foreignObject x="1000" y="140" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fdiamond-container">
-                                    <div class="fdiamond-bg"></div>
-                                    <div class="fdiamond-text">Adakah aset tersebut boleh dibaikpulih?</div>
-                                </div>
-                            </foreignObject>
-
-                            <!-- Row 3 -->
-                            <foreignObject x="200" y="280" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Kemaskini keputusan
-                                    laporan kerosakan aset</div>
-                            </foreignObject>
-                            <foreignObject x="400" y="280" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Kembalikan aset yang
-                                    dibaiki</div>
-                            </foreignObject>
-                            <foreignObject x="600" y="280" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fdiamond-container">
-                                    <div class="fdiamond-bg"></div>
-                                    <div class="fdiamond-text">Adakah aset telah dibaikpulihkan?</div>
-                                </div>
-                            </foreignObject>
-                            <foreignObject x="800" y="280" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Penyelenggaran dan
-                                    pembaikian selesai</div>
-                            </foreignObject>
-                            <foreignObject x="1000" y="280" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Mencari dan mengganti alat
-                                    komponen yang rosak</div>
-                            </foreignObject>
-
-                            <!-- Row 4 -->
-                            <foreignObject x="200" y="420" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Menjana laporan kerosakan
-                                    aset</div>
-                            </foreignObject>
-
-                            <!-- Row 5 -->
-                            <foreignObject x="200" y="560" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode frect">Tandatangan laporan
-                                    pengesahan kerosakan aset</div>
-                            </foreignObject>
-                            <foreignObject x="400" y="560" width="160" height="100">
-                                <div xmlns="http://www.w3.org/1999/xhtml" class="fnode foval">Tamat</div>
-                            </foreignObject>
-                        </svg>
+    %% Apply class
+    class G,K diamond;
+                        </pre>
                     </div>
                 </div>
 
@@ -326,6 +222,25 @@
         </main>
     </div>
 
+
+    <!-- ===== PASSWORD REMINDER MODAL ===== -->
+    <div id="pwReminderModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:24px; padding:2.5rem; max-width:440px; width:90%; box-shadow:0 25px 60px rgba(0,0,0,0.15); animation:modalSlide 0.4s cubic-bezier(0.34,1.56,0.64,1); text-align:center; position:relative;">
+            <div style="width:64px; height:64px; background:linear-gradient(135deg,#fee2e2,#fecaca); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 1.25rem;">🔑</div>
+            <h3 style="font-size:1.3rem; color:#0f172a; margin-bottom:0.5rem;">Peringatan Kata Laluan</h3>
+            <p style="color:#64748b; font-size:0.9rem; line-height:1.6; margin-bottom:0.5rem;">
+                Kata laluan anda telah melebihi <strong>90 hari</strong> dan perlu dikemas kini.
+            </p>
+            <p id="pwReminderDays" style="color:#dc2626; font-weight:700; font-size:0.95rem; margin-bottom:1.75rem;"></p>
+            <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+                <a href="profile.html" style="background:linear-gradient(135deg,#dc2626,#2563eb); color:white; font-weight:700; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none; font-size:0.9rem; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🔒 Tukar Kata Laluan Sekarang</a>
+                <button onclick="document.getElementById('pwReminderModal').style.display='none'" style="background:#f1f5f9; color:#475569; font-weight:600; padding:0.75rem 1.5rem; border-radius:12px; border:none; cursor:pointer; font-size:0.9rem;">Abaikan Buat Masa Ini</button>
+            </div>
+            <p style="color:#94a3b8; font-size:0.75rem; margin-top:1.25rem;">Peringatan ini akan terus muncul sehingga kata laluan anda dikemas kini.</p>
+        </div>
+    </div>
+    <!-- ===== END PASSWORD REMINDER MODAL ===== -->
+
     <script>
         async function handleLogout() {
             try {
@@ -334,6 +249,19 @@
             sessionStorage.clear();
             sessionStorage.clear();
             window.location.replace('../login.html');
+        }
+
+        function checkPasswordAge(updatedAt) {
+            if (!updatedAt) return;
+            const lastChanged = new Date(updatedAt);
+            const now = new Date();
+            const diffDays = Math.floor((now - lastChanged) / (1000 * 60 * 60 * 24));
+            if (diffDays >= 90) {
+                const modal = document.getElementById('pwReminderModal');
+                const daysEl = document.getElementById('pwReminderDays');
+                daysEl.textContent = `Kata laluan anda telah ${diffDays} hari tidak ditukar.`;
+                modal.style.display = 'flex';
+            }
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -352,6 +280,8 @@
                     if (typeof setupStaffSidebarProfile === 'function') {
                         setupStaffSidebarProfile();
                     }
+                    // Check password age
+                    checkPasswordAge(profile.data.updated_at);
                 } else {
                     console.error('Profile fetch failed:', profile.message);
                     // Show specific error to help user debug
@@ -366,12 +296,13 @@
                 alert('Connection Error: Could not connect to profile API.');
             }
 
-            // Fetch Stats (History)
+            // Fetch Stats (History) & Update Real-time tracking
             try {
                 const historyRes = await fetch('../api/staff_get_history.php');
                 const history = await historyRes.json();
 
                 if (history.status === 'success') {
+                    // Update Stats
                     document.getElementById('stat-total').textContent = history.data.length;
                     const pending = history.data.filter(r => r.status === 'Pending').length;
                     document.getElementById('stat-pending').textContent = pending;
@@ -380,6 +311,58 @@
                     const currentYear = new Date().getFullYear();
                     const yearly = history.data.filter(r => new Date(r.created_at).getFullYear() === currentYear).length;
                     document.getElementById('stat-yearly').textContent = yearly;
+
+                    // Update Real-Time Tracking (Active/Baru Dihantar)
+                    const container = document.getElementById('liveTrackingContainer');
+                    const activeReports = history.data.filter(r => r.status === 'Pending' || r.status === 'In Progress');
+                    
+                    if (activeReports.length > 0) {
+                        const recentReports = activeReports.slice(0, 3);
+                        container.innerHTML = '';
+                        recentReports.forEach(report => {
+                            let statusColor = '#b45309', statusBg = '#fef3c7', statusIcon = '🕒';
+                            const status = report.status || 'Pending';
+                            if (status === 'In Progress') { statusColor = '#1d4ed8'; statusBg = '#dbeafe'; statusIcon = '🔄'; }
+
+                            const dateStr = new Date(report.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' });
+                            
+                            // Proses Semasa dari Admin
+                            let prosesHTML = '';
+                            if (report.proses_semasa) {
+                                const prosesColors = {
+                                    'Diterima': { bg: '#e0f2fe', color: '#0369a1' },
+                                    'Sedang Dibaikpulih': { bg: '#fef9c3', color: '#854d0e' },
+                                    'Tunggu Panel / Alat Ganti': { bg: '#ffedd5', color: '#9a3412' },
+                                    'Dihantar ke Panel Lantikan': { bg: '#ede9fe', color: '#6d28d9' },
+                                    'Siap - Sedia Diambil': { bg: '#dcfce7', color: '#166534' },
+                                };
+                                const pc = prosesColors[report.proses_semasa] || { bg: '#f1f5f9', color: '#475569' };
+                                prosesHTML = `<div style="margin-top: 0.4rem; display: inline-flex; align-items: center; gap: 0.4rem; background: ${pc.bg}; color: ${pc.color}; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.78rem; font-weight: 700;">
+                                    🔄 Proses: ${report.proses_semasa}
+                                </div>`;
+                            } else {
+                                prosesHTML = `<div style="margin-top: 0.4rem; display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-muted); font-size: 0.78rem;">⏳ Menunggu tindakan admin...</div>`;
+                            }
+
+                            container.innerHTML += `
+                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border: 1px solid var(--border); border-radius: 12px; background: #f8fafc; gap: 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
+                                        <div style="width: 48px; height: 48px; border-radius: 50%; background: ${statusBg}; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">${statusIcon}</div>
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: 700; color: var(--text-main); font-size: 1rem;">${report.jenis_aset}</div>
+                                            <div style="color: var(--text-muted); font-size: 0.82rem;">S/N: ${report.nombor_siri} • Dihantar: ${dateStr}</div>
+                                            ${prosesHTML}
+                                        </div>
+                                    </div>
+                                    <div style="background: ${statusBg}; color: ${statusColor}; padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.8rem; white-space: nowrap;">
+                                        ${status === 'Pending' ? 'Belum Selesai' : 'Dalam Proses'}
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        container.innerHTML = '<p class="text-muted" style="text-align: center; padding: 1rem;">Tiada laporan yang sedang diproses pada masa ini.</p>';
+                    }
                 }
             } catch (err) { console.error('Stats fetch error:', err); }
 
