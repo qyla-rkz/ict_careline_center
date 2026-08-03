@@ -52,7 +52,7 @@
                 <div style="display: flex; gap: 1rem; align-items: center;">
                     <div id="current-date"
                         style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
-                        <!-- Date via JS -->
+                        <script>document.currentScript.parentElement.textContent = new Date().toLocaleDateString('ms-MY', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });</script>
                     </div>
                 </div>
             </header>
@@ -110,7 +110,7 @@
                             </tr>
                         </thead>
                         <tbody id="assetTableBody">
-                            <!-- Loaded via JS -->
+                            <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">⏳ Memuatkan data...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -141,9 +141,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', opts);
-            
             const user = JSON.parse(sessionStorage.getItem('user'));
             if (user && user.full_name) {
                 document.getElementById('sidebarAdminName').textContent = user.full_name;
@@ -186,15 +183,36 @@
         let filteredAssets = [];
 
         async function fetchAssets() {
+            const tbody = document.getElementById('assetTableBody');
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">⏳ Memuatkan data...</td></tr>';
             try {
-                const response = await fetch('../api/admin_get_assets.php');
-                const result = await response.json();
-                if (result.status === 'success') {
-                    allAssets = result.data;
-                    filteredAssets = [...allAssets];
-                    renderAssets();
+                const response = await fetch('../api/admin_get_assets.php?_t=' + new Date().getTime());
+                const rawText = await response.text();
+                console.log('[DEBUG] Raw response dari admin_get_assets.php:', rawText);
+                let result;
+                try {
+                    result = JSON.parse(rawText);
+                } catch(parseErr) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:red;">❌ Ralat parsing JSON:<br><pre style="text-align:left;font-size:0.75rem;">${rawText.substring(0, 500)}</pre></td></tr>`;
+                    return;
                 }
-            } catch (err) { console.error(err); }
+                if (result.status === 'success') {
+                    allAssets = result.data || [];
+                    filteredAssets = [...allAssets];
+                    if (allAssets.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">📭 Tiada aset staf didaftarkan lagi.</td></tr>';
+                        updatePagination(0);
+                    } else {
+                        renderAssets();
+                    }
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:red;">❌ ${result.message || 'Ralat tidak diketahui'}</td></tr>`;
+                    console.error('[DEBUG] API returned error:', result);
+                }
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:red;">❌ Fetch gagal: ${err.message}</td></tr>`;
+                console.error('[DEBUG] Fetch error:', err);
+            }
         }
 
         function handleSearch() {
@@ -371,10 +389,10 @@
                 reader.onload = (event) => {
                     const div = document.createElement('div');
                     div.style.cssText = 'position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; border:1px solid var(--border);';
-                    div.innerHTML = \`
-                        <img src="\${event.target.result}" style="width:100%; height:100%; object-fit:cover;">
+                    div.innerHTML = `
+                        <img src="${event.target.result}" style="width:100%; height:100%; object-fit:cover;">
                         <div style="position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.5); color:#fff; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; cursor:pointer;" onclick="this.parentElement.remove()">×</div>
-                    \`;
+                    `;
                     grid.appendChild(div);
                 };
                 reader.readAsDataURL(file);

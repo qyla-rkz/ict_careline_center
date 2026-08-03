@@ -34,12 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Audit Log
-        $auditStmt = $pdo->prepare("INSERT INTO audit_logs (user_id, action, details, ip_address) VALUES (?, ?, ?, ?)");
+        $auditStmt = $pdo->prepare("INSERT INTO audit_logs (user_id, action, details) VALUES (?, ?, ?)");
         $auditStmt->execute([
             $_SESSION['user_id'],
             'UPDATE_SETTINGS',
-            'Tetapan sistem dikemas kini',
-            $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN'
+            'Tetapan sistem dikemas kini'
         ]);
 
         $pdo->commit();

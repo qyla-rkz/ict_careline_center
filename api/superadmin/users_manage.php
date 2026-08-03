@@ -10,11 +10,7 @@ if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role']) !== 'super adm
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Helper function to insert audit log
-function logAudit($pdo, $action, $details) {
-    $stmt = $pdo->prepare("INSERT INTO audit_logs (user_id, action, details, ip_address) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$_SESSION['user_id'], $action, $details, $_SERVER['REMOTE_ADDR'] ?? '']);
-}
+
 
 if ($method === 'GET') {
     try {

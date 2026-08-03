@@ -46,6 +46,8 @@
             font-weight: 700;
             background: #f1f5f9;
             color: #334155;
+            white-space: nowrap;
+            display: inline-block;
         }
     </style>
 </head>
@@ -121,12 +123,11 @@
                                 <th>Pengguna</th>
                                 <th>Tindakan</th>
                                 <th>Butiran</th>
-                                <th>Alamat IP</th>
                             </tr>
                         </thead>
                         <tbody id="logsTableBody">
                             <tr>
-                                <td colspan="5" style="text-align:center;">Memuatkan data...</td>
+                                <td colspan="4" style="text-align:center;">Memuatkan data...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -231,7 +232,7 @@
             tbody.innerHTML = '';
 
             if (logs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">Tiada log direkodkan untuk tarikh ini.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">Tiada log direkodkan untuk tarikh ini.</td></tr>';
                 return;
             }
 
@@ -242,7 +243,6 @@
                     <td><strong>${log.user_name || 'Tidak diketahui'}</strong><br><small>${log.staff_id || '-'}</small></td>
                     <td><span class="badge-action">${log.action}</span></td>
                     <td>${log.details || '-'}</td>
-                    <td style="color:#9ca3af;">${log.ip_address || '-'}</td>
                 `;
                 tbody.appendChild(tr);
             });
