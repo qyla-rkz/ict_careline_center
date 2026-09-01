@@ -1,108 +1,130 @@
 # 🖥️ ICT Careline Center
 
-Sistem Web Pengurusan Aset ICT dan Laporan Kerosakan (KEW.PA-9) bersepadu untuk memudahkan pemantauan inventori jabatan, pendaftaran aset kakitangan, dan pengurusan aduan kerosakan secara elektronik.
+Sistem web ini dibangunkan untuk membantu pengurusan aset ICT, pelaporan kerosakan, dan pemantauan aktiviti dalam organisasi. Aplikasi ini menyokong tiga peranan utama iaitu Staff, Admin dan Super Admin.
 
 ---
 
-## 👥 Peranan Pengguna & Ciri-Ciri Utama
+## ✨ Fungsi Utama
 
-Sistem ini mempunyai tiga (3) peranan utama dengan fungsi berbeza:
+### Kakitangan (Staff)
+- Daftar aset ICT seperti komputer, laptop dan printer
+- Hantar aduan kerosakan melalui borang KEW.PA-9
+- Semak status laporan secara online
+- Lihat sejarah aduan dan kemaskini profil
 
-| Peranan | Penerangan Ciri Utama |
-| :--- | :--- |
-| **Kakitangan (Staff)** | <ul><li>**Pendaftaran Aset**: Mendaftar spesifikasi peralatan ICT (PC, Laptop, Printer) berserta gambar.</li><li>**Aduan Kerosakan (KEW.PA-9)**: Menghantar laporan kerosakan aset secara digital.</li><li>**Sejarah Aduan**: Memantau status aduan (Pending, In Progress, Resolved, Rejected).</li><li>**Profil & Kata Laluan**: Mengurus maklumat peribadi.</li></ul> |
-| **Pentadbir (Admin)** | <ul><li>**Kelulusan Aduan**: Menyemak, meluluskan, atau menolak laporan aduan kakitangan.</li><li>**Cetak KEW.PA-9**: Mencetak terus borang KEW.PA-9 dalam format dokumen rasmi A4.</li><li>**Inventori Jabatan**: Mengurus & memantau status pecahan unit aset mengikut jabatan/unit.</li><li>**My Assets (Senarai Aset)**: Melihat keseluruhan rekod aset yang didaftarkan oleh staf.</li></ul> |
-| **Pentadbir Utama (Super Admin)** | <ul><li>**Dashboard Statistik**: Analisis visual keseluruhan data sistem.</li><li>**Pengurusan Pengguna**: Tambah, padam, dan kemaskini maklumat pengguna (Staff & Admin).</li><li>**Tetapan Sistem**: Mengurus Mod Penyelenggaraan (*Maintenance Mode*).</li><li>**Log Audit (Audit Logs)**: Menjejaki aktiviti yang berlaku dalam sistem untuk tujuan keselamatan.</li></ul> |
+### Pentadbir (Admin)
+- Semak dan urus laporan yang dihantar staff
+- Lihat inventori aset mengikut jabatan/unit
+- Semak senarai aset staff dan status semasa
+- Cetak borang KEW.PA-9
+
+### Pentadbir Utama (Super Admin)
+- Lihat dashboard statistik sistem
+- Urus pengguna staff dan admin
+- Tetapkan mod penyelenggaraan (maintenance mode)
+- Semak log audit aktiviti sistem
 
 ---
 
 ## 📂 Struktur Projek
 
-```bash
+```text
 ict_careline_center/
-├── admin/               # Fail antaramuka & dashboard untuk Admin
-├── api/                 # API Backend PHP (Pemprosesan Data & Logik)
-│   ├── superadmin/      # API khusus untuk Super Admin
-│   ├── config.php       # Konfigurasi Pangkalan Data (PDO) & fungsi global
-│   └── login.php        # Pengendalian log masuk berasingan mengikut peranan
-├── assets/              # Aset Statik (CSS, JavaScript, Imej)
-│   ├── css/             # Fail penggayaan (style.css)
-│   └── js/              # Logik Frontend (global.js, main.js)
-├── phpmailer/           # Pustaka PHPMailer untuk penghantaran emel
-├── sql/                 # Fail skema pangkalan data MySQL
-│   ├── database.sql     # Skema penuh struktur SQL
-│   └── superadmin_setup.php
-├── staff/               # Fail antaramuka & dashboard untuk Kakitangan (Staff)
-├── superadmin/          # Fail antaramuka & dashboard untuk Super Admin
-├── uploads/             # Folder simpanan imej kerosakan/aset yang dimuat naik
-├── .env                 # Konfigurasi persekitaran (DB host, user, password)
-├── index.html           # Halaman utama (Landing Page)
-├── select-portal.html   # Halaman Pemilihan Portal Pengguna
-├── login.html           # Halaman Log Masuk (dengan suis peranan Staf/Admin)
-├── register.html        # Halaman Pendaftaran Staf
-└── reset_password.html  # Halaman Tetapan Semula Kata Laluan
+├── admin/                 # Halaman dan dashboard untuk Admin
+├── api/                   # API PHP untuk login, profil, laporan, inventori dan tetapan
+│   └── superadmin/        # Endpoint khusus untuk Super Admin
+├── assets/                # CSS, JavaScript dan imej UI
+├── phpmailer/             # Library PHPMailer untuk reset kata laluan
+├── staff/                 # Halaman dan dashboard untuk Staff
+├── superadmin/            # Halaman dan dashboard untuk Super Admin
+├── uploads/               # Folder untuk gambar profil dan fail laporan
+├── index.html             # Halaman utama
+├── login.html             # Halaman log masuk
+├── register.html          # Halaman pendaftaran staff
+├── reset_password.html    # Halaman reset kata laluan
+└── select-portal.html     # Halaman pemilihan portal
 ```
 
 ---
 
-## 🛠 Teknologi Digunakan
+## 🛠 Teknologi Yang Digunakan
 
-*   **Antaramuka (Frontend)**: HTML5, CSS3 (Vanilla CSS - Premium Glassmorphism & UI Moden), JavaScript (Vanilla - Asynchronous Fetch API).
-*   **Logik Backend**: PHP Native (PDO untuk mengelakkan *SQL Injection*).
-*   **Pangkalan Data**: MySQL / MariaDB.
-*   **Penghantaran Emel**: PHPMailer (Tetapan semula kata laluan).
+- Frontend: HTML, CSS dan JavaScript vanilla
+- Backend: PHP Native dengan PDO
+- Database: MySQL / MariaDB
+- Email: PHPMailer
+- Pengurusan fail upload: folder uploads dengan penyimpanan imej dan dokumen
 
 ---
 
-## ⚙️ Cara Pemasangan & Konfigurasi
+## ⚙️ Cara Pemasangan
 
-### 1. Salin Projek (Clone / Copy)
-Salin keseluruhan folder projek ini ke dalam direktori pelayan tempatan anda:
-*   **XAMPP**: `C:\xampp\htdocs\ict_careline_center`
-*   **Laragon**: `C:\laragon\www\ict_careline_center`
+### 1. Salin projek ke folder pelayan tempatan
+- XAMPP: C:\xampp\htdocs\ict_careline_center
+- Laragon: C:\laragon\www\ict_careline_center
 
-### 2. Konfigurasi Pangkalan Data (Database)
-1. Aktifkan **Apache** dan **MySQL** pada XAMPP Control Panel.
-2. Buka pelayar web dan layari `http://localhost/phpmyadmin/`.
-3. Cipta pangkalan data baru bertajuk `ict_careline`.
-4. Pilih pangkalan data tersebut, pergi ke tab **Import**, pilih fail `sql/database.sql` dan klik **Go** / **Import**.
+### 2. Jalankan Apache dan MySQL
+Pastikan server web dan pangkalan data berjalan sebelum membuka aplikasi.
 
-### 3. Tetapan Fail Persekitaran (`.env`)
-Buat fail bertajuk `.env` di dalam folder utama projek (*root directory*) dan masukkan konfigurasi pangkalan data anda:
+### 3. Sediakan pangkalan data
+Cipta pangkalan data MySQL anda, contohnya:
+
+```sql
+CREATE DATABASE ict_careline;
+```
+
+Seterusnya, sediakan jadual yang diperlukan oleh sistem seperti users, reports, department_inventory, system_settings dan audit_logs. Jika pasukan anda mempunyai fail SQL, import fail tersebut ke pangkalan data.
+
+### 4. Buat fail .env
+Di folder utama projek, cipta fail bernama .env dengan kandungan seperti berikut:
+
 ```env
 DB_HOST=localhost
 DB_NAME=ict_careline
 DB_USER=root
-DB_PASS=            # Masukkan kata laluan MySQL anda (kosongkan jika tiada)
+DB_PASS=
 ```
 
-### 4. Jalankan Aplikasi
-Buka pelayar web dan layari:
+> Jika anda menggunakan kata laluan MySQL, masukkan nilai tersebut pada DB_PASS.
+
+### 5. Pastikan folder upload boleh ditulis
+Beri kebenaran tulis kepada folder berikut:
+- uploads/profile_pictures
+- uploads/reports
+
+### 6. Jalankan aplikasi
+Buka pelayar dan lawati:
+
 ```text
 http://localhost/ict_careline_center/
 ```
 
 ---
 
-## 🔒 Langkah Keselamatan Pintar
-*   **Prepared Statements (PDO)**: Menghalang serangan *SQL Injection* secara menyeluruh di semua query backend.
-*   **XSS Protection**: Fungsi `sanitizeOutput()` disediakan secara terbina untuk memastikan output selamat daripada suntikan skrip berniat jahat.
-*   **Akses Tertutup (`.htaccess`)**: Menghalang pengguna luar daripada membaca fail `.env` secara terus melalui pelayar web.
+## 🔐 Nota Penting
+
+- Aplikasi ini menggunakan PDO untuk mengelakkan serangan SQL injection.
+- Fungsi sanitasi output disediakan untuk membantu mengurangkan risiko XSS.
+- Mod penyelenggaraan boleh diaktifkan melalui portal Super Admin.
 
 ---
 
-## 🔧 Penyelesaian Masalah (Troubleshooting)
+## 🧩 Penyelesaian Masalah
 
-### 1. Ralat VS Code: *“Cannot validate since a PHP installation could not be found...”*
-Jika VS Code anda memaparkan amaran di atas, ini bermakna editor anda memerlukan laluan ke fail PHP (*PHP executable path*).
-1. Tekan `Ctrl + ,` untuk membuka Settings.
-2. Klik ikon **Open Settings (JSON)** di bahagian bucu atas kanan.
-3. Tambah baris kod ini di dalam `{}` tetapan anda:
-   ```json
-   "php.validate.executablePath": "C:\\xampp\\php\\php.exe"
-   ```
-   *(Pastikan anda meletakkan tanda koma `,` di hujung baris sebelumnya jika ada).*
+### Sambungan pangkalan data gagal
+- Semak sama ada Apache dan MySQL sedang berjalan
+- Semak semula nilai DB_HOST, DB_NAME, DB_USER dan DB_PASS dalam .env
 
-### 2. Ralat Sambungan Pangkalan Data (*Database Connection Failed*)
-*   Pastikan servis MySQL pada XAMPP telah dihidupkan (*running*).
-*   Semak semula fail `.env` anda untuk memastikan nama database (`DB_NAME`) dan kata laluan (`DB_PASS`) adalah betul.
+### Upload gambar atau laporan gagal
+- Pastikan folder uploads mempunyai kebenaran tulis
+- Semak saiz fail yang dimuat naik
+
+### Halaman tidak dipaparkan
+- Pastikan projek diletakkan dalam folder root pelayan yang betul
+- Semak sama ada PHP telah dipasang dan dikonfigurasikan dengan betul
+
+---
+
+## 📌 Catatan
+
+README ini disediakan supaya lebih selaras dengan struktur dan fungsi sebenar projek ICT Careline Center yang sedang dibangunkan.
