@@ -7,10 +7,56 @@
     <title>Hantar KEW.PA-9 - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=15">
     <script src="../assets/js/global.js?v=10"></script>
+    <style>
+        /* --- Print Watermark Styles --- */
+        #print-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 80%;
+            height: auto;
+            /* Invisible on screen, but always in DOM to preload */
+            opacity: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @media print {
+            .sidebar, header, #submit-btn {
+                display: none !important;
+            }
+            .app-container {
+                display: block !important;
+                background: white !important;
+            }
+            .main-content {
+                margin: 0 !important;
+                padding: 1rem !important;
+                width: 100% !important;
+            }
+            .card {
+                max-width: 100% !important;
+                background: white !important;
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+            /* The image already has 25% opacity baked into its pixels! */
+            #print-watermark {
+                opacity: 1 !important;
+                display: block !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="app-container">
+    <img id="print-watermark" src="../assets/images/logo-mpm-watermark.png" alt="Logo MPM Watermark">
+
+<div class="app-container">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo-area">
@@ -50,7 +96,11 @@
                 <p class="text-muted">Aduan Kerosakan Aset Alih Kerajaan</p>
 
                 <div class="card" style="margin-top: 2rem; max-width: 800px;">
-                    <form id="reportForm" enctype="multipart/form-data">
+
+                    <!-- MPM Logo watermark: hidden on screen, shown at 50% opacity when printing -->
+                    
+    
+<form id="reportForm" enctype="multipart/form-data">
                         <div
                             style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem;">
                             <div class="form-group">
