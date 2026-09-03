@@ -1,8 +1,17 @@
-# Block access to .env and other hidden files
+# 1. Halang akses ke fail sensitif (seperti .env)
 <FilesMatch "^\.">
-    Order allow,deny
-    Deny from all
+    Require all denied
 </FilesMatch>
 
-# Optional: Disable directory browsing
+# 2. Matikan paparan senarai folder (Directory browsing)
 Options -Indexes
+
+# 3. Sembunyikan .php dari URL (Clean URL)
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^\ ]+)\.php
+RewriteRule ^/?(.*)\.php$ /$1 [L,R=301]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
