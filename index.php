@@ -17,7 +17,7 @@
     <nav class="navbar container"
         style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; border-bottom: none; display: flex; justify-content: space-between; align-items: center;">
         <div class="logo">
-            <a href="index" style="text-decoration:none; color:inherit; display: flex; align-items: center; gap: 15px;">
+            <a href="index.php" style="text-decoration:none; color:inherit; display: flex; align-items: center; gap: 15px;">
                 <img src="assets/images/logo-mpm.png" alt="Logo MPM" style="height: 70px; width: auto;">
                 <div>ICT Careline <span>Center</span></div>
             </a>
@@ -32,7 +32,7 @@
                     dan pengurusan aset. Kami di sini untuk membantu anda.</p>
 
                 <div class="cta-group fade-in-delay">
-                    <a href="select-portal" class="cta-btn primary">Pilih Portal Anda</a>
+                    <a href="select-portal.php" class="cta-btn primary">Pilih Portal Anda</a>
                 </div>
             </div>
 

@@ -29,13 +29,13 @@
 
     <nav class="navbar container" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; border-bottom: none; display: flex; justify-content: space-between; align-items: center;">
         <div class="logo">
-            <a href="index" style="text-decoration:none; color:inherit; display: flex; align-items: center; gap: 15px;">
+            <a href="index.php" style="text-decoration:none; color:inherit; display: flex; align-items: center; gap: 15px;">
                 <img src="assets/images/logo-mpm.png" alt="Logo MPM" style="height: 70px; width: auto;">
                 <div>ICT Careline <span>Center</span></div>
             </a>
         </div>
         <div>
-            <a href="index" style="text-decoration: none; font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; background: rgba(79, 70, 229, 0.05); padding: 0.5rem 1.25rem; border-radius: 20px; border: 1.5px solid var(--primary); transition: all 0.2s ease;" onmouseover="this.style.background='var(--primary)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(79, 70, 229, 0.05)'; this.style.color='var(--primary)';">
+            <a href="index.php" style="text-decoration: none; font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; background: rgba(79, 70, 229, 0.05); padding: 0.5rem 1.25rem; border-radius: 20px; border: 1.5px solid var(--primary); transition: all 0.2s ease;" onmouseover="this.style.background='var(--primary)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(79, 70, 229, 0.05)'; this.style.color='var(--primary)';">
                 ← Kembali
             </a>
         </div>
@@ -49,13 +49,13 @@
                     <div class="icon">📖</div>
                     <h3>Portal Pendaftaran Staf</h3>
                     <p>Daftar akaun Staf baru untuk mula menguruskan papan pemuka anda.</p>
-                    <a href="register" class="role-btn">Daftar Sekarang</a>
+                    <a href="register.php" class="role-btn">Daftar Sekarang</a>
                 </div>
                 <div class="role-card login">
                     <div class="icon">👤</div>
                     <h3>Portal Log Masuk</h3>
                     <p>Akses akaun sedia ada anda untuk aktiviti pengawasan dan pengurusan.</p>
-                    <a href="login" class="role-btn">Log Masuk Sekarang</a>
+                    <a href="login.php" class="role-btn">Log Masuk Sekarang</a>
                 </div>
             </div>
         </section>

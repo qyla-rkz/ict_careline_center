@@ -48,14 +48,14 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile" class="nav-link">👤 Profil Saya</a>
-                <a href="assets" class="nav-link">🖥️ Aset Saya</a>
-                <a href="report_form" class="nav-link">📝 Hantar KEW.PA-9</a>
-                <a href="history" class="nav-link active">📜 Laporan Saya</a>
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="assets.php" class="nav-link">🖥️ Aset Saya</a>
+                <a href="report_form.php" class="nav-link">📝 Hantar KEW.PA-9</a>
+                <a href="history.php" class="nav-link active">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
+                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 

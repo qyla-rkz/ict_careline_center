@@ -29,15 +29,15 @@
                 <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile" class="nav-link">👤 Profil Saya</a>
-                <a href="report_management" class="nav-link">📝 Pengurusan Laporan</a>
-                <a href="inventory" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets" class="nav-link active">👥 Aset Staf</a>
-                <a href="history_reports" class="nav-link">📜 Log Sejarah</a>
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="report_management.php" class="nav-link">📝 Pengurusan Laporan</a>
+                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets.php" class="nav-link active">👥 Aset Staf</a>
+                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
+                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 

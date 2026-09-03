@@ -460,7 +460,7 @@ function setupStaffSidebarProfile() {
             if (isStaffPage || isAdminPage || isSuperAdminPage) {
                 picContainer.style.cursor = 'pointer';
                 picContainer.title = 'Profil Saya';
-                picContainer.onclick = () => { window.location.href="profile"; };
+                picContainer.onclick = () => { window.location.href="profile.php"; };
             }
             container.appendChild(picContainer);
         }

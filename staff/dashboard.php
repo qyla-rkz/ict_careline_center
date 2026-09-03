@@ -32,14 +32,14 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard" class="nav-link active">📊 Papan Pemuka</a>
-                <a href="profile" class="nav-link">👤 Profil Saya</a>
-                <a href="assets" class="nav-link">🖥️ Aset Saya</a>
-                <a href="report_form" class="nav-link">📝 Hantar KEW.PA-9</a>
-                <a href="history" class="nav-link">📜 Laporan Saya</a>
+                <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="assets.php" class="nav-link">🖥️ Aset Saya</a>
+                <a href="report_form.php" class="nav-link">📝 Hantar KEW.PA-9</a>
+                <a href="history.php" class="nav-link">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
+                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
                     Log Keluar</a>
             </div>
         </aside>
@@ -72,13 +72,13 @@
                             jejaki status tindakan laporan aktif anda secara langsung.
                         </p>
                         <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <a href="report_form"
+                            <a href="report_form.php"
                                 style="background: white; color: var(--primary); font-weight: 700; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
                                 onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0,0,0,0.2)';"
                                 onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';">
                                 📝 Hantar Laporan Kerosakan
                             </a>
-                            <a href="assets"
+                            <a href="assets.php"
                                 style="background: rgba(255,255,255,0.15); color: white; font-weight: 600; border: 1px solid rgba(255,255,255,0.3); padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; backdrop-filter: blur(5px); transition: background 0.2s;"
                                 onmouseover="this.style.background='rgba(255,255,255,0.25)';"
                                 onmouseout="this.style.background='rgba(255,255,255,0.15)';">
@@ -148,7 +148,7 @@
                         <h3 style="margin: 0; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
                             📡 Status Semasa Laporan KEW.PA-9
                         </h3>
-                        <a href="history" style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600;">Lihat Semua &rarr;</a>
+                        <a href="history.php" style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600;">Lihat Semua &rarr;</a>
                     </div>
                     
                     <div id="liveTrackingContainer" style="display: flex; flex-direction: column; gap: 1rem;">
@@ -233,7 +233,7 @@ flowchart TD
             </p>
             <p id="pwReminderDays" style="color:#dc2626; font-weight:700; font-size:0.95rem; margin-bottom:1.75rem;"></p>
             <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-                <a href="profile" style="background:linear-gradient(135deg,#dc2626,#2563eb); color:white; font-weight:700; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none; font-size:0.9rem; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🔒 Tukar Kata Laluan Sekarang</a>
+                <a href="profile.php" style="background:linear-gradient(135deg,#dc2626,#2563eb); color:white; font-weight:700; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none; font-size:0.9rem; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🔒 Tukar Kata Laluan Sekarang</a>
                 <button onclick="document.getElementById('pwReminderModal').style.display='none'" style="background:#f1f5f9; color:#475569; font-weight:600; padding:0.75rem 1.5rem; border-radius:12px; border:none; cursor:pointer; font-size:0.9rem;">Abaikan Buat Masa Ini</button>
             </div>
             <p style="color:#94a3b8; font-size:0.75rem; margin-top:1.25rem;">Peringatan ini akan terus muncul sehingga kata laluan anda dikemas kini.</p>
