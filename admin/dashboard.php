@@ -31,12 +31,12 @@
                 <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link active">📊 Papan Pemuka</a>
-                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
-                <a href="report_management.html" class="nav-link">📝 Pengurusan Laporan</a>
-                <a href="inventory.html" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets.html" class="nav-link">👥 Aset Staf</a>
-                <a href="history_reports.html" class="nav-link">📜 Log Sejarah</a>
+                <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="report_management.php" class="nav-link">📝 Pengurusan Laporan</a>
+                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
+                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -388,7 +388,7 @@
             </p>
             <p id="pwReminderDays" style="color:#dc2626; font-weight:700; font-size:0.95rem; margin-bottom:1.75rem;"></p>
             <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-                <a href="profile.html" style="background:linear-gradient(135deg,#dc2626,#2563eb); color:white; font-weight:700; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none; font-size:0.9rem; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🔒 Tukar Kata Laluan Sekarang</a>
+                <a href="profile.php" style="background:linear-gradient(135deg,#dc2626,#2563eb); color:white; font-weight:700; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none; font-size:0.9rem; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🔒 Tukar Kata Laluan Sekarang</a>
                 <button onclick="document.getElementById('pwReminderModal').style.display='none'" style="background:#f1f5f9; color:#475569; font-weight:600; padding:0.75rem 1.5rem; border-radius:12px; border:none; cursor:pointer; font-size:0.9rem;">Abaikan Buat Masa Ini</button>
             </div>
             <p style="color:#94a3b8; font-size:0.75rem; margin-top:1.25rem;">Peringatan ini akan terus muncul sehingga kata laluan anda dikemas kini.</p>
@@ -407,7 +407,7 @@
             } catch (err) { }
             sessionStorage.clear();
             sessionStorage.clear();
-            window.location.replace('../login.html');
+            window.location.replace('../login.php');
         }
 
 

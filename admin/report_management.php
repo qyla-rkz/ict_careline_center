@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sejarah Laporan - ICT Careline Center</title>
+    <title>Pengurusan Laporan - ICT Careline Center</title>
     <link rel="stylesheet" href="../assets/css/style.css">
-    <script src="../assets/js/global.js?v=10"></script>
     <style>
         @media print {
             @page {
@@ -133,15 +132,15 @@
         }
 
         #printableArea .pa9-bahagian2-label {
-            width: 240px;
+            min-width: 240px;
             flex-shrink: 0;
         }
     </style>
+    <script src="../assets/js/global.js?v=10"></script>
 </head>
 
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
@@ -153,12 +152,12 @@
                 <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
-                <a href="report_management.html" class="nav-link">📝 Pengurusan Laporan</a>
-                <a href="inventory.html" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets.html" class="nav-link">👥 Aset Staf</a>
-                <a href="history_reports.html" class="nav-link active">📜 Sejarah Laporan</a>
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="report_management.php" class="nav-link active">📝 Pengurusan Laporan</a>
+                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
+                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -166,79 +165,50 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
             <header
                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
                 <div>
-                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Admin Portal</p>
-                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Sejarah Laporan</h2>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Admin Portal
+                    </p>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Pengurusan Laporan</h2>
                 </div>
-                <div id="current-date"
+                <div id="adminDate"
                     style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
-                    <!-- Date loaded via JS -->
                 </div>
             </header>
 
-            <div class="card" style="margin-bottom: 1.5rem;">
-                <div style="display: flex; gap: 1rem; align-items: flex-end; padding: 0.5rem;">
-                    <div class="form-group" style="margin-bottom: 0; flex: 1;">
-                        <label
-                            style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Cari
-                            Nama Pelapor</label>
-                        <input type="text" id="filterName" class="form-control" placeholder="Masukkan nama..."
-                            onkeyup="if(event.key === 'Enter') applyFilters()">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0; flex: 1;">
-                        <label
-                            style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Tahun</label>
-                        <select id="filterYear" class="form-control" onchange="applyFilters()">
-                            <option value="">Semua Tahun</option>
+            <!-- Table -->
+            <div class="card table-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">Senarai Laporan</h3>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin: 0;">KEPUTUSAN LAPORAN:</label>
+                        <select id="statusFilter" class="form-control" style="width: auto; min-width: 200px;" onchange="filterReports()">
+                            <option value="PendingToday" selected>Belum Selesai</option>
+                            <option value="Pending">Semua Laporan</option>
                         </select>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0; flex: 1;">
-                        <label
-                            style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Bulan</label>
-                        <select id="filterMonth" class="form-control" onchange="applyFilters()">
-                            <option value="">Semua Bulan</option>
-                            <option value="0">Januari</option>
-                            <option value="1">Februari</option>
-                            <option value="2">Mac</option>
-                            <option value="3">April</option>
-                            <option value="4">Mei</option>
-                            <option value="5">Jun</option>
-                            <option value="6">Julai</option>
-                            <option value="7">Ogos</option>
-                            <option value="8">September</option>
-                            <option value="9">Oktober</option>
-                            <option value="10">November</option>
-                            <option value="11">Disember</option>
-                        </select>
-                    </div>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button onclick="applyFilters()" class="btn btn-primary" style="padding: 0.6rem 1.25rem;">🔍
-                            Cari</button>
                     </div>
                 </div>
-            </div>
-
-            <div class="card table-card">
                 <div class="table-container">
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr style="text-align: left;">
                                 <th style="padding: 1rem;">ID</th>
-                                <th style="padding: 1rem;">Pengadu</th>
-                                <th style="padding: 1rem;">Keputusan</th>
-                                <th style="padding: 1rem;">Diproses Oleh</th>
+                                <th style="padding: 1rem;">Maklumat Aset</th>
+                                <th style="padding: 1rem;">Pelapor</th>
                                 <th style="padding: 1rem; white-space: nowrap;">Tarikh Aduan</th>
                                 <th style="padding: 1rem; white-space: nowrap;">Tarikh Siap</th>
                                 <th style="padding: 1rem; white-space: nowrap;">Pematuhan ISO</th>
+                                <th style="padding: 1rem; text-align: center; white-space: nowrap;">Keputusan</th>
                                 <th style="padding: 1rem; text-align: center; white-space: nowrap;">Tindakan</th>
                             </tr>
                         </thead>
-                        <tbody id="historyTableBody">
-                            <!-- Loaded via JS -->
+                        <tbody id="reportTableBody">
+                            <tr>
+                                <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                                    Memuatkan laporan...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -255,7 +225,7 @@
         </main>
     </div>
 
-    <!-- View Modal -->
+    <!-- View/Process Modal -->
     <div id="viewModal" class="modal">
         <div class="modal-content" style="max-width: 860px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -301,20 +271,48 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             <div class="form-group"><label>Kos Penyelenggaraan Terdahulu (RM)</label><input
                                     type="number" step="0.01" name="kos_penyelenggaraan_dahulu" id="v_kos_dahulu"
-                                    class="form-control" readonly></div>
+                                    class="form-control"></div>
                             <div class="form-group"><label>Anggaran Kos Penyelenggaraan (RM)</label><input type="number"
-                                    step="0.01" name="anggaran_kos" id="v_anggaran_kos" class="form-control" readonly>
-                            </div>
+                                    step="0.01" name="anggaran_kos" id="v_anggaran_kos" class="form-control"></div>
                         </div>
                         <div class="form-group"><label>Syor Dan Ulasan</label><textarea name="syor_ulasan" id="v_syor"
-                                class="form-control" rows="3" readonly></textarea></div>
+                                class="form-control" rows="3"></textarea></div>
                         <div class="form-group"><label>Nama Pegawai Teknikal</label><input type="text"
-                                name="pegawai_teknikal_nama" id="v_admin_nama" class="form-control" readonly></div>
+                                name="pegawai_teknikal_nama" id="v_admin_nama" class="form-control"></div>
                         <div class="form-group"><label>Jawatan Pegawai Teknikal</label><input type="text"
-                                name="pegawai_teknikal_jawatan" id="v_admin_jawatan" class="form-control" readonly>
+                                name="pegawai_teknikal_jawatan" id="v_admin_jawatan" class="form-control"></div>
+                        <div class="form-group" id="tarikh_siap_group" style="display: none;"><label>Tarikh Siap (Admin
+                                ICT)</label><input type="text" id="v_admin_tarikh" class="form-control" readonly></div>
+                    </div>
+
+                    <!-- Proses Semasa (Web Only - Tidak termasuk dalam cetakan) -->
+                    <div
+                        style="background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(168,85,247,0.05)); border: 1px solid rgba(99,102,241,0.2); border-radius: 12px; padding: 1.25rem;">
+                        <h4
+                            style="color: #6366f1; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                            🔄 Proses Semasa <span
+                                style="font-size: 0.7rem; background: #6366f1; color: white; padding: 0.15rem 0.5rem; border-radius: 20px; font-weight: 600;">WEB
+                                SAHAJA</span>
+                        </h4>
+                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem;">Maklumat ini
+                            <strong>tidak akan dicetak</strong> dalam borang KEW.PA-9. Ia hanya untuk makluman staff
+                            secara dalam talian.</p>
+                        <div style="display: flex; gap: 0.75rem; align-items: flex-end;">
+                            <div style="flex: 1;">
+                                <select id="v_proses_semasa" class="form-control">
+                                    <option value="">— Tiada Kemas Kini —</option>
+                                    <option value="Diterima">📥 Diterima</option>
+                                    <option value="Sedang Dibaikpulih">🔧 Sedang Dibaikpulih</option>
+                                    <option value="Tunggu Panel / Alat Ganti">⏳ Tunggu Panel / Alat Ganti</option>
+                                    <option value="Dihantar ke Panel Lantikan">🚗 Dihantar ke Panel Lantikan</option>
+                                    <option value="Siap - Sedia Diambil">✅ Siap - Sedia Diambil</option>
+                                </select>
+                            </div>
+                            <button type="button" onclick="saveProsesSemasa()" class="btn btn-primary"
+                                style="padding: 0.6rem 1.25rem; white-space: nowrap; font-size: 0.85rem;">
+                                💾 Simpan Proses
+                            </button>
                         </div>
-                        <div class="form-group"><label>Tarikh Siap (Admin ICT)</label><input type="text"
-                                id="v_admin_tarikh" class="form-control" readonly></div>
                     </div>
 
                     <!-- Bahagian III -->
@@ -325,13 +323,17 @@
                         <div style="display: flex; flex-direction: column; gap: 1rem;">
                             <div class="form-group">
                                 <label>Keputusan</label>
-                                <input type="text" id="v_keputusan" class="form-control" readonly>
+                                <select name="keputusan" id="v_keputusan" class="form-control">
+                                    <option value="Diluluskan">Diluluskan</option>
+                                    <option value="Tidak Diluluskan">Tidak Diluluskan</option>
+                                    <option value="Syor Dilupuskan">Syor Dilupuskan</option>
+                                </select>
                             </div>
                             <div class="form-group"><label>Nama Ketua</label><input type="text" name="keputusan_nama"
-                                    id="v_kep_nama" class="form-control" readonly></div>
+                                    id="v_kep_nama" class="form-control"></div>
                             <div class="form-group"><label>Tarikh Keputusan</label><input type="date"
-                                    name="keputusan_tarikh" id="v_kep_tarikh" class="form-control" readonly></div>
-                            <div class="form-group">
+                                    name="keputusan_tarikh" id="v_kep_tarikh" class="form-control"></div>
+                            <div class="form-group" id="iso_badge_group" style="display: none;">
                                 <label>Pematuhan ISO (&lt;14 hari)</label>
                                 <div id="v_iso_badge" style="padding-top: 0.5rem;"></div>
                             </div>
@@ -339,6 +341,7 @@
                     </div>
 
                     <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">💾 Simpan & Selesaikan</button>
                         <button type="button" onclick="printKEWPA9()" class="btn btn-secondary" style="flex: 1;">🖨️
                             Cetak KEW.PA-9</button>
                         <button type="button" onclick="closeModal()" class="btn btn-secondary"
@@ -472,81 +475,43 @@
 
 
     <script>
-        let currentReport = null;
-
         async function handleLogout() {
-            try {
-                await fetch('../api/logout.php');
-            } catch (err) { }
-            sessionStorage.clear();
-            sessionStorage.clear();
-            window.location.replace('../login.html');
+            try { await fetch('../api/logout.php'); } catch (e) { }
+            sessionStorage.clear(); sessionStorage.clear();
+            window.location.replace('../login.php');
         }
+
+        let allReports = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let filteredData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', opts);
+            document.getElementById('adminDate').textContent = new Date().toLocaleDateString('ms-MY', opts);
 
             const user = JSON.parse(sessionStorage.getItem('user'));
             if (user && user.full_name) {
                 document.getElementById('sidebarAdminName').textContent = user.full_name;
             }
 
-            fetchHistory();
+            fetchReports();
         });
 
-        let currentPage = 1;
-        const itemsPerPage = 10;
-        let allHistory = [];
-        let filteredHistory = [];
-
-        async function fetchHistory() {
-            const url = `../api/admin_get_reports.php`;
-
+        async function fetchReports() {
             try {
-                const response = await fetch(url);
-                const result = await response.json();
+                const res = await fetch('../api/admin_get_reports.php');
+                const result = await res.json();
                 if (result.status === 'success') {
-                    allHistory = result.data.filter(r => r.status === 'Resolved' || r.status === 'Rejected');
-                    
-                    // Populate Year Dropdown dynamically
-                    const yearSelect = document.getElementById('filterYear');
-                    if (yearSelect.options.length <= 1) {
-                        const years = [...new Set(allHistory.map(r => new Date(r.created_at).getFullYear()))].sort((a, b) => b - a);
-                        years.forEach(yr => {
-                            if (!isNaN(yr)) {
-                                const opt = document.createElement('option');
-                                opt.value = yr;
-                                opt.textContent = yr;
-                                yearSelect.appendChild(opt);
-                            }
-                        });
-                    }
+                    allReports = result.data;
 
-                    applyFilters();
+                    filterReports();
+                } else {
+                    console.error('API error:', result.message);
+                    document.getElementById('reportTableBody').innerHTML =
+                        '<tr><td colspan="6" style="padding: 2rem; text-align: center; color: var(--danger);">Ralat: ' + result.message + '</td></tr>';
                 }
             } catch (err) { console.error(err); }
-        }
-
-        function applyFilters() {
-            const name = document.getElementById('filterName').value.toLowerCase();
-            const y = document.getElementById('filterYear').value;
-            const m = document.getElementById('filterMonth').value;
-
-            filteredHistory = allHistory.filter(r => {
-                const date = new Date(r.created_at);
-                const yearMatch = !y || date.getFullYear().toString() === y;
-                const monthMatch = !m || date.getMonth().toString() === m;
-                
-                const nameMatch = !name || 
-                    (r.nama_pelapor && r.nama_pelapor.toLowerCase().includes(name)) ||
-                    (r.full_name && r.full_name.toLowerCase().includes(name));
-
-                return yearMatch && monthMatch && nameMatch;
-            });
-
-            currentPage = 1;
-            renderHistory();
         }
 
         function calcIsoDays(createdAt, completedAt) {
@@ -574,19 +539,20 @@
             ">${pass ? '✅' : '⚠️'} ${days} hari</span>`;
         }
 
-        function renderHistory() {
-            const tbody = document.getElementById('historyTableBody');
-            if (!filteredHistory.length) {
-                tbody.innerHTML = '<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text-muted)">Tiada rekod ditemui.</td></tr>';
+        function renderReports() {
+            const tbody = document.getElementById('reportTableBody');
+            if (!filteredData.length) {
+                tbody.innerHTML = '<tr><td colspan="8" style="padding: 2rem; text-align: center; color: var(--text-muted);">Tiada laporan dijumpai.</td></tr>';
                 updatePagination(0);
                 return;
             }
 
             const start = (currentPage - 1) * itemsPerPage;
             const end = start + itemsPerPage;
-            const pageItems = filteredHistory.slice(start, end);
+            const pageItems = filteredData.slice(start, end);
 
             tbody.innerHTML = pageItems.map(r => {
+                const badgeClass = r.keputusan === 'Syor Dilupuskan' ? 'badge-disposed' : r.status === 'Resolved' ? 'badge-resolved' : r.status === 'Rejected' ? 'badge-rejected' : 'badge-pending';
                 const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
                 const tarikhSiap = (isCompleted && r.admin_tarikh)
                     ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -595,20 +561,25 @@
                 return `
                 <tr style="border-bottom: 1px solid var(--border);">
                     <td style="padding: 1rem; font-weight: 600; color: var(--primary);">#${r.id}</td>
-                    <td style="padding: 1rem;">${r.nama_pelapor || r.full_name}</td>
-                    <td style="padding: 1rem;"><span class="badge badge-${r.keputusan === 'Diluluskan' ? 'resolved' : r.keputusan === 'Syor Dilupuskan' ? 'disposed' : 'rejected'}" style="white-space: nowrap;">${r.keputusan || 'N/A'}</span></td>
-                    <td style="padding: 1rem;">${r.keputusan_nama || r.admin_name_jawatan || 'System'}</td>
-                    <td style="padding: 1rem; white-space: nowrap;">${new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td style="padding: 1rem;">
+                        <div style="font-weight: 700;">${r.jenis_aset}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">${r.nombor_siri}</div>
+                    </td>
+                    <td style="padding: 1rem;">
+                        <div style="font-weight: 600;">${r.nama_pelapor || r.full_name || '-'}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">${r.location || '-'}</div>
+                    </td>
+                    <td style="padding: 1rem; font-size: 0.9rem; color: var(--text-muted); white-space: nowrap;">${new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${tarikhSiap}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${isobadge(r)}</td>
+                    <td style="padding: 1rem; text-align: center; white-space: nowrap;"><span class="badge ${badgeClass}" style="white-space: nowrap;">${r.keputusan === 'Syor Dilupuskan' ? 'Syor Dilupuskan' : r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
                     <td style="padding: 1rem; text-align: center; white-space: nowrap;">
-                        <button onclick='showReportDetails(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Lihat / Cetak</button>
+                        <button onclick='openReport(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📋 Urus</button>
                     </td>
-                </tr>
-            `;
+                </tr>`;
             }).join('');
 
-            updatePagination(filteredHistory.length);
+            updatePagination(filteredData.length);
         }
 
         function updatePagination(totalItems) {
@@ -626,18 +597,50 @@
 
         function nextPage() {
             currentPage++;
-            renderHistory();
+            renderReports();
             document.querySelector('.table-container').scrollTop = 0;
         }
 
         function prevPage() {
             currentPage--;
-            renderHistory();
+            renderReports();
             document.querySelector('.table-container').scrollTop = 0;
         }
 
-        function showReportDetails(r) {
-            currentReport = r;
+        function filterReports() {
+            const s = document.getElementById('statusFilter').value;
+
+            // Get today's date string for comparison (YYYY-MM-DD)
+            const today = new Date();
+            const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+
+            filteredData = allReports.filter(r => {
+                let statusMatch = true;
+                if (s === 'PendingToday') {
+                    // Belum Selesai (Terkini) — only today's pending reports
+                    const createdDate = r.created_at ? r.created_at.substring(0, 10) : '';
+                    statusMatch = r.status === 'Pending' && r.keputusan !== 'Syor Dilupuskan' && createdDate === todayStr;
+                } else if (s === 'Pending') {
+                    // Semua Belum Selesai — all pending reports regardless of date
+                    statusMatch = r.status === 'Pending' && r.keputusan !== 'Syor Dilupuskan';
+                } else if (s === 'Syor Dilupuskan') {
+                    statusMatch = r.keputusan === 'Syor Dilupuskan';
+                } else if (s !== 'all') {
+                    statusMatch = r.status === s && r.keputusan !== 'Syor Dilupuskan';
+                }
+
+                return statusMatch;
+            });
+            currentPage = 1;
+            renderReports();
+        }
+
+        function resetFilters() {
+            document.getElementById('statusFilter').value = "PendingToday";
+            filterReports();
+        }
+
+        function openReport(r) {
             document.getElementById('p_id').value = r.id;
             document.getElementById('p_reporter').value = r.nama_pelapor || r.full_name || '';
             document.getElementById('p_created_at').value = r.created_at;
@@ -653,39 +656,98 @@
             document.getElementById('v_syor').value = r.syor_ulasan || '';
             document.getElementById('v_admin_nama').value = r.admin_name_jawatan || '';
             document.getElementById('v_admin_jawatan').value = r.admin_jawatan || '';
-
-            const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
-            document.getElementById('v_admin_tarikh').value = (isCompleted && r.admin_tarikh)
-                ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })
-                : 'Belum Diproses';
-
             document.getElementById('v_keputusan').value = r.keputusan || 'Diluluskan';
             document.getElementById('v_kep_nama').value = r.keputusan_nama || '';
             document.getElementById('v_kep_tarikh').value = r.keputusan_tarikh || '';
 
-            // ISO badge
-            const modalDays = (isCompleted && r.admin_tarikh) ? calcIsoDays(r.created_at, r.admin_tarikh) : null;
-            const isoEl = document.getElementById('v_iso_badge');
-            if (modalDays !== null) {
-                const pass = modalDays <= 14;
-                isoEl.innerHTML = `<span style="
-                    display:inline-flex;align-items:center;gap:0.4rem;
-                    padding:0.4rem 1rem;border-radius:20px;font-size:0.8rem;font-weight:700;
-                    background:${pass ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)'};
-                    color:${pass ? '#059669' : '#dc2626'};
-                    border:1px solid ${pass ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};
-                ">${pass ? '✅ Memenuhi ISO' : '⚠️ Melebihi ISO'} (${modalDays} hari)</span>`;
+            // Proses Semasa — sentiasa boleh dikemaskini
+            const prosesEl = document.getElementById('v_proses_semasa');
+            prosesEl.value = r.proses_semasa || '';
+            prosesEl.disabled = false;
+
+            const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected' || r.keputusan === 'Syor Dilupuskan';
+            const saveBtn = document.querySelector('#processForm button[type="submit"]');
+            if (isCompleted) {
+                document.getElementById('tarikh_siap_group').style.display = 'block';
+                document.getElementById('v_admin_tarikh').value = r.admin_tarikh
+                    ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })
+                    : 'Belum Diproses';
+
+                document.getElementById('iso_badge_group').style.display = 'block';
+                const modalDays = r.admin_tarikh ? calcIsoDays(r.created_at, r.admin_tarikh) : null;
+                const isoEl = document.getElementById('v_iso_badge');
+                if (modalDays !== null) {
+                    const pass = modalDays <= 14;
+                    isoEl.innerHTML = `<span style="
+                        display:inline-flex;align-items:center;gap:0.4rem;
+                        padding:0.4rem 1rem;border-radius:20px;font-size:0.8rem;font-weight:700;
+                        background:${pass ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)'};
+                        color:${pass ? '#059669' : '#dc2626'};
+                        border:1px solid ${pass ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};
+                    ">${pass ? '✅ Memenuhi ISO' : '⚠️ Melebihi ISO'} (${modalDays} hari)</span>`;
+                } else {
+                    isoEl.innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem;">—</span>';
+                }
+
+                if (saveBtn) saveBtn.style.display = 'none';
+                document.querySelectorAll('#processForm input, #processForm textarea, #processForm select').forEach(el => {
+                    if (el.id !== 'p_id' && el.id !== 'v_proses_semasa') el.disabled = true;
+                });
             } else {
-                isoEl.innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem;">—</span>';
+                document.getElementById('tarikh_siap_group').style.display = 'none';
+                document.getElementById('iso_badge_group').style.display = 'none';
+
+                if (saveBtn) saveBtn.style.display = 'block';
+                document.querySelectorAll('#processForm input, #processForm textarea, #processForm select').forEach(el => {
+                    if (el.id !== 'p_id') el.disabled = false;
+                });
             }
 
             document.getElementById('viewModal').style.display = 'flex';
         }
 
-
         function closeModal() {
             document.getElementById('viewModal').style.display = 'none';
         }
+
+        async function saveProsesSemasa() {
+            const id = document.getElementById('p_id').value;
+            const proses = document.getElementById('v_proses_semasa').value;
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('proses_semasa', proses);
+            try {
+                const res = await fetch('../api/admin_update_proses.php', { method: 'POST', body: formData });
+                const result = await res.json();
+                if (result.status === 'success') {
+                    // Show brief success toast
+                    const toast = document.createElement('div');
+                    toast.textContent = '✅ Proses semasa berjaya dikemaskini!';
+                    toast.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:#10b981;color:white;padding:0.75rem 1.5rem;border-radius:12px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);';
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 3000);
+                    fetchReports();
+                } else {
+                    alert('Ralat: ' + result.message);
+                }
+            } catch (err) { console.error(err); alert('Ralat sambungan.'); }
+        }
+
+        document.getElementById('processForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            try {
+                const res = await fetch('../api/admin_update_report.php', { method: 'POST', body: formData });
+                const result = await res.json();
+                if (result.status === 'success') {
+                    alert('Laporan berjaya dikemaskini!');
+                    closeModal();
+                    fetchReports();
+                } else {
+                    alert(result.message);
+                }
+            } catch (err) { console.error(err); }
+        });
 
         function printKEWPA9() {
             try {
@@ -725,7 +787,7 @@
                 document.getElementById('pr_admin_tarikh').textContent = new Date().toLocaleDateString('ms-MY');
                 document.getElementById('pr_keputusan_line').innerHTML = kepLine;
                 document.getElementById('pr_kep_nama').textContent = document.getElementById('v_kep_nama').value || '';
-                document.getElementById('pr_kep_jawatan').textContent = currentReport ? (currentReport.keputusan_jawatan || '') : '';
+                document.getElementById('pr_kep_jawatan').textContent = document.getElementById('v_kep_nama').value || '';
                 document.getElementById('pr_kep_tarikh').textContent = document.getElementById('v_kep_tarikh').value || '';
 
                 document.getElementById('printableArea').style.display = 'block';

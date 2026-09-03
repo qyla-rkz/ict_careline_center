@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Saya - Super Admin</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <title>Profil Saya - ICT Careline Center</title>
+    <link rel="stylesheet" href="../assets/css/style.css?v=15">
     <script src="../assets/js/global.js?v=10"></script>
 </head>
-
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -17,64 +15,47 @@
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
                 <h2>ICT Careline Center</h2>
             </div>
-            <div class="user-profile"
-                style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
-                <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super
-                    Admin</p>
-            </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.html" class="nav-link active">👤 Profil Saya</a>
-                <a href="users.html" class="nav-link">👥 Pengguna</a>
-                <a href="audit_logs.html" class="nav-link">📜 Jejak Audit</a>
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link active">👤 Profil Saya</a>
+                <a href="assets.php" class="nav-link">🖥️ Aset Saya</a>
+                <a href="report_form.php" class="nav-link">📝 Hantar KEW.PA-9</a>
+                <a href="history.php" class="nav-link">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
-                    Log Keluar</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header
-                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
                 <div>
-                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Super Admin Portal
-                    </p>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Staff Portal</p>
                     <h2 style="font-size: 1.8rem; color: var(--text-main);">Profil Saya</h2>
                 </div>
-                <div id="current-date"
-                    style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                <div id="current-date" style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
                     <!-- Date will be loaded here -->
                 </div>
             </header>
 
             <section>
                 <h1>Maklumat Akaun</h1>
-                <div class="card" style="margin-top: 2rem; max-width: 700px;">
+                <div class="card" style="margin-top: 2rem; max-width: 600px;">
                     <form id="profile-form" enctype="multipart/form-data">
-                        <div
-                            style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; padding: 1.5rem; background: rgba(79, 70, 229, 0.03); border: 1px solid var(--border); border-radius: 16px;">
-                            <div id="avatar-container"
-                                style="width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--primary); overflow: hidden; background: #e2e8f0; box-shadow: var(--shadow); margin-bottom: 1rem; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;"
-                                title="Klik untuk menukar gambar profil">
-                                <img id="p_profile_pic" src=""
-                                    style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                        <!-- Profile Picture Edit Section -->
+                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; padding: 1.5rem; background: rgba(79, 70, 229, 0.03); border: 1px solid var(--border); border-radius: 16px;">
+                            <div id="avatar-container" style="width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--primary); overflow: hidden; background: #e2e8f0; box-shadow: var(--shadow); margin-bottom: 1rem; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;" title="Klik untuk menukar gambar profil">
+                                <img id="p_profile_pic" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
                                 <span id="p_profile_pic_placeholder" style="font-size: 3rem;">👤</span>
-                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s;"
-                                    onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
-                                    <span
-                                        style="color: white; font-size: 0.8rem; font-weight: 600; text-align: center; padding: 5px;">Tukar
-                                        Gambar</span>
+                                <!-- Hover dark overlay -->
+                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                                    <span style="color: white; font-size: 0.8rem; font-weight: 600; text-align: center; padding: 5px;">Tukar Gambar</span>
                                 </div>
                             </div>
-                            <input type="file" name="profile_picture" id="profile_picture_input" accept="image/*"
-                                style="display: none;">
-                            <span style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">Gambar Profil
-                                Formal</span>
-                            <div
-                                style="margin-top: 0.5rem; text-align: center; font-size: 0.8rem; color: var(--text-muted); max-width: 320px; line-height: 1.4;">
+                            <input type="file" name="profile_picture" id="profile_picture_input" accept="image/*" style="display: none;">
+                            <span style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">Gambar Profil Formal</span>
+                            <div style="margin-top: 0.5rem; text-align: center; font-size: 0.8rem; color: var(--text-muted); max-width: 320px; line-height: 1.4;">
                                 Klik gambar di atas untuk memuat naik gambar profil baru anda.
                             </div>
                         </div>
@@ -84,9 +65,8 @@
                             <input type="text" id="p_name" name="full_name" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>Nama Pengguna</label>
-                            <input type="text" id="p_user" name="username" class="form-control" readonly
-                                style="background: rgba(0,0,0,0.03);">
+                            <label>ID Staf</label>
+                            <input type="text" id="p_user" name="username" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
                         </div>
                         <div class="form-group">
                             <label>No. Telefon</label>
@@ -102,38 +82,32 @@
                         </div>
                         <div class="form-group">
                             <label>Jabatan / Unit</label>
-                            <input type="text" id="p_dept" name="department" class="form-control" readonly
-                                style="background: rgba(0,0,0,0.03);">
+                            <input type="text" id="p_dept" name="department" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
                         </div>
+                        
                         <div style="margin-top: 2rem;">
-                            <button type="submit" id="save-btn" class="btn btn-primary" style="width: 100%;">Simpan
-                                Perubahan</button>
+                            <button type="submit" id="save-btn" class="btn btn-primary" style="width: 100%;">Simpan Perubahan</button>
                         </div>
                     </form>
                 </div>
 
                 <h1 style="margin-top: 3rem;">Keselamatan</h1>
-                <div class="card" style="margin-top: 2rem; max-width: 700px;">
+                <div class="card" style="margin-top: 2rem; max-width: 600px;">
                     <form id="password-form">
                         <div class="form-group">
                             <label>Kata Laluan Semasa</label>
-                            <input type="password" name="current_password" class="form-control" required
-                                placeholder="Masukkan kata laluan semasa">
+                            <input type="password" name="current_password" class="form-control" required placeholder="Masukkan kata laluan semasa">
                         </div>
                         <div class="form-group">
                             <label>Kata Laluan Baru</label>
-                            <input type="password" name="new_password" class="form-control" required
-                                placeholder="Masukkan kata laluan baru">
+                            <input type="password" name="new_password" class="form-control" required placeholder="Masukkan kata laluan baru">
                         </div>
                         <div class="form-group">
                             <label>Sahkan Kata Laluan Baru</label>
-                            <input type="password" name="confirm_password" class="form-control" required
-                                placeholder="Ulang kata laluan baru">
+                            <input type="password" name="confirm_password" class="form-control" required placeholder="Ulang kata laluan baru">
                         </div>
                         <div style="margin-top: 2rem;">
-                            <button type="submit" id="pass-btn" class="btn btn-secondary"
-                                style="width: 100%; border: 1px solid var(--border); background: transparent; color: var(--text-main);">Kemaskini
-                                Kata Laluan</button>
+                            <button type="submit" id="pass-btn" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--border); background: transparent; color: var(--text-main);">Kemaskini Kata Laluan</button>
                         </div>
                     </form>
                 </div>
@@ -145,52 +119,17 @@
         async function handleLogout() {
             try {
                 await fetch('../api/logout.php');
-            } catch (err) { }
+            } catch (err) {}
             sessionStorage.clear();
-            window.location.replace('../login.html');
+            sessionStorage.clear();
+            window.location.replace('../login.php');
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
             const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', dateOpts);
 
-            const loadProfile = async () => {
-                try {
-                    const response = await fetch('../api/admin_get_profile.php');
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const result = await response.json();
-                    if (result.status === 'success') {
-                        document.getElementById('p_name').value = result.data.full_name || '';
-                        document.getElementById('p_user').value = result.data.username || '';
-                        document.getElementById('p_phone').value = result.data.phone || '';
-                        document.getElementById('p_office').value = result.data.office || '';
-                        document.getElementById('p_jawatan').value = result.data.jawatan || '';
-                        document.getElementById('p_dept').value = result.data.department || '';
-
-                        if (result.data.profile_picture) {
-                            const imgEl = document.getElementById('p_profile_pic');
-                            const placeholderEl = document.getElementById('p_profile_pic_placeholder');
-                            imgEl.src = '../' + result.data.profile_picture;
-                            imgEl.style.display = 'block';
-                            placeholderEl.style.display = 'none';
-                        }
-
-                        if (result.data.full_name) {
-                            document.getElementById('sidebarSuperadminName').textContent = result.data.full_name;
-                        }
-
-                        sessionStorage.setItem('user', JSON.stringify(result.data));
-                    } else if (result.message === 'Not logged in') {
-                        window.location.replace('../login.html');
-                    } else {
-                        alert('Ralat memuatkan profil: ' + result.message);
-                    }
-                } catch (err) {
-                    console.error('Fetch error:', err);
-                    alert('Ralat Sambungan: Tidak dapat memuatkan data profil.');
-                }
-            };
-
+            // Profile Picture Selection & Preview Logic
             const avatarContainer = document.getElementById('avatar-container');
             const profilePictureInput = document.getElementById('profile_picture_input');
             const profilePicImg = document.getElementById('p_profile_pic');
@@ -213,8 +152,46 @@
                 }
             });
 
+            const loadProfile = async () => {
+                try {
+                    const response = await fetch('../api/staff_get_profile.php');
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        document.getElementById('p_name').value = result.data.full_name || '';
+                        document.getElementById('p_user').value = result.data.username || '';
+                        document.getElementById('p_phone').value = result.data.phone || '';
+                        document.getElementById('p_office').value = result.data.office || '';
+                        document.getElementById('p_jawatan').value = result.data.jawatan || '';
+                        document.getElementById('p_dept').value = result.data.department || '';
+                        
+                        if (result.data.profile_picture) {
+                            const imgEl = document.getElementById('p_profile_pic');
+                            const placeholderEl = document.getElementById('p_profile_pic_placeholder');
+                            imgEl.src = '../' + result.data.profile_picture;
+                            imgEl.style.display = 'block';
+                            placeholderEl.style.display = 'none';
+                        }
+                        
+                        sessionStorage.setItem('user', JSON.stringify(result.data));
+                        if (typeof setupStaffSidebarProfile === 'function') {
+                            setupStaffSidebarProfile();
+                        }
+                    } else if (result.message === 'Not logged in') {
+                        window.location.replace('../login.php');
+                    } else {
+                        alert('Error loading profile: ' + result.message);
+                    }
+                } catch (err) { 
+                    console.error('Fetch error:', err);
+                    alert('Ralat Sambungan: Tidak dapat memuatkan data profil.');
+                }
+            };
+
             await loadProfile();
 
+            // Handle Profile Update
             document.getElementById('profile-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const btn = document.getElementById('save-btn');
@@ -225,7 +202,7 @@
                     btn.textContent = 'Menyimpan...';
 
                     const formData = new FormData(e.target);
-                    const response = await fetch('../api/admin_update_profile.php', {
+                    const response = await fetch('../api/staff_update_profile.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -235,7 +212,7 @@
                         alert('Profil berjaya dikemaskini!');
                         await loadProfile();
                     } else {
-                        alert(result.message || 'Kemaskini gagal');
+                        alert(result.message || 'Update failed');
                     }
                 } catch (err) {
                     console.error(err);
@@ -246,6 +223,7 @@
                 }
             });
 
+            // Handle Password Update
             document.getElementById('password-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const btn = document.getElementById('pass-btn');
@@ -260,7 +238,7 @@
                     btn.disabled = true;
                     btn.textContent = 'Mengemaskini...';
 
-                    const response = await fetch('../api/admin_change_password.php', {
+                    const response = await fetch('../api/staff_change_password.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -270,7 +248,7 @@
                         alert('Kata laluan berjaya dikemaskini!');
                         e.target.reset();
                     } else {
-                        alert(result.message || 'Kemaskini gagal');
+                        alert(result.message || 'Update failed');
                     }
                 } catch (err) {
                     console.error(err);
@@ -282,6 +260,6 @@
             });
         });
     </script>
-</body>
 
+</body>
 </html>

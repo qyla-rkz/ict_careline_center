@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya - ICT Careline Center</title>
-    <link rel="stylesheet" href="../assets/css/style.css?v=15">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <script src="../assets/js/global.js?v=10"></script>
 </head>
 <body>
@@ -15,12 +15,17 @@
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
                 <h2>ICT Careline Center</h2>
             </div>
+            <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
+                <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
+            </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.html" class="nav-link active">👤 Profil Saya</a>
-                <a href="assets.html" class="nav-link">🖥️ Aset Saya</a>
-                <a href="report_form.html" class="nav-link">📝 Hantar KEW.PA-9</a>
-                <a href="history.html" class="nav-link">📜 Laporan Saya</a>
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link active">👤 Profil Saya</a>
+                <a href="report_management.php" class="nav-link">📝 Pengurusan Laporan</a>
+                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
+                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
@@ -31,7 +36,7 @@
         <main class="main-content">
             <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
                 <div>
-                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Staff Portal</p>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Admin Portal</p>
                     <h2 style="font-size: 1.8rem; color: var(--text-main);">Profil Saya</h2>
                 </div>
                 <div id="current-date" style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
@@ -65,7 +70,7 @@
                             <input type="text" id="p_name" name="full_name" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>ID Staf</label>
+                            <label>ID Staf / Username</label>
                             <input type="text" id="p_user" name="username" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
                         </div>
                         <div class="form-group">
@@ -121,8 +126,7 @@
                 await fetch('../api/logout.php');
             } catch (err) {}
             sessionStorage.clear();
-            sessionStorage.clear();
-            window.location.replace('../login.html');
+            window.location.replace('../login.php');
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -154,7 +158,7 @@
 
             const loadProfile = async () => {
                 try {
-                    const response = await fetch('../api/staff_get_profile.php');
+                    const response = await fetch('../api/admin_get_profile.php');
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     
                     const result = await response.json();
@@ -174,14 +178,16 @@
                             placeholderEl.style.display = 'none';
                         }
                         
-                        sessionStorage.setItem('user', JSON.stringify(result.data));
-                        if (typeof setupStaffSidebarProfile === 'function') {
-                            setupStaffSidebarProfile();
+                        // Update sidebar name
+                        if (result.data.full_name) {
+                            document.getElementById('sidebarAdminName').textContent = result.data.full_name;
                         }
+
+                        sessionStorage.setItem('user', JSON.stringify(result.data));
                     } else if (result.message === 'Not logged in') {
-                        window.location.replace('../login.html');
+                        window.location.replace('../login.php');
                     } else {
-                        alert('Error loading profile: ' + result.message);
+                        alert('Ralat memuatkan profil: ' + result.message);
                     }
                 } catch (err) { 
                     console.error('Fetch error:', err);
@@ -202,7 +208,7 @@
                     btn.textContent = 'Menyimpan...';
 
                     const formData = new FormData(e.target);
-                    const response = await fetch('../api/staff_update_profile.php', {
+                    const response = await fetch('../api/admin_update_profile.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -212,7 +218,7 @@
                         alert('Profil berjaya dikemaskini!');
                         await loadProfile();
                     } else {
-                        alert(result.message || 'Update failed');
+                        alert(result.message || 'Kemaskini gagal');
                     }
                 } catch (err) {
                     console.error(err);
@@ -238,7 +244,7 @@
                     btn.disabled = true;
                     btn.textContent = 'Mengemaskini...';
 
-                    const response = await fetch('../api/staff_change_password.php', {
+                    const response = await fetch('../api/admin_change_password.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -248,7 +254,7 @@
                         alert('Kata laluan berjaya dikemaskini!');
                         e.target.reset();
                     } else {
-                        alert(result.message || 'Update failed');
+                        alert(result.message || 'Kemaskini gagal');
                     }
                 } catch (err) {
                     console.error(err);
@@ -260,6 +266,5 @@
             });
         });
     </script>
-
 </body>
 </html>

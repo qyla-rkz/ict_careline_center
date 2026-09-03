@@ -23,12 +23,12 @@
                 <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
-                <a href="report_management.html" class="nav-link">📝 Pengurusan Laporan</a>
-                <a href="inventory.html" class="nav-link active">🖥️ Inventori Aset</a>
-                <a href="staff_assets.html" class="nav-link">👥 Aset Staf</a>
-                <a href="history_reports.html" class="nav-link">📜 Log Sejarah</a>
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="report_management.php" class="nav-link">📝 Pengurusan Laporan</a>
+                <a href="inventory.php" class="nav-link active">🖥️ Inventori Aset</a>
+                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
+                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -310,7 +310,7 @@
             document.getElementById('deptModal').style.display = 'flex';
         }
 
-        // Senarai semua jabatan dalam sistem (sama seperti register.html)
+        // Senarai semua jabatan dalam sistem (sama seperti register.php)
         const SEMUA_JABATAN = [
             'Jabatan Bangunan',
             'Jabatan Kejuruteraan',

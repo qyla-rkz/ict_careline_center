@@ -64,11 +64,11 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
-                <a href="assets.html" class="nav-link">🖥️ Aset Saya</a>
-                <a href="report_form.html" class="nav-link active">📝 Hantar KEW.PA-9</a>
-                <a href="history.html" class="nav-link">📜 Laporan Saya</a>
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="assets.php" class="nav-link">🖥️ Aset Saya</a>
+                <a href="report_form.php" class="nav-link active">📝 Hantar KEW.PA-9</a>
+                <a href="history.php" class="nav-link">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -182,7 +182,7 @@
             } catch (err) { }
             sessionStorage.clear();
             sessionStorage.clear();
-            window.location.replace('../login.html');
+            window.location.replace('../login.php');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -202,7 +202,7 @@
                     document.getElementById('f_dept').value = result.data.department || '';
                     document.getElementById('f_pengguna').value = result.data.full_name || '';
                 } else if (result.message === 'Not logged in') {
-                    window.location.replace('../login.html');
+                    window.location.replace('../login.php');
                 }
             } catch (err) { console.error(err); }
         }
@@ -231,7 +231,7 @@
 
                 if (res.status === 'success') {
                     alert('Borang KEW.PA-9 berjaya dihantar!');
-                    window.location.href = 'history.html';
+                    window.location.href = 'history.php';
                 } else {
                     alert(res.message || 'Submission failed');
                 }

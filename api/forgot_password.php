@@ -52,7 +52,7 @@ try {
     $stmt->execute([$email, $token, $expires]);
 
     // Build reset link
-    $reset_link = $app_url . '/reset_password.html?token=' . $token;
+    $reset_link = $app_url . '/reset_password.php?token=' . $token;
 
     // ─── Send Email via PHPMailer ───
     require_once __DIR__ . '/../phpmailer/PHPMailer.php';

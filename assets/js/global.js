@@ -15,7 +15,7 @@
 (function () {
     const path = window.location.pathname;
     const inSubdir = path.includes('/staff/') || path.includes('/admin/') || path.includes('/superadmin/');
-    const isWelcomePage = path.endsWith('/') || path.endsWith('index.html') || path === '/';
+    const isWelcomePage = path.endsWith('/') || path.endsWith('index.php') || path === '/';
     const isGuestPage = !inSubdir;
 
     function hidePortalUntilAuth() {
@@ -31,7 +31,7 @@
         if (sessionStorage.getItem('pending_inactivity_logout') === 'true') {
             sessionStorage.clear();
             fetch('../api/logout.php', { cache: 'no-store' }).catch(() => {});
-            window.location.replace('../login.html');
+            window.location.replace('../login.php');
             return;
         }
 
@@ -52,13 +52,13 @@
                 } else {
                     // No server session — clear any stale client data and redirect
                     sessionStorage.clear();
-                    window.location.replace('../login.html');
+                    window.location.replace('../login.php');
                 }
             })
             .catch(function () {
                 // Network error: if no sessionStorage either, play it safe and redirect
                 if (!sessionStorage.getItem('user')) {
-                    window.location.replace('../login.html');
+                    window.location.replace('../login.php');
                 } else {
                     restorePortalVisibility();
                 }
@@ -75,11 +75,11 @@
                     if (result.status === 'success') {
                         const role = (result.data.role || '').toLowerCase();
                         if (role === 'staff') {
-                            window.location.replace('staff/dashboard.html');
+                            window.location.replace('staff/dashboard.php');
                         } else if (role === 'super admin' || role === 'superadmin') {
-                            window.location.replace('superadmin/dashboard.html');
+                            window.location.replace('superadmin/dashboard.php');
                         } else if (role === 'admin') {
-                            window.location.replace('admin/dashboard.html');
+                            window.location.replace('admin/dashboard.php');
                         }
                     } else {
                         // Server session expired — clear stale sessionStorage
@@ -102,7 +102,7 @@ window.addEventListener('pageshow', function (event) {
             .then(function (result) {
                 if (result.status !== 'success') {
                     sessionStorage.clear();
-                    window.location.replace('../login.html');
+                    window.location.replace('../login.php');
                 } else {
                     // Refresh sessionStorage in case it was stale
                     sessionStorage.setItem('user', JSON.stringify(result.data));
@@ -114,7 +114,7 @@ window.addEventListener('pageshow', function (event) {
                 if (sessionStorage.getItem('user')) {
                     document.documentElement.style.visibility = '';
                 } else {
-                    window.location.replace('../login.html');
+                    window.location.replace('../login.php');
                 }
             });
     }
@@ -234,7 +234,7 @@ async function triggerGlobalLogout() {
                      window.location.pathname.includes('/admin/') || 
                      window.location.pathname.includes('/superadmin/');
     const apiPath = inSubdir ? '../api/logout.php' : './api/logout.php';
-    const loginPath = inSubdir ? '../login.html' : './login.html';
+    const loginPath = inSubdir ? '../login.php' : './login.php';
     
     try {
         await fetch(apiPath);
@@ -460,7 +460,7 @@ function setupStaffSidebarProfile() {
             if (isStaffPage || isAdminPage || isSuperAdminPage) {
                 picContainer.style.cursor = 'pointer';
                 picContainer.title = 'Profil Saya';
-                picContainer.onclick = () => { window.location.href = 'profile.html'; };
+                picContainer.onclick = () => { window.location.href = 'profile.php'; };
             }
             container.appendChild(picContainer);
         }
@@ -505,7 +505,7 @@ function setupStaffSidebarProfile() {
 
 function setupDashboardBackGuard() {
     const path = window.location.pathname.toLowerCase();
-    const isDashboardPage = path.endsWith('/dashboard.html');
+    const isDashboardPage = path.endsWith('/dashboard.php');
     if (!isDashboardPage) return;
 
     // Push a state so that when user hits back, we can intercept it

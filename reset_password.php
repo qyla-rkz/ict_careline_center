@@ -52,7 +52,7 @@
 
     <nav class="navbar container" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; border-bottom: none;">
         <div class="logo">
-            <a href="index.html" style="text-decoration:none; color:inherit;">ICT Careline <span>Center</span></a>
+            <a href="index.php" style="text-decoration:none; color:inherit;">ICT Careline <span>Center</span></a>
         </div>
     </nav>
 
@@ -75,7 +75,7 @@
                 <div style="font-size:2rem; margin-bottom:0.75rem;">⏱️</div>
                 <p style="color:#dc2626; font-weight:700; margin-bottom:0.5rem;">Pautan Tidak Sah atau Tamat Tempoh</p>
                 <p style="color:var(--text-muted); font-size:0.875rem; margin-bottom:1.5rem;">Pautan ini tidak sah atau telah tamat tempoh (1 jam). Sila mohon semula.</p>
-                <a href="login.html" class="cta-btn primary" style="display:inline-block; text-decoration:none; padding:0.7rem 1.5rem; border-radius:10px; font-size:0.9rem;">
+                <a href="login.php" class="cta-btn primary" style="display:inline-block; text-decoration:none; padding:0.7rem 1.5rem; border-radius:10px; font-size:0.9rem;">
                     Kembali ke Log Masuk
                 </a>
             </div>
@@ -186,7 +186,7 @@
                 if (data.status === 'success') {
                     document.getElementById('resetForm').style.display = 'none';
                     showSuccess(data.message + ' Mengalihkan ke Log Masuk...');
-                    setTimeout(() => window.location.href = 'login.html', 2500);
+                    setTimeout(() => window.location.href = 'login.php', 2500);
                 } else {
                     showError(data.message || 'Ralat tidak diketahui.');
                     if (data.message.includes('tidak sah') || data.message.includes('tamat')) {

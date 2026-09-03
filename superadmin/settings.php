@@ -104,10 +104,10 @@
                     Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.html" class="nav-link">👤 Profil Saya</a>
-                <a href="users.html" class="nav-link">👥 Pengguna</a>
-                <a href="audit_logs.html" class="nav-link">📜 Jejak Audit</a>
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="users.php" class="nav-link">👥 Pengguna</a>
+                <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -185,13 +185,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             const userStr = sessionStorage.getItem('user');
             if (!userStr) {
-                window.location.replace('../login.html');
+                window.location.replace('../login.php');
                 return;
             }
             const user = JSON.parse(userStr);
             if (user.role !== 'Super Admin' && user.role !== 'superadmin') {
                 alert('Akses Ditolak. Anda bukan Super Admin.');
-                window.location.replace('../login.html');
+                window.location.replace('../login.php');
                 return;
             }
 
