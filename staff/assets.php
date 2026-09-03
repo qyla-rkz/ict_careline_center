@@ -16,11 +16,11 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
-                <a href="assets.php" class="nav-link active">🖥️ Aset Saya</a>
-                <a href="report_form.php" class="nav-link">📝 Hantar KEW.PA-9</a>
-                <a href="history.php" class="nav-link">📜 Laporan Saya</a>
+                <a href="dashboard" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile" class="nav-link">👤 Profil Saya</a>
+                <a href="assets" class="nav-link active">🖥️ Aset Saya</a>
+                <a href="report_form" class="nav-link">📝 Hantar KEW.PA-9</a>
+                <a href="history" class="nav-link">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
@@ -163,7 +163,7 @@
     <script>
         async function handleLogout() {
             try {
-                await fetch('../api/logout.php');
+                await fetch("../api/logout"));
             } catch (err) {}
             sessionStorage.clear();
             sessionStorage.clear();
@@ -212,7 +212,7 @@
 
         async function fetchProfile() {
             try {
-                const response = await fetch('../api/staff_get_profile.php');
+                const response = await fetch("../api/staff_get_profile"));
                 const result = await response.json();
                 if (result.status === 'success') {
                     document.getElementById('user_nama').value = result.data.full_name || '';
@@ -224,7 +224,7 @@
 
         async function loadAssetData() {
             try {
-                const response = await fetch('../api/staff_get_assets.php');
+                const response = await fetch("../api/staff_get_assets"));
                 const result = await response.json();
                 if (result.status === 'success' && result.data.length > 0) {
                     const a = result.data[0];
@@ -275,7 +275,7 @@
                 btn.disabled = true;
                 btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Menyimpan Butiran...';
                 
-                const response = await fetch('../api/staff_save_asset.php', {
+                const response = await fetch("../api/staff_save_asset"), {
                     method: 'POST',
                     body: formData
                 });

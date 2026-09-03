@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(loginForm);
             
             try {
-                const response = await fetch('api/login.php', {
+                const response = await fetch("api/login"), {
                     method: 'POST',
                     body: formData
                 });
@@ -29,11 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Redirect based on role
                     const role = data.data.role.toLowerCase();
                     if (role === 'super admin' || role === 'superadmin') {
-                        window.location.href = 'superadmin/dashboard.php';
+                        window.location.href="superadmin/dashboard";
                     } else if (role === 'admin') {
-                        window.location.href = 'admin/dashboard.php';
+                        window.location.href="admin/dashboard";
                     } else {
-                        window.location.href = 'staff/dashboard.php';
+                        window.location.href="staff/dashboard";
                     }
                 } else {
                     alert(data.message || 'Log Masuk gagal.');

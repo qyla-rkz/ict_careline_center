@@ -22,13 +22,13 @@
 
     <nav class="navbar container" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; border-bottom: none; display: flex; justify-content: space-between; align-items: center;">
         <div class="logo">
-            <a href="index.php" style="text-decoration:none; color:inherit; display: flex; align-items: center; gap: 15px;">
+            <a href="index" style="text-decoration:none; color:inherit; display: flex; align-items: center; gap: 15px;">
                 <img src="assets/images/logo-mpm.png" alt="Logo MPM" style="height: 70px; width: auto;">
                 <div>ICT Careline <span>Center</span></div>
             </a>
         </div>
         <div>
-            <a href="select-portal.php" style="text-decoration: none; font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; background: rgba(79, 70, 229, 0.05); padding: 0.5rem 1.25rem; border-radius: 20px; border: 1.5px solid var(--primary); transition: all 0.2s ease;" onmouseover="this.style.background='var(--primary)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(79, 70, 229, 0.05)'; this.style.color='var(--primary)';">
+            <a href="select-portal" style="text-decoration: none; font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; background: rgba(79, 70, 229, 0.05); padding: 0.5rem 1.25rem; border-radius: 20px; border: 1.5px solid var(--primary); transition: all 0.2s ease;" onmouseover="this.style.background='var(--primary)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(79, 70, 229, 0.05)'; this.style.color='var(--primary)';">
                 ← Kembali
             </a>
         </div>
@@ -106,7 +106,7 @@
                 </button>
 
                 <p style="text-align:center; margin-top:2rem; font-size:0.9rem; color: var(--text-muted);">
-                    Sudah mempunyai akaun? <a href="login.php" style="color:var(--primary); font-weight:700; text-decoration:none;">Log masuk di sini</a>
+                    Sudah mempunyai akaun? <a href="login" style="color:var(--primary); font-weight:700; text-decoration:none;">Log masuk di sini</a>
                 </p>
             </form>
         </div>
@@ -185,14 +185,14 @@
 
             const formData = new FormData(e.target);
             try {
-                const response = await fetch('api/register.php', {
+                const response = await fetch("api/register"), {
                     method: 'POST',
                     body: formData
                 });
                 const res = await response.json();
                 if (res.status === 'success') {
                     alert('Pendaftaran berjaya! Sila log masuk.');
-                    window.location.href = 'login.php';
+                    window.location.href="login";
                 } else {
                     alert(res.message);
                 }

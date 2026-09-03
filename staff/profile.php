@@ -16,11 +16,11 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link active">👤 Profil Saya</a>
-                <a href="assets.php" class="nav-link">🖥️ Aset Saya</a>
-                <a href="report_form.php" class="nav-link">📝 Hantar KEW.PA-9</a>
-                <a href="history.php" class="nav-link">📜 Laporan Saya</a>
+                <a href="dashboard" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile" class="nav-link active">👤 Profil Saya</a>
+                <a href="assets" class="nav-link">🖥️ Aset Saya</a>
+                <a href="report_form" class="nav-link">📝 Hantar KEW.PA-9</a>
+                <a href="history" class="nav-link">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
@@ -118,7 +118,7 @@
     <script>
         async function handleLogout() {
             try {
-                await fetch('../api/logout.php');
+                await fetch("../api/logout"));
             } catch (err) {}
             sessionStorage.clear();
             sessionStorage.clear();
@@ -154,7 +154,7 @@
 
             const loadProfile = async () => {
                 try {
-                    const response = await fetch('../api/staff_get_profile.php');
+                    const response = await fetch("../api/staff_get_profile"));
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     
                     const result = await response.json();
@@ -202,7 +202,7 @@
                     btn.textContent = 'Menyimpan...';
 
                     const formData = new FormData(e.target);
-                    const response = await fetch('../api/staff_update_profile.php', {
+                    const response = await fetch("../api/staff_update_profile"), {
                         method: 'POST',
                         body: formData
                     });
@@ -238,7 +238,7 @@
                     btn.disabled = true;
                     btn.textContent = 'Mengemaskini...';
 
-                    const response = await fetch('../api/staff_change_password.php', {
+                    const response = await fetch("../api/staff_change_password"), {
                         method: 'POST',
                         body: formData
                     });

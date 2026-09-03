@@ -27,10 +27,10 @@
                     Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
-                <a href="users.php" class="nav-link">👥 Pengguna</a>
-                <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
+                <a href="dashboard" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="profile" class="nav-link">👤 Profil Saya</a>
+                <a href="users" class="nav-link">👥 Pengguna</a>
+                <a href="audit_logs" class="nav-link">📜 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -115,7 +115,7 @@
                                 Memuatkan...</li>
                         </ul>
                         <div style="margin-top: 1.5rem; text-align: center;">
-                            <a href="audit_logs.php" class="btn btn-outline"
+                            <a href="audit_logs" class="btn btn-outline"
                                 style="width: 100%; display: block; font-size: 0.9rem;">Lihat Semua Jejak Audit
                                 &rarr;</a>
                         </div>
@@ -136,7 +136,7 @@
             </p>
             <p id="pwReminderDays" style="color:#dc2626; font-weight:700; font-size:0.95rem; margin-bottom:1.75rem;"></p>
             <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-                <a href="profile.php" style="background:linear-gradient(135deg,#dc2626,#2563eb); color:white; font-weight:700; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none; font-size:0.9rem; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🔒 Tukar Kata Laluan Sekarang</a>
+                <a href="profile" style="background:linear-gradient(135deg,#dc2626,#2563eb); color:white; font-weight:700; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none; font-size:0.9rem; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🔒 Tukar Kata Laluan Sekarang</a>
                 <button onclick="document.getElementById('pwReminderModal').style.display='none'" style="background:#f1f5f9; color:#475569; font-weight:600; padding:0.75rem 1.5rem; border-radius:12px; border:none; cursor:pointer; font-size:0.9rem;">Abaikan Buat Masa Ini</button>
             </div>
             <p style="color:#94a3b8; font-size:0.75rem; margin-top:1.25rem;">Peringatan ini akan terus muncul sehingga kata laluan anda dikemas kini.</p>
@@ -168,7 +168,7 @@
 
             // Fetch profile to check password age
             try {
-                const profileRes = await fetch('../api/admin_get_profile.php');
+                const profileRes = await fetch("../api/admin_get_profile"));
                 const profile = await profileRes.json();
                 if (profile.status === 'success') {
                     sessionStorage.setItem('user', JSON.stringify(profile.data));
@@ -208,7 +208,7 @@
 
         async function loadDeanName() {
             try {
-                const res = await fetch('../api/superadmin/settings.php');
+                const res = await fetch("../api/superadmin/settings"));
                 const data = await res.json();
             } catch (e) {
                 console.error('Ralat mengambil nama dekan:', e);
@@ -217,7 +217,7 @@
 
         async function fetchStats() {
             try {
-                const res = await fetch('../api/superadmin/system_stats.php');
+                const res = await fetch("../api/superadmin/system_stats"));
                 const data = await res.json();
 
                 if (data.status === 'success') {

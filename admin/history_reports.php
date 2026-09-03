@@ -153,12 +153,12 @@
                 <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
-                <a href="report_management.php" class="nav-link">📝 Pengurusan Laporan</a>
-                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="history_reports.php" class="nav-link active">📜 Sejarah Laporan</a>
+                <a href="dashboard" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile" class="nav-link">👤 Profil Saya</a>
+                <a href="report_management" class="nav-link">📝 Pengurusan Laporan</a>
+                <a href="inventory" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets" class="nav-link">👥 Aset Staf</a>
+                <a href="history_reports" class="nav-link active">📜 Sejarah Laporan</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -476,7 +476,7 @@
 
         async function handleLogout() {
             try {
-                await fetch('../api/logout.php');
+                await fetch("../api/logout"));
             } catch (err) { }
             sessionStorage.clear();
             sessionStorage.clear();

@@ -20,12 +20,12 @@
                 <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link active">👤 Profil Saya</a>
-                <a href="report_management.php" class="nav-link">📝 Pengurusan Laporan</a>
-                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
+                <a href="dashboard" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile" class="nav-link active">👤 Profil Saya</a>
+                <a href="report_management" class="nav-link">📝 Pengurusan Laporan</a>
+                <a href="inventory" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets" class="nav-link">👥 Aset Staf</a>
+                <a href="history_reports" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
@@ -123,7 +123,7 @@
     <script>
         async function handleLogout() {
             try {
-                await fetch('../api/logout.php');
+                await fetch("../api/logout"));
             } catch (err) {}
             sessionStorage.clear();
             window.location.replace('../login.php');
@@ -158,7 +158,7 @@
 
             const loadProfile = async () => {
                 try {
-                    const response = await fetch('../api/admin_get_profile.php');
+                    const response = await fetch("../api/admin_get_profile"));
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     
                     const result = await response.json();
@@ -208,7 +208,7 @@
                     btn.textContent = 'Menyimpan...';
 
                     const formData = new FormData(e.target);
-                    const response = await fetch('../api/admin_update_profile.php', {
+                    const response = await fetch("../api/admin_update_profile"), {
                         method: 'POST',
                         body: formData
                     });
@@ -244,7 +244,7 @@
                     btn.disabled = true;
                     btn.textContent = 'Mengemaskini...';
 
-                    const response = await fetch('../api/admin_change_password.php', {
+                    const response = await fetch("../api/admin_change_password"), {
                         method: 'POST',
                         body: formData
                     });

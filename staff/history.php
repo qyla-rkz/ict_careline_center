@@ -48,11 +48,11 @@
                 <h2>ICT Careline Center</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
-                <a href="assets.php" class="nav-link">🖥️ Aset Saya</a>
-                <a href="report_form.php" class="nav-link">📝 Hantar KEW.PA-9</a>
-                <a href="history.php" class="nav-link active">📜 Laporan Saya</a>
+                <a href="dashboard" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile" class="nav-link">👤 Profil Saya</a>
+                <a href="assets" class="nav-link">🖥️ Aset Saya</a>
+                <a href="report_form" class="nav-link">📝 Hantar KEW.PA-9</a>
+                <a href="history" class="nav-link active">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
@@ -280,7 +280,7 @@
     <script>
         async function handleLogout() {
             try {
-                await fetch('../api/logout.php');
+                await fetch("../api/logout"));
             } catch (err) {}
             sessionStorage.clear();
             sessionStorage.clear();
@@ -300,7 +300,7 @@
 
         async function fetchHistory() {
             try {
-                const response = await fetch('../api/staff_get_history.php');
+                const response = await fetch("../api/staff_get_history"));
                 const result = await response.json();
                 if (result.status === 'success') {
                     reportsData = result.data;

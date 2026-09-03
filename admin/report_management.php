@@ -152,12 +152,12 @@
                 <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
-                <a href="report_management.php" class="nav-link active">📝 Pengurusan Laporan</a>
-                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
+                <a href="dashboard" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile" class="nav-link">👤 Profil Saya</a>
+                <a href="report_management" class="nav-link active">📝 Pengurusan Laporan</a>
+                <a href="inventory" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets" class="nav-link">👥 Aset Staf</a>
+                <a href="history_reports" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -476,7 +476,7 @@
 
     <script>
         async function handleLogout() {
-            try { await fetch('../api/logout.php'); } catch (e) { }
+            try { await fetch("../api/logout")); } catch (e) { }
             sessionStorage.clear(); sessionStorage.clear();
             window.location.replace('../login.php');
         }
@@ -500,7 +500,7 @@
 
         async function fetchReports() {
             try {
-                const res = await fetch('../api/admin_get_reports.php');
+                const res = await fetch("../api/admin_get_reports"));
                 const result = await res.json();
                 if (result.status === 'success') {
                     allReports = result.data;
@@ -717,7 +717,7 @@
             formData.append('id', id);
             formData.append('proses_semasa', proses);
             try {
-                const res = await fetch('../api/admin_update_proses.php', { method: 'POST', body: formData });
+                const res = await fetch("../api/admin_update_proses"), { method: 'POST', body: formData });
                 const result = await res.json();
                 if (result.status === 'success') {
                     // Show brief success toast
@@ -737,7 +737,7 @@
             e.preventDefault();
             const formData = new FormData(e.target);
             try {
-                const res = await fetch('../api/admin_update_report.php', { method: 'POST', body: formData });
+                const res = await fetch("../api/admin_update_report"), { method: 'POST', body: formData });
                 const result = await res.json();
                 if (result.status === 'success') {
                     alert('Laporan berjaya dikemaskini!');

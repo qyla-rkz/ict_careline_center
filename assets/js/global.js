@@ -30,7 +30,7 @@
         // ── Portal page: hide stale content and check server session ──
         if (sessionStorage.getItem('pending_inactivity_logout') === 'true') {
             sessionStorage.clear();
-            fetch('../api/logout.php', { cache: 'no-store' }).catch(() => {});
+            fetch("../api/logout"), { cache: 'no-store' }).catch(() => {});
             window.location.replace('../login.php');
             return;
         }
@@ -69,7 +69,7 @@
         // If sessionStorage says logged in, verify with server then redirect to dashboard
         const userStr = sessionStorage.getItem('user');
         if (userStr) {
-            fetch('./api/check_session.php', { cache: 'no-store' })
+            fetch("./api/check_session"), { cache: 'no-store' })
                 .then(function (r) { return r.json(); })
                 .then(function (result) {
                     if (result.status === 'success') {
@@ -97,7 +97,7 @@ window.addEventListener('pageshow', function (event) {
     const inSubdir = path.includes('/staff/') || path.includes('/admin/') || path.includes('/superadmin/');
     if (inSubdir) {
         document.documentElement.style.visibility = 'hidden';
-        fetch('../api/check_session.php', { cache: 'no-store', credentials: 'same-origin' })
+        fetch("../api/check_session"), { cache: 'no-store', credentials: 'same-origin' })
             .then(function (r) { return r.json(); })
             .then(function (result) {
                 if (result.status !== 'success') {
@@ -460,7 +460,7 @@ function setupStaffSidebarProfile() {
             if (isStaffPage || isAdminPage || isSuperAdminPage) {
                 picContainer.style.cursor = 'pointer';
                 picContainer.title = 'Profil Saya';
-                picContainer.onclick = () => { window.location.href = 'profile.php'; };
+                picContainer.onclick = () => { window.location.href="profile"; };
             }
             container.appendChild(picContainer);
         }
@@ -468,7 +468,7 @@ function setupStaffSidebarProfile() {
     }
 
     // 3. Fetch FRESH profile from API to update picture (solves stale sessionStorage issue)
-    fetch('../api/staff_get_profile.php')
+    fetch("../api/staff_get_profile"))
         .then(r => r.json())
         .then(result => {
             if (result.status !== 'success') return;

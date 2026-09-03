@@ -194,10 +194,10 @@
                     Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
-                <a href="users.php" class="nav-link active">👥 Pengguna</a>
-                <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
+                <a href="dashboard" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile" class="nav-link">👤 Profil Saya</a>
+                <a href="users" class="nav-link active">👥 Pengguna</a>
+                <a href="audit_logs" class="nav-link">📜 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;" <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link"
                 style="color: var(--danger);">🚪 Log Keluar</a>
@@ -330,7 +330,7 @@
 
         async function loadDeanName() {
             try {
-                const res = await fetch('../api/superadmin/settings.php');
+                const res = await fetch("../api/superadmin/settings"));
                 const data = await res.json();
             } catch (e) {
                 console.error('Ralat mengambil nama dekan:', e);
@@ -469,7 +469,7 @@
         async function deleteUser(id) {
             if (!confirm(`AMARAN KERAS: Adakah anda pasti mahu memadam pengguna ini terus dari sistem? Tindakan ini tidak boleh dipulihkan.`)) return;
             try {
-                const res = await fetch('../api/superadmin/users_manage.php', {
+                const res = await fetch("../api/superadmin/users_manage"), {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: 'id=' + id
@@ -485,7 +485,7 @@
 
         async function sendPost(formData) {
             try {
-                const res = await fetch('../api/superadmin/users_manage.php', {
+                const res = await fetch("../api/superadmin/users_manage"), {
                     method: 'POST',
                     body: formData
                 });
