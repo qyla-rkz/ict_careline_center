@@ -507,7 +507,9 @@
                 const response = await fetch(url);
                 const result = await response.json();
                 if (result.status === 'success') {
-                    allHistory = result.data.filter(r => r.status === 'Resolved' || r.status === 'Rejected');
+                    // Show reports based on final decision (`keputusan`) rather than internal `status`.
+                    // Include any report that has a keputusan set and is not 'Pending'.
+                    allHistory = result.data.filter(r => (r.keputusan && r.keputusan !== '' && r.keputusan !== 'Pending'));
                     
                     // Populate Year Dropdown dynamically
                     const yearSelect = document.getElementById('filterYear');

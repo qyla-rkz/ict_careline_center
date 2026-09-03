@@ -14,6 +14,30 @@
             overflow: hidden;
             height: 100vh;
         }
+        .pw-toggle-btn {
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 0;
+        }
+        .pw-toggle-btn svg {
+            width: 18px;
+            height: 18px;
+            display: block;
+        }
+        .pw-toggle-btn:hover {
+            color: var(--primary);
+        }
     </style>
     <script src="assets/js/global.js?v=10"></script>
 </head>
@@ -45,11 +69,17 @@
                 </div>
 
                 <div class="auth-form-group" style="margin-bottom: 0.65rem;">
-                    <input type="text" name="username" class="auth-input" style="padding: 0.7rem 0.9rem; font-size: 0.85rem;" placeholder="ID Staf / Nama Pengguna" required>
+                    <input type="text" name="username" class="auth-input" style="padding: 0.7rem 0.9rem; font-size: 0.85rem;" placeholder="ID Staf" required>
                 </div>
                 <div class="auth-form-group" style="margin-bottom: 0.65rem; position: relative;">
                     <input type="password" id="login_password" name="password" class="auth-input" style="padding: 0.7rem 2.4rem 0.7rem 0.9rem; font-size: 0.85rem;" placeholder="Kata Laluan" required>
-                    <span onclick="togglePw('login_password', this)" style="position:absolute; right:0.9rem; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1rem; color:var(--text-muted); user-select:none;">👁️</span>
+                    <button type="button" class="pw-toggle-btn" id="login_password_toggle" onclick="togglePw('login_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false">
+                        <!-- eye icon (shown state = password hidden) -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                 </div>
 
                 <div class="form-footer" style="margin-bottom: 1rem; font-size: 0.8rem;">
@@ -81,7 +111,6 @@
             <!-- Default view -->
             <div id="forgotDefault">
                 <div style="text-align:center; margin-bottom:1.5rem;">
-                    <div style="font-size:2.5rem; margin-bottom:0.5rem;">🔑</div>
                     <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:0.4rem; color:#1e293b;">Lupa Kata Laluan?</h3>
                     <p style="color:#64748b; font-size:0.85rem; line-height:1.5;">
                         Masukkan emel yang didaftarkan. Kami akan menghantar pautan tetapan semula.
@@ -113,10 +142,9 @@
 
             <!-- Success view -->
             <div id="forgotSuccess" style="display:none; text-align:center; padding:0.5rem 0;">
-                <div style="font-size:3rem; margin-bottom:1rem;">📧</div>
                 <h3 style="font-size:1.2rem; font-weight:800; color:#16a34a; margin-bottom:0.5rem;">Emel Dihantar!</h3>
                 <p style="color:#64748b; font-size:0.875rem; line-height:1.6; margin-bottom:1rem;" id="forgotSuccessMsg"></p>
-                <p style="color:#9ca3af; font-size:0.78rem; margin-bottom:1.5rem;">⏱️ Pautan tamat tempoh dalam <strong>1 jam</strong>. Semak juga folder <em>Spam</em>.</p>
+                <p style="color:#9ca3af; font-size:0.78rem; margin-bottom:1.5rem;">Pautan tamat tempoh dalam <strong>1 jam</strong>. Semak juga folder <em>Spam</em>.</p>
                 <button onclick="closeForgotModal()"
                         style="width:100%; padding:0.75rem; background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:none; border-radius:12px; font-weight:700; font-size:0.95rem; cursor:pointer;">
                     Tutup
@@ -142,7 +170,7 @@
         });
         function showForgotAlert(msg, type) {
             const el = document.getElementById('forgotAlert');
-            el.textContent = (type === 'error' ? '⚠️ ' : '✅ ') + msg;
+            el.textContent = (type === 'error' ? '' : '') + msg;
             el.style.display = 'block';
             el.style.background = type === 'error' ? '#fef2f2' : '#f0fdf4';
             el.style.color      = type === 'error' ? '#dc2626' : '#16a34a';
@@ -179,14 +207,32 @@
         });
     </script>
     <script>
-        function togglePw(id, el) {
+        // SVG icon markup for the two password-visibility states
+        const PW_EYE_OPEN = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>`;
+        const PW_EYE_CLOSED = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06"></path>
+                <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19"></path>
+                <path d="M14.12 14.12A3 3 0 1 1 9.88 9.88"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>`;
+
+        function togglePw(id, btn) {
             const input = document.getElementById(id);
             if (input.type === 'password') {
                 input.type = 'text';
-                el.textContent = '🙈';
+                btn.innerHTML = PW_EYE_CLOSED;
+                btn.setAttribute('aria-label', 'Sembunyikan kata laluan');
+                btn.setAttribute('aria-pressed', 'true');
             } else {
                 input.type = 'password';
-                el.textContent = '👁️';
+                btn.innerHTML = PW_EYE_OPEN;
+                btn.setAttribute('aria-label', 'Tunjukkan kata laluan');
+                btn.setAttribute('aria-pressed', 'false');
             }
         }
     </script>

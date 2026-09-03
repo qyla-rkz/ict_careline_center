@@ -141,9 +141,9 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>No. Siri Pendaftaran / Asset ID</label>
+                                <label>No. Siri Pendaftaran / Aset ID</label>
                                 <input type="text" name="nombor_siri" id="f_nombor_siri" class="form-control" required
-                                    placeholder="cth: KKM/ICT/01...">
+                                    placeholder="cth: MPM/KEW/H...">
                             </div>
                             <div class="form-group">
                                 <label>Tarikh Kerosakan</label>

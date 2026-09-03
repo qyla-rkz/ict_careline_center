@@ -14,6 +14,8 @@
             background-color: var(--primary-light) !important;
             color: var(--primary);
         }
+        .pw-toggle-btn svg { width: 18px; height: 18px; display: block; }
+        .pw-toggle-btn:hover { color: var(--primary); }
     </style>
     <script src="assets/js/global.js?v=10"></script>
 </head>
@@ -97,9 +99,12 @@
                     </div>
                 </div>
 
-                <div class="auth-form-group" style="position: relative;">
-                    <input type="password" id="reg_password" name="password" class="auth-input" style="padding-right: 2.4rem;" placeholder="Kata Laluan" required>
-                    <span onclick="togglePw('reg_password', this)" style="position:absolute; right:0.9rem; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1rem; color:var(--text-muted); user-select:none;">👁️</span>
+                <div class="auth-form-group">
+                    <div class="pw-field-wrap" style="position: relative;">
+                        <input type="password" id="reg_password" name="password" class="auth-input" style="padding-right: 2.4rem;" placeholder="Kata Laluan" required>
+                        <button type="button" class="pw-toggle-btn" onclick="togglePw('reg_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false" style="position:absolute; right:0.9rem; top:50%; transform:translateY(-50%); cursor:pointer; background:none; border:none; padding:0; line-height:0; color:var(--text-muted); display:flex; align-items:center; justify-content:center;"></button>
+                    </div>
+                    <div id="password_strength_box" style="margin-top: 0.6rem;"></div>
                 </div>
 
                 <button type="submit" class="cta-btn primary" style="width:100%; border:none; cursor:pointer; margin-top: 1rem;">
@@ -201,16 +206,39 @@
         });
     </script>
     <script>
-        function togglePw(id, el) {
+        // SVG icon markup for the two password-visibility states
+        const PW_EYE_OPEN = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>`;
+        const PW_EYE_CLOSED = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06"></path>
+                <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19"></path>
+                <path d="M14.12 14.12A3 3 0 1 1 9.88 9.88"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>`;
+
+        function togglePw(id, btn) {
             const input = document.getElementById(id);
             if (input.type === 'password') {
                 input.type = 'text';
-                el.textContent = '🙈';
+                btn.innerHTML = PW_EYE_CLOSED;
+                btn.setAttribute('aria-label', 'Sembunyikan kata laluan');
+                btn.setAttribute('aria-pressed', 'true');
             } else {
                 input.type = 'password';
-                el.textContent = '👁️';
+                btn.innerHTML = PW_EYE_OPEN;
+                btn.setAttribute('aria-label', 'Tunjukkan kata laluan');
+                btn.setAttribute('aria-pressed', 'false');
             }
         }
+
+        // Initialize toggle button(s) with the default (hidden/eye-open) icon
+        document.querySelectorAll('.pw-toggle-btn').forEach(btn => {
+            btn.innerHTML = PW_EYE_OPEN;
+        });
     </script>
 </body>
 </html>

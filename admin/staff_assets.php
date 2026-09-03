@@ -105,7 +105,7 @@
                                 <th style="padding: 1rem; width: 14.28%; font-weight: 700; color: var(--text-main); font-size: 0.9rem;">Jabatan</th>
                                 <th style="padding: 1rem; width: 14.28%; font-weight: 700; color: var(--text-main); font-size: 0.9rem;">Jenis</th>
                                 <th style="padding: 1rem; width: 14.28%; font-weight: 700; color: var(--text-main); font-size: 0.9rem;">Jenama/Model</th>
-                                <th style="padding: 1rem; width: 14.28%; font-weight: 700; color: var(--text-main); font-size: 0.9rem;">Keputusan</th>
+                                <th style="padding: 1rem; width: 14.28%; font-weight: 700; color: var(--text-main); font-size: 0.9rem;">Sejarah Laporan</th>
                                 <th style="padding: 1rem; width: 14.28%; text-align: center; font-weight: 700; color: var(--text-main); font-size: 0.9rem;">Tindakan</th>
                             </tr>
                         </thead>
@@ -252,7 +252,11 @@
                     <td style="padding: 1rem; vertical-align: middle; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; word-wrap: break-word; overflow-wrap: break-word;">${a.department || '-'}</td>
                     <td style="padding: 1rem; vertical-align: middle; font-size: 0.9rem; color: var(--text-main);">${a.asset_type}</td>
                     <td style="padding: 1rem; vertical-align: middle; font-size: 0.9rem; color: var(--text-main);">${a.model_komputer || '-'}</td>
-                    <td style="padding: 1rem; vertical-align: middle;"><span class="badge badge-resolved" style="font-size: 0.7rem; padding: 0.3rem 0.6rem;">Aktif</span></td>
+                    <td style="padding: 1rem; vertical-align: middle;">
+                        <button class="btn btn-secondary" title="Jumlah laporan oleh staf" style="padding: 0.35rem 0.6rem; font-size:0.75rem; border-radius:6px;" data-user-id="${a.user_id || ''}" data-user-name="${(a.name||'').replace(/\"/g, '&quot;')}" onclick="viewUserHistoryFromBtn(this)">
+                         (${a.total_report_count || 0})
+                        </button>
+                    </td>
                     <td style="padding: 1rem; vertical-align: middle; text-align: center;">
                         <button onclick='viewAssetDetails(${JSON.stringify(a).replace(/'/g, "&#39;")})' 
                                 class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 6px; font-weight: 600; min-width: 80px;">
@@ -371,6 +375,110 @@
                 </form>
             `;
             document.getElementById('assetModal').style.display = 'flex';
+        }
+
+        function viewUserHistoryFromBtn(btn) {
+            const userId = btn.getAttribute('data-user-id');
+            const userName = btn.getAttribute('data-user-name') || 'Staf';
+            if (!userId) {
+                alert('ID pengguna tidak tersedia untuk melihat sejarah.');
+                return;
+            }
+            viewUserHistory(userId, userName);
+        }
+
+        async function viewUserHistory(userId, userName) {
+            const content = document.getElementById('assetDetailsContent');
+            document.getElementById('modalTitle').textContent = `Sejarah Laporan - ${userName}`;
+            content.innerHTML = '<p style="padding:1rem; color:var(--text-muted);">⏳ Memuatkan sejarah...</p>';
+            document.getElementById('assetModal').style.display = 'flex';
+            try {
+                const res = await fetch(`../api/admin_get_reports.php?user_id=${encodeURIComponent(userId)}`);
+                const result = await res.json();
+                if (result.status !== 'success') {
+                    content.innerHTML = `<p style="padding:1rem;color:red;">Ralat: ${result.message || 'Gagal memuatkan sejarah.'}</p>`;
+                    return;
+                }
+                const reports = result.data || [];
+                if (!reports.length) {
+                    content.innerHTML = '<p style="padding:1rem;color:var(--text-muted);">Tiada laporan ditemui untuk staf ini.</p>';
+                    return;
+                }
+
+                content.innerHTML = `
+                    <div style="display:flex;flex-direction:column;gap:1rem;padding:0.5rem;">
+                        ${reports.map(r => `
+                            <div style="border:1px solid var(--border); padding:1rem; border-radius:8px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                                    <div style="font-weight:700;">${r.nama_pelapor || r.full_name || '-'}</div>
+                                    <div style="font-size:0.8rem; color:var(--text-muted);">${new Date(r.created_at).toLocaleString()}</div>
+                                </div>
+                                <div style="margin-bottom:0.5rem;"><strong>Aset:</strong> ${r.jenis_aset || '-'} ${r.nombor_siri ? '('+r.nombor_siri+')' : ''} &nbsp; <strong>Keputusan:</strong> ${r.keputusan || r.status || '-'}</div>
+                                <div style="margin-bottom:0.5rem; color:var(--text-main);">${r.perihal_kerosakan || r.perihal || '-'}</div>
+                                ${r.images && r.images.length ? `
+                                    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap:0.5rem; margin-top:0.5rem;">
+                                        ${r.images.map(img => `<div style="aspect-ratio:1; overflow:hidden; border-radius:6px; border:1px solid var(--border);"><img src="../${img.image_path}" style="width:100%; height:100%; object-fit:cover;"></div>`).join('')}
+                                    </div>
+                                ` : ''}
+                                <div style="margin-top:0.5rem; text-align:right;"><button onclick='showReportDetails(${JSON.stringify(r).replace(/'/g, "\\'")})' class="btn btn-primary" style="padding:0.35rem 0.6rem; font-size:0.8rem;">Lihat Butiran</button></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (err) {
+                content.innerHTML = `<p style="padding:1rem;color:red;">Ralat teknikal: ${err.message}</p>`;
+            }
+        }
+
+        function showReportDetails(r) {
+            const content = document.getElementById('assetDetailsContent');
+            document.getElementById('modalTitle').textContent = `Butiran Laporan #${r.id}`;
+            const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
+            const adminTarikh = (isCompleted && r.admin_tarikh) ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY') : (r.admin_tarikh || 'Belum Diproses');
+
+            content.innerHTML = `
+                <div style="display:flex;flex-direction:column;gap:1rem;">
+                    <div style="background:#f8fafc;padding:1rem;border-radius:8px;border:1px solid var(--border);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                            <div style="font-weight:700;">${r.nama_pelapor || r.full_name || '-'}</div>
+                            <div style="font-size:0.9rem;color:var(--text-muted);">${new Date(r.created_at).toLocaleString()}</div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                            <div><strong>Jenis Aset</strong><div>${r.jenis_aset || '-'}</div></div>
+                            <div><strong>No. Siri</strong><div>${r.nombor_siri || '-'}</div></div>
+                            <div><strong>Pengguna Terakhir</strong><div>${r.pengguna_terakhir || '-'}</div></div>
+                            <div><strong>Tarikh Kerosakan</strong><div>${r.tarikh_kerosakan || '-'}</div></div>
+                            <div style="grid-column: span 2;"><strong>Perihal Kerosakan</strong><div style="color:var(--text-main);">${r.perihal_kerosakan || '-'}</div></div>
+                            <div><strong>Lokasi</strong><div>${r.location || '-'}</div></div>
+                            <div><strong>Status/Keputusan</strong><div>${r.keputusan || r.status || '-'}</div></div>
+                        </div>
+                    </div>
+
+                    <div style="background:#fff;padding:1rem;border-radius:8px;border:1px solid var(--border);">
+                        <h4 style="margin:0 0 0.5rem 0;color:var(--primary);">Bahagian II & III</h4>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                            <div><strong>Kos Dahulu (RM)</strong><div>${r.kos_penyelenggaraan_dahulu || '0.00'}</div></div>
+                            <div><strong>Anggaran Kos (RM)</strong><div>${r.anggaran_kos || '0.00'}</div></div>
+                            <div style="grid-column: span 2;"><strong>Syor / Ulasan</strong><div>${r.syor_ulasan || '-'}</div></div>
+                            <div><strong>Pegawai Teknikal</strong><div>${r.admin_name_jawatan || r.admin_jawatan || '-'}</div></div>
+                            <div><strong>Tarikh Siap</strong><div>${adminTarikh}</div></div>
+                            <div><strong>Keputusan Nama</strong><div>${r.keputusan_nama || '-'}</div></div>
+                            <div><strong>Tarikh Keputusan</strong><div>${r.keputusan_tarikh || '-'}</div></div>
+                        </div>
+                    </div>
+
+                    ${r.images && r.images.length ? `
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;">
+                            ${r.images.map(img => `<div style="aspect-ratio:1;overflow:hidden;border-radius:6px;border:1px solid var(--border);"><img src="../${img.image_path}" style="width:100%;height:100%;object-fit:cover;"></div>`).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
+                        <button class="btn btn-secondary" onclick="viewUserHistory(${r.user_id || ''}, '${(r.full_name||r.nama_pelapor||'Staf').replace(/'/g,'\'')}')">Kembali</button>
+                        <button class="btn btn-secondary" onclick="closeModal()">Tutup</button>
+                    </div>
+                </div>
+            `;
         }
 
         function handleImagePreview(e) {

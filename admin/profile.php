@@ -125,15 +125,24 @@
                     <form id="password-form">
                         <div class="form-group">
                             <label>Kata Laluan Semasa</label>
-                            <input type="password" name="current_password" class="form-control" required placeholder="Masukkan kata laluan semasa">
+                            <div class="pw-field-wrap" style="position: relative;">
+                                <input type="password" id="a_current_password" name="current_password" class="form-control" style="padding-right: 2.6rem;" required placeholder="Masukkan kata laluan semasa">
+                                <button type="button" class="pw-toggle-btn" onclick="togglePw('a_current_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false"></button>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Kata Laluan Baru</label>
-                            <input type="password" name="new_password" class="form-control" required placeholder="Masukkan kata laluan baru">
+                            <div class="pw-field-wrap" style="position: relative;">
+                                <input type="password" id="a_new_password" name="new_password" class="form-control" style="padding-right: 2.6rem;" required placeholder="Masukkan kata laluan baru">
+                                <button type="button" class="pw-toggle-btn" onclick="togglePw('a_new_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false"></button>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Sahkan Kata Laluan Baru</label>
-                            <input type="password" name="confirm_password" class="form-control" required placeholder="Ulang kata laluan baru">
+                            <div class="pw-field-wrap" style="position: relative;">
+                                <input type="password" id="a_confirm_password" name="confirm_password" class="form-control" style="padding-right: 2.6rem;" required placeholder="Ulang kata laluan baru">
+                                <button type="button" class="pw-toggle-btn" onclick="togglePw('a_confirm_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false"></button>
+                            </div>
                         </div>
                         <div style="margin-top: 2rem;">
                             <button type="submit" id="pass-btn" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--border); background: transparent; color: var(--text-main);">Kemaskini Kata Laluan</button>
@@ -148,8 +157,61 @@
         .dept-opt { padding: 0.7rem 1.2rem; cursor: pointer; font-size: 0.9rem; }
         .dept-opt:hover { background: rgba(79,70,229,0.07); color: var(--primary); }
         #dept_display_box { position: relative; }
+
+        .pw-toggle-btn {
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 0;
+        }
+        .pw-toggle-btn svg { width: 18px; height: 18px; display: block; }
+        .pw-toggle-btn:hover { color: var(--primary); }
     </style>
     <script>
+        // SVG icon markup for the two password-visibility states
+        const PW_EYE_OPEN = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>`;
+        const PW_EYE_CLOSED = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06"></path>
+                <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19"></path>
+                <path d="M14.12 14.12A3 3 0 1 1 9.88 9.88"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>`;
+
+        function togglePw(id, btn) {
+            const input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = PW_EYE_CLOSED;
+                btn.setAttribute('aria-label', 'Sembunyikan kata laluan');
+                btn.setAttribute('aria-pressed', 'true');
+            } else {
+                input.type = 'password';
+                btn.innerHTML = PW_EYE_OPEN;
+                btn.setAttribute('aria-label', 'Tunjukkan kata laluan');
+                btn.setAttribute('aria-pressed', 'false');
+            }
+        }
+
+        // Initialize all toggle buttons with the default (hidden/eye-open) icon
+        document.querySelectorAll('.pw-toggle-btn').forEach(btn => {
+            btn.innerHTML = PW_EYE_OPEN;
+        });
+
         async function handleLogout() {
             try {
                 await fetch("../api/logout.php");

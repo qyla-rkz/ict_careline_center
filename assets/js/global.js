@@ -30,7 +30,7 @@
         // ── Portal page: hide stale content and check server session ──
         if (sessionStorage.getItem('pending_inactivity_logout') === 'true') {
             sessionStorage.clear();
-            fetch("../api/logout.php", { cache: 'no-store' }).catch(() => {});
+            fetch("../api/logout.php", { cache: 'no-store' }).catch(() => { });
             window.location.replace('../login.php');
             return;
         }
@@ -135,9 +135,9 @@ let countdownInterval;
 
 function initInactivityTimer() {
     // Only apply inactivity timer on logged-in portal pages
-    const isPortalPage = window.location.pathname.includes('/staff/') || 
-                         window.location.pathname.includes('/admin/') || 
-                         window.location.pathname.includes('/superadmin/');
+    const isPortalPage = window.location.pathname.includes('/staff/') ||
+        window.location.pathname.includes('/admin/') ||
+        window.location.pathname.includes('/superadmin/');
     if (!isPortalPage) return;
 
     // Reset timer on user interactions
@@ -167,14 +167,14 @@ function resetInactivityTimer() {
 
 function showInactivityWarning() {
     sessionStorage.setItem('pending_inactivity_logout', 'true');
-    
+
     // If modal already exists, don't recreate
     if (document.getElementById('inactivity-modal')) {
         document.getElementById('inactivity-modal').style.display = 'flex';
         startCountdown(60);
         return;
     }
-    
+
     const modalHtml = `
         <div id="inactivity-modal" class="modal" style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 99999;">
             <div class="modal-content" style="max-width: 420px; text-align: center; padding: 2.5rem; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow);">
@@ -192,9 +192,9 @@ function showInactivityWarning() {
             </div>
         </div>
     `;
-    
+
     document.body.insertAdjacentHTML('beforeend', modalHtml);
-    
+
     // Wire up keep alive button
     document.getElementById('inactivity-keep-alive').addEventListener('click', () => {
         sessionStorage.removeItem('pending_inactivity_logout');
@@ -208,12 +208,12 @@ function showInactivityWarning() {
 function startCountdown(seconds) {
     let currentSeconds = seconds;
     const countdownEl = document.getElementById('inactivity-countdown');
-    
+
     clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
         currentSeconds--;
         if (countdownEl) countdownEl.textContent = currentSeconds;
-        
+
         if (currentSeconds <= 0) {
             clearInterval(countdownInterval);
             triggerGlobalLogout();
@@ -230,12 +230,12 @@ function hideInactivityModal() {
 }
 
 async function triggerGlobalLogout() {
-    const inSubdir = window.location.pathname.includes('/staff/') || 
-                     window.location.pathname.includes('/admin/') || 
-                     window.location.pathname.includes('/superadmin/');
+    const inSubdir = window.location.pathname.includes('/staff/') ||
+        window.location.pathname.includes('/admin/') ||
+        window.location.pathname.includes('/superadmin/');
     const apiPath = inSubdir ? '../api/logout.php' : './api/logout.php';
     const loginPath = inSubdir ? '../login.php' : './login.php';
-    
+
     try {
         await fetch(apiPath);
     } catch (err) {
@@ -266,7 +266,7 @@ function setupPasswordStrength() {
 
     const passwordInput = document.querySelector('input[type="password"][name="password"], input[type="password"]#new_password, input[type="password"][name="new_password"]');
     if (!passwordInput) return;
-    
+
     // Create the strength container
     const container = document.createElement('div');
     container.className = 'password-strength-container';
@@ -284,25 +284,37 @@ function setupPasswordStrength() {
             <li id="req-special" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.35rem;">❌ Mengandungi 1 simbol khas (e.g. @, #, $, !)</li>
         </ul>
     `;
-    
-    // Insert after password field
-    passwordInput.parentNode.insertBefore(container, passwordInput.nextSibling);
-    
+
+    // Insert after the password field's positioning wrapper (if one exists),
+    // NOT directly after the input itself. Pages that add a show/hide
+    // toggle wrap the input in a `.pw-field-wrap` element with
+    // `position: relative` so the toggle button can be vertically centered
+    // on the input's own height. If the strength meter were inserted
+    // *inside* that wrapper (as a sibling of the input), the wrapper would
+    // grow taller with the meter/checklist, and the centered toggle button
+    // would be dragged down with it — making the icon appear to float over
+    // the requirements list instead of staying pinned to the input box.
+    // Inserting after the wrapper itself (as a sibling within the outer
+    // .auth-form-group / .form-group) keeps the wrapper's height fixed to
+    // just the input, so the icon stays put regardless of the meter below.
+    const pwHost = passwordInput.closest('.pw-field-wrap') || passwordInput;
+    pwHost.parentNode.insertBefore(container, pwHost.nextSibling);
+
     // Listen for input events
     passwordInput.addEventListener('input', () => {
         const val = passwordInput.value;
-        
+
         const hasLength = val.length >= 8;
         const hasCase = /[a-z]/.test(val) && /[A-Z]/.test(val);
         const hasNumber = /\d/.test(val);
         const hasSpecial = /[^A-Za-z0-9]/.test(val);
-        
+
         // Update requirements indicator
         updateRequirement('req-length', hasLength);
         updateRequirement('req-case', hasCase);
         updateRequirement('req-number', hasNumber);
         updateRequirement('req-special', hasSpecial);
-        
+
         // Calculate score
         let score = 0;
         if (val.length > 0) {
@@ -312,11 +324,11 @@ function setupPasswordStrength() {
             if (hasSpecial) score += 1;
             if (val.length >= 12 && score === 4) score += 1; // Bonus score for length
         }
-        
+
         // Update bar and text
         const fill = document.getElementById('password-strength-fill');
         const txt = document.getElementById('password-strength-text');
-        
+
         if (val.length === 0) {
             fill.style.width = '0';
             fill.style.backgroundColor = 'transparent';
@@ -384,7 +396,7 @@ function setupStaffSidebarProfile() {
                 else if (user.name) staffName = user.name;
                 if (user.profile_picture) profilePic = user.profile_picture;
             }
-        } catch (e) {}
+        } catch (e) { }
     }
 
     // Helper to build avatar HTML
@@ -456,11 +468,11 @@ function setupStaffSidebarProfile() {
             picContainer = document.createElement('div');
             picContainer.id = 'header-profile-pic-container';
             picContainer.style.cssText = 'width:70px;height:70px;border-radius:50%;border:2.5px solid var(--primary);overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:flex;justify-content:center;align-items:center;background:#e2e8f0;flex-shrink:0;';
-            
+
             if (isStaffPage || isAdminPage || isSuperAdminPage) {
                 picContainer.style.cursor = 'pointer';
                 picContainer.title = 'Profil Saya';
-                picContainer.onclick = () => { window.location.href="profile.php"; };
+                picContainer.onclick = () => { window.location.href = "profile.php"; };
             }
             container.appendChild(picContainer);
         }
@@ -473,7 +485,7 @@ function setupStaffSidebarProfile() {
         .then(result => {
             if (result.status !== 'success') return;
             const freshName = result.data.full_name || staffName;
-            const freshPic  = result.data.profile_picture || '';
+            const freshPic = result.data.profile_picture || '';
 
             // Update sidebar name
             const nameEl = document.getElementById('sidebarStaffName') || document.getElementById('sidebarAdminName') || document.getElementById('sidebarSuperadminName');
@@ -493,7 +505,7 @@ function setupStaffSidebarProfile() {
                 stored.full_name = freshName;
                 stored.profile_picture = freshPic;
                 sessionStorage.setItem('user', JSON.stringify(stored));
-            } catch(e) {}
+            } catch (e) { }
         })
         .catch(e => console.error('Profile fetch error:', e));
 }

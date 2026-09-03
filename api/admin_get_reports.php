@@ -10,6 +10,7 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['Admin', 'Supe
 
 $name = isset($_GET['name']) ? $_GET['name'] : '';
 $date = isset($_GET['date']) ? $_GET['date'] : '';
+$user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
 
 try {
     $sql = "SELECT r.*, u.name AS full_name, u.department 
@@ -23,6 +24,11 @@ try {
         $params['name'] = "%$name%";
     }
 
+    if ($user_id !== '') {
+        $sql .= " AND u.id = :user_id";
+        $params['user_id'] = $user_id;
+    }
+
     if ($date !== '') {
         $sql .= " AND DATE(r.created_at) = :date";
         $params['date'] = $date;
@@ -33,6 +39,14 @@ try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $reports = $stmt->fetchAll();
+
+    // Attach images for each report
+    foreach ($reports as &$r) {
+        $imgStmt = $pdo->prepare("SELECT image_path FROM report_images WHERE report_id = ?");
+        $imgStmt->execute([$r['id']]);
+        $r['images'] = $imgStmt->fetchAll();
+    }
+
     jsonResponse('success', 'Reports fetched', $reports);
 } catch (PDOException $e) {
     jsonResponse('error', $e->getMessage());
