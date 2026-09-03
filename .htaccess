@@ -1,3 +1,5 @@
+DirectoryIndex login.php
+
 # 1. Halang akses ke fail sensitif (seperti .env)
 <FilesMatch "^\.">
     Require all denied

@@ -15,7 +15,7 @@
 (function () {
     const path = window.location.pathname;
     const inSubdir = path.includes('/staff/') || path.includes('/admin/') || path.includes('/superadmin/');
-    const isWelcomePage = path.endsWith('/') || path.endsWith('index.php') || path === '/';
+    const isWelcomePage = path.endsWith('/') || path === '/';
     const isGuestPage = !inSubdir;
 
     function hidePortalUntilAuth() {

@@ -52,7 +52,7 @@
 
     <nav class="navbar container" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; border-bottom: none;">
         <div class="logo">
-            <a href="index.php" style="text-decoration:none; color:inherit;">ICT Careline <span>Center</span></a>
+            <a href="login.php" style="text-decoration:none; color:inherit;">ICT Careline <span>Center</span></a>
         </div>
     </nav>
 
