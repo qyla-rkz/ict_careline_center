@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 01, 2026 at 08:58 AM
+-- Generation Time: Sep 03, 2026 at 06:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,7 +43,13 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `activity_type`, `description`, `c
 (1, 3, 'Report Submitted', 'Submitted KEW.PA-9 for Laptop (0000)', '2026-04-25 07:32:38'),
 (2, 3, 'Report Submitted', 'Submitted KEW.PA-9 for Printer (0001)', '2026-06-22 07:51:49'),
 (3, 8, 'Profile Updated', 'Admin changed profile information', '2026-06-29 02:05:37'),
-(4, 3, 'Report Submitted', 'Submitted KEW.PA-9 for Desktop PC (0000)', '2026-07-01 02:25:45');
+(4, 3, 'Report Submitted', 'Submitted KEW.PA-9 for Desktop PC (0000)', '2026-07-01 02:25:45'),
+(5, 8, 'Profile Updated', 'Admin changed profile information', '2026-09-03 04:31:41'),
+(6, 8, 'Profile Updated', 'Admin changed profile information', '2026-09-03 04:31:54'),
+(7, 1, 'Profile Updated', 'Admin changed profile information', '2026-09-03 04:32:24'),
+(8, 1, 'Profile Updated', 'Admin changed profile information', '2026-09-03 04:34:44'),
+(9, 1, 'Profile Updated', 'Admin changed profile information', '2026-09-03 04:34:53'),
+(10, 8, 'Profile Updated', 'Admin changed profile information', '2026-09-03 04:35:13');
 
 -- --------------------------------------------------------
 
@@ -174,7 +180,31 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `details`, `created_at`) VA
 (95, 1, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (50130) berjaya log masuk sebagai Super Admin.', '2026-09-01 03:57:42'),
 (96, 1, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (50130) berjaya log masuk sebagai Super Admin.', '2026-09-01 04:02:30'),
 (97, 1, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (50130) berjaya log masuk sebagai Super Admin.', '2026-09-01 04:04:50'),
-(98, 1, 'Log Keluar', 'Pengguna \'Nurul Aqilah Khairuni\' (50130) telah log keluar.', '2026-09-01 04:09:33');
+(98, 1, 'Log Keluar', 'Pengguna \'Nurul Aqilah Khairuni\' (50130) telah log keluar.', '2026-09-01 04:09:33'),
+(99, 1, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (50130) berjaya log masuk sebagai Super Admin.', '2026-09-01 06:59:42'),
+(100, 1, 'Log Keluar', 'Pengguna \'Nurul Aqilah Khairuni\' (50130) telah log keluar.', '2026-09-01 07:00:04'),
+(101, 3, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (50000) berjaya log masuk sebagai Staff.', '2026-09-01 07:00:10'),
+(102, 3, 'Log Keluar', 'Pengguna \'Nurul Aqilah Khairuni\' (50000) telah log keluar.', '2026-09-01 07:00:15'),
+(103, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-01 07:00:20'),
+(104, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-01 08:02:14'),
+(105, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-01 08:27:00'),
+(106, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-01 08:50:58'),
+(107, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-03 04:19:04'),
+(108, 3, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (50000) berjaya log masuk sebagai Staff.', '2026-09-03 04:19:16'),
+(109, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-03 04:23:05'),
+(110, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-03 04:25:28'),
+(111, 8, 'Log Keluar', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) telah log keluar.', '2026-09-03 04:26:51'),
+(112, 3, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (50000) berjaya log masuk sebagai Staff.', '2026-09-03 04:27:00'),
+(113, 3, 'Log Keluar', 'Pengguna \'Nurul Aqilah Khairuni\' (50000) telah log keluar.', '2026-09-03 04:31:20'),
+(114, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-03 04:31:29'),
+(115, 8, 'Log Keluar', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) telah log keluar.', '2026-09-03 04:32:00'),
+(116, 1, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (50130) berjaya log masuk sebagai Super Admin.', '2026-09-03 04:32:05'),
+(117, 1, 'Log Keluar', 'Pengguna \'Nurul Aqilah Khairuni\' (50130) telah log keluar.', '2026-09-03 04:34:59'),
+(118, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-03 04:35:03'),
+(119, 8, 'Log Keluar', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) telah log keluar.', '2026-09-03 04:43:54'),
+(120, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-03 04:45:33'),
+(121, 8, 'Log Masuk', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) berjaya log masuk sebagai Admin.', '2026-09-03 04:45:39'),
+(122, 8, 'Log Keluar', 'Pengguna \'Nurul Aqilah Khairuni\' (51000) telah log keluar.', '2026-09-03 04:46:15');
 
 -- --------------------------------------------------------
 
@@ -365,9 +395,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `jawatan`, `staff_id`, `phone`, `office`, `department`, `password`, `role`, `profile_picture`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Nurul Aqilah Khairuni', NULL, '50130', '-', '-', 'Unit Teknologi Maklumat', '$2y$10$Q3dgrsi0q3mTq1gVLw7yzuuCqh9JADW12sJ0Ktpr8e8Vh2IJpf8Je', 'Super Admin', NULL, 'active', '2026-04-14 02:06:45', '2026-05-18 01:05:04'),
+(1, 'Nurul Aqilah Khairuni', '-', '50130', '-', '-', 'Unit Teknologi Maklumat', '$2y$10$Q3dgrsi0q3mTq1gVLw7yzuuCqh9JADW12sJ0Ktpr8e8Vh2IJpf8Je', 'Super Admin', NULL, 'active', '2026-04-14 02:06:45', '2026-09-03 04:34:53'),
 (3, 'Nurul Aqilah Khairuni', NULL, '50000', '0103701610', '-', 'Unit Teknologi Maklumat', '$2y$10$E7YI2Uj/.G4g.4QNsel7X.5akU0KWyz4LLwpJkd8JaVeKAEhhwXu2', 'Staff', NULL, 'active', '2026-04-14 07:41:01', '2026-04-15 07:59:22'),
-(8, 'Nurul Aqilah Khairuni', '-', '51000', '-', '-', 'teknologi maklumat', '$2y$10$ItYWLnf2MrUEWe8z7KjUKOHMxVHnc3tTzSaH/P1HUP7hay8J8vX1S', 'Admin', NULL, 'active', '2026-04-23 03:55:54', '2026-06-29 02:33:05');
+(8, 'Nurul Aqilah Khairuni', '-', '51000', '-', '-', 'Unit Teknologi Maklumat', '$2y$10$ItYWLnf2MrUEWe8z7KjUKOHMxVHnc3tTzSaH/P1HUP7hay8J8vX1S', 'Admin', NULL, 'active', '2026-04-23 03:55:54', '2026-09-03 04:35:13');
 
 --
 -- Indexes for dumped tables
@@ -450,7 +480,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `asset_images`
@@ -462,7 +492,7 @@ ALTER TABLE `asset_images`
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
 
 --
 -- AUTO_INCREMENT for table `department_inventory`
