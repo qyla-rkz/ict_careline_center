@@ -1,4 +1,4 @@
-# 🖥️ ICT Careline Center
+# 🖥️ eICT Desk
 
 Sistem web ini dibangunkan untuk membantu pengurusan aset ICT, pelaporan kerosakan, dan pemantauan aktiviti dalam organisasi. Aplikasi ini menyokong tiga peranan utama iaitu Staff, Admin dan Super Admin.
 
@@ -127,4 +127,4 @@ http://localhost/ict_careline_center/
 
 ## 📌 Catatan
 
-README ini disediakan supaya lebih selaras dengan struktur dan fungsi sebenar projek ICT Careline Center yang sedang dibangunkan.
+README ini disediakan supaya lebih selaras dengan struktur dan fungsi sebenar projek eICT Desk yang sedang dibangunkan.

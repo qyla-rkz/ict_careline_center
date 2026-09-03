@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -185,7 +185,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <div class="user-profile"
                 style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
@@ -330,7 +330,7 @@
 
         async function loadDeanName() {
             try {
-                const res = await fetch("../api/superadmin/settings"));
+                const res = await fetch("../api/superadmin/settings.php");
                 const data = await res.json();
             } catch (e) {
                 console.error('Ralat mengambil nama dekan:', e);
@@ -469,7 +469,7 @@
         async function deleteUser(id) {
             if (!confirm(`AMARAN KERAS: Adakah anda pasti mahu memadam pengguna ini terus dari sistem? Tindakan ini tidak boleh dipulihkan.`)) return;
             try {
-                const res = await fetch("../api/superadmin/users_manage"), {
+                const res = await fetch("../api/superadmin/users_manage.php", {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: 'id=' + id
@@ -485,7 +485,7 @@
 
         async function sendPost(formData) {
             try {
-                const res = await fetch("../api/superadmin/users_manage"), {
+                const res = await fetch("../api/superadmin/users_manage.php", {
                     method: 'POST',
                     body: formData
                 });

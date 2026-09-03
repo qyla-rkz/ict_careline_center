@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -58,7 +58,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <div class="user-profile"
                 style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
@@ -192,7 +192,7 @@
 
         async function loadDeanName() {
             try {
-                const res = await fetch("../api/superadmin/settings"));
+                const res = await fetch("../api/superadmin/settings.php");
                 const data = await res.json();
             } catch (e) {
                 console.error('Ralat mengambil nama dekan:', e);
@@ -201,7 +201,7 @@
 
         async function fetchLogs() {
             try {
-                const res = await fetch("../api/superadmin/audit_logs"));
+                const res = await fetch("../api/superadmin/audit_logs.php");
                 const data = await res.json();
 
                 if (data.status === 'success') {

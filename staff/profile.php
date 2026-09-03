@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Saya - ICT Careline Center</title>
+    <title>Profil Saya - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=15">
     <script src="../assets/js/global.js?v=10"></script>
 </head>
@@ -13,7 +13,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <nav class="nav-links">
                 <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
@@ -82,7 +82,31 @@
                         </div>
                         <div class="form-group">
                             <label>Jabatan / Unit</label>
-                            <input type="text" id="p_dept" name="department" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
+                            <input type="hidden" id="p_dept" name="department" required>
+                            <div id="dept_display_box" class="form-control" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; position:relative;">
+                                <span id="dept_display_text" style="color:var(--text-muted);">Pilih Jabatan / Unit</span>
+                                <span style="font-size:0.8rem;">▼</span>
+                            </div>
+                            <div id="dept_options" style="display:none; position:absolute; width:100%; background:white; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); z-index:1000; max-height:220px; overflow-y:auto; margin-top:4px;">
+                                <div class="dept-opt" data-value="Jabatan Bangunan">Jabatan Bangunan</div>
+                                <div class="dept-opt" data-value="Jabatan Kejuruteraan">Jabatan Kejuruteraan</div>
+                                <div class="dept-opt" data-value="Jabatan Kesihatan dan Pelesenan">Jabatan Kesihatan dan Pelesenan</div>
+                                <div class="dept-opt" data-value="Jabatan Kewangan">Jabatan Kewangan</div>
+                                <div class="dept-opt" data-value="Jabatan Khidmat Pengurusan">Jabatan Khidmat Pengurusan</div>
+                                <div class="dept-opt" data-value="Jabatan Komunikasi Koprat dan Kemasyarakatan">Jabatan Komunikasi Koprat dan Kemasyarakatan</div>
+                                <div class="dept-opt" data-value="Jabatan Penguatkuasaan">Jabatan Penguatkuasaan</div>
+                                <div class="dept-opt" data-value="Jabatan Penilaian dan Pengurusan Harta">Jabatan Penilaian dan Pengurusan Harta</div>
+                                <div class="dept-opt" data-value="Jabatan Perancangan dan Pembangunan Landskap">Jabatan Perancangan dan Pembangunan Landskap</div>
+                                <div class="dept-opt" data-value="Kaunter Hasil">Kaunter Hasil</div>
+                                <div class="dept-opt" data-value="Pejabat Setiausaha">Pejabat Setiausaha</div>
+                                <div class="dept-opt" data-value="Pejabat YDP">Pejabat YDP</div>
+                                <div class="dept-opt" data-value="Unit Audit Dalaman">Unit Audit Dalaman</div>
+                                <div class="dept-opt" data-value="Unit Perolehan dan Pengurusan Kontrak">Unit Perolehan dan Pengurusan Kontrak</div>
+                                <div class="dept-opt" data-value="Unit Persuruhjaya Bangunan">Unit Persuruhjaya Bangunan</div>
+                                <div class="dept-opt" data-value="Unit Pusat Setempat">Unit Pusat Setempat</div>
+                                <div class="dept-opt" data-value="Unit Teknologi Maklumat">Unit Teknologi Maklumat</div>
+                                <div class="dept-opt" data-value="Unit Undang-Undang">Unit Undang-Undang</div>
+                            </div>
                         </div>
                         
                         <div style="margin-top: 2rem;">
@@ -115,12 +139,16 @@
         </main>
     </div>
 
+    <style>
+        .dept-opt { padding: 0.7rem 1.2rem; cursor: pointer; font-size: 0.9rem; }
+        .dept-opt:hover { background: rgba(79,70,229,0.07); color: var(--primary); }
+        #dept_display_box { position: relative; }
+    </style>
     <script>
         async function handleLogout() {
             try {
-                await fetch("../api/logout"));
+                await fetch("../api/logout.php");
             } catch (err) {}
-            sessionStorage.clear();
             sessionStorage.clear();
             window.location.replace('../login.php');
         }
@@ -128,6 +156,29 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('current-date').textContent = new Date().toLocaleDateString('ms-MY', dateOpts);
+
+            // Department dropdown logic
+            const deptBox = document.getElementById('dept_display_box');
+            const deptOptions = document.getElementById('dept_options');
+            const deptText = document.getElementById('dept_display_text');
+            const deptInput = document.getElementById('p_dept');
+
+            function setDept(val) {
+                deptInput.value = val;
+                deptText.textContent = val;
+                deptText.style.color = 'var(--text-main)';
+                deptOptions.style.display = 'none';
+            }
+
+            deptBox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deptOptions.style.display = deptOptions.style.display === 'block' ? 'none' : 'block';
+            });
+            deptOptions.addEventListener('click', (e) => {
+                const opt = e.target.closest('.dept-opt');
+                if (opt) setDept(opt.getAttribute('data-value'));
+            });
+            document.addEventListener('click', () => { deptOptions.style.display = 'none'; });
 
             // Profile Picture Selection & Preview Logic
             const avatarContainer = document.getElementById('avatar-container');
@@ -154,7 +205,7 @@
 
             const loadProfile = async () => {
                 try {
-                    const response = await fetch("../api/staff_get_profile"));
+                    const response = await fetch("../api/staff_get_profile.php");
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     
                     const result = await response.json();
@@ -164,7 +215,7 @@
                         document.getElementById('p_phone').value = result.data.phone || '';
                         document.getElementById('p_office').value = result.data.office || '';
                         document.getElementById('p_jawatan').value = result.data.jawatan || '';
-                        document.getElementById('p_dept').value = result.data.department || '';
+                        if (result.data.department) setDept(result.data.department);
                         
                         if (result.data.profile_picture) {
                             const imgEl = document.getElementById('p_profile_pic');
@@ -202,7 +253,7 @@
                     btn.textContent = 'Menyimpan...';
 
                     const formData = new FormData(e.target);
-                    const response = await fetch("../api/staff_update_profile"), {
+                    const response = await fetch("../api/staff_update_profile.php", {
                         method: 'POST',
                         body: formData
                     });
@@ -238,7 +289,7 @@
                     btn.disabled = true;
                     btn.textContent = 'Mengemaskini...';
 
-                    const response = await fetch("../api/staff_change_password"), {
+                    const response = await fetch("../api/staff_change_password.php", {
                         method: 'POST',
                         body: formData
                     });

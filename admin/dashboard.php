@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - ICT Careline Center</title>
+    <title>Admin Dashboard - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../assets/js/global.js?v=10"></script>
@@ -24,7 +24,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
@@ -403,7 +403,7 @@
 
         async function handleLogout() {
             try {
-                await fetch("../api/logout"));
+                await fetch("../api/logout.php");
             } catch (err) { }
             sessionStorage.clear();
             sessionStorage.clear();
@@ -423,7 +423,7 @@
 
             // Fetch admin profile to check password age
             try {
-                const profileRes = await fetch("../api/admin_get_profile"));
+                const profileRes = await fetch("../api/admin_get_profile.php");
                 const profile = await profileRes.json();
                 if (profile.status === 'success') {
                     sessionStorage.setItem('user', JSON.stringify(profile.data));
@@ -683,7 +683,7 @@
 
         async function fetchReports() {
             try {
-                const response = await fetch("../api/admin_get_reports"));
+                const response = await fetch("../api/admin_get_reports.php");
                 const result = await response.json();
 
                 if (result.status === 'success') {
@@ -799,7 +799,7 @@
             fd.append('proses_semasa', pSemasa);
 
             try {
-                const res = await fetch("../api/admin_update_proses"), { method: 'POST', body: fd });
+                const res = await fetch("../api/admin_update_proses.php", { method: 'POST', body: fd });
                 const data = await res.json();
                 if (data.status === 'success') {
                     alert('Proses Semasa berjaya dikemas kini!');
@@ -817,7 +817,7 @@
             e.preventDefault();
             const formData = new FormData(e.target);
             try {
-                const response = await fetch("../api/admin_update_report"), {
+                const response = await fetch("../api/admin_update_report.php", {
                     method: 'POST',
                     body: formData
                 });

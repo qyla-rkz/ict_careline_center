@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICT Careline Center - Log Masuk</title>
+    <title>eICT Desk - Log Masuk</title>
     <link rel="stylesheet" href="assets/css/style.css?v=15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@
         <div class="logo">
             <a href="login.php" style="text-decoration:none; color:inherit; display: flex; align-items: center; gap: 15px;">
                 <img src="assets/images/logo-mpm.png" alt="Logo MPM" style="height: 70px; width: auto;">
-                <div>ICT Careline <span>Center</span></div>
+                <div>eICT <span>Desk</span></div>
             </a>
         </div>
     </nav>
@@ -47,8 +47,9 @@
                 <div class="auth-form-group" style="margin-bottom: 0.65rem;">
                     <input type="text" name="username" class="auth-input" style="padding: 0.7rem 0.9rem; font-size: 0.85rem;" placeholder="ID Staf / Nama Pengguna" required>
                 </div>
-                <div class="auth-form-group" style="margin-bottom: 0.65rem;">
-                    <input type="password" name="password" class="auth-input" style="padding: 0.7rem 0.9rem; font-size: 0.85rem;" placeholder="Kata Laluan" required>
+                <div class="auth-form-group" style="margin-bottom: 0.65rem; position: relative;">
+                    <input type="password" id="login_password" name="password" class="auth-input" style="padding: 0.7rem 2.4rem 0.7rem 0.9rem; font-size: 0.85rem;" placeholder="Kata Laluan" required>
+                    <span onclick="togglePw('login_password', this)" style="position:absolute; right:0.9rem; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1rem; color:var(--text-muted); user-select:none;">👁️</span>
                 </div>
 
                 <div class="form-footer" style="margin-bottom: 1rem; font-size: 0.8rem;">
@@ -160,7 +161,7 @@
             const fd = new FormData();
             fd.append('email', email);
             try {
-                const res  = await fetch("api/forgot_password.php")), { method: 'POST', body: fd });
+                const res  = await fetch("api/forgot_password.php", { method: 'POST', body: fd });
                 const data = await res.json();
                 if (data.status === 'success') {
                     document.getElementById('forgotDefault').style.display = 'none';
@@ -176,6 +177,18 @@
                 btn.textContent = 'Hantar Pautan Tetapan Semula';
             }
         });
+    </script>
+    <script>
+        function togglePw(id, el) {
+            const input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+                el.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                el.textContent = '👁️';
+            }
+        }
     </script>
 
     <script type="module" src="assets/js/main.js?v=3"></script>

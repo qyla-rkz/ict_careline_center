@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICT Careline Center - Daftar</title>
+    <title>eICT Desk - Daftar</title>
     <link rel="stylesheet" href="assets/css/style.css?v=15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@
         <div class="logo">
             <a href="login.php" style="text-decoration:none; color:inherit; display: flex; align-items: center; gap: 15px;">
                 <img src="assets/images/logo-mpm.png" alt="Logo MPM" style="height: 70px; width: auto;">
-                <div>ICT Careline <span>Center</span></div>
+                <div>eICT <span>Desk</span></div>
             </a>
         </div>
         <div>
@@ -97,8 +97,9 @@
                     </div>
                 </div>
 
-                <div class="auth-form-group">
-                    <input type="password" name="password" class="auth-input" placeholder="Kata Laluan" required>
+                <div class="auth-form-group" style="position: relative;">
+                    <input type="password" id="reg_password" name="password" class="auth-input" style="padding-right: 2.4rem;" placeholder="Kata Laluan" required>
+                    <span onclick="togglePw('reg_password', this)" style="position:absolute; right:0.9rem; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1rem; color:var(--text-muted); user-select:none;">👁️</span>
                 </div>
 
                 <button type="submit" class="cta-btn primary" style="width:100%; border:none; cursor:pointer; margin-top: 1rem;">
@@ -185,7 +186,7 @@
 
             const formData = new FormData(e.target);
             try {
-                const response = await fetch("api/register.php")), {
+                const response = await fetch("api/register.php", {
                     method: 'POST',
                     body: formData
                 });
@@ -198,6 +199,18 @@
                 }
             } catch (err) { console.error(err); }
         });
+    </script>
+    <script>
+        function togglePw(id, el) {
+            const input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+                el.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                el.textContent = '👁️';
+            }
+        }
     </script>
 </body>
 </html>

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aset Saya - ICT Careline Center</title>
+    <title>Aset Saya - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=15">
     <script src="../assets/js/global.js?v=10"></script>
 </head>
@@ -13,7 +13,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <nav class="nav-links">
                 <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
@@ -163,7 +163,7 @@
     <script>
         async function handleLogout() {
             try {
-                await fetch("../api/logout"));
+                await fetch("../api/logout.php");
             } catch (err) {}
             sessionStorage.clear();
             sessionStorage.clear();
@@ -212,7 +212,7 @@
 
         async function fetchProfile() {
             try {
-                const response = await fetch("../api/staff_get_profile"));
+                const response = await fetch("../api/staff_get_profile.php");
                 const result = await response.json();
                 if (result.status === 'success') {
                     document.getElementById('user_nama').value = result.data.full_name || '';
@@ -224,7 +224,7 @@
 
         async function loadAssetData() {
             try {
-                const response = await fetch("../api/staff_get_assets"));
+                const response = await fetch("../api/staff_get_assets.php");
                 const result = await response.json();
                 if (result.status === 'success' && result.data.length > 0) {
                     const a = result.data[0];
@@ -275,7 +275,7 @@
                 btn.disabled = true;
                 btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Menyimpan Butiran...';
                 
-                const response = await fetch("../api/staff_save_asset"), {
+                const response = await fetch("../api/staff_save_asset.php", {
                     method: 'POST',
                     body: formData
                 });

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Papan Pemuka Staf - ICT Careline Center</title>
+    <title>Papan Pemuka Staf - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=15">
     <script src="../assets/js/global.js?v=10"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
@@ -29,7 +29,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <nav class="nav-links">
                 <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
@@ -244,7 +244,7 @@ flowchart TD
     <script>
         async function handleLogout() {
             try {
-                await fetch("../api/logout"));
+                await fetch("../api/logout.php");
             } catch (err) { }
             sessionStorage.clear();
             sessionStorage.clear();
@@ -271,7 +271,7 @@ flowchart TD
 
             // Fetch Profile (Critical for welcome message)
             try {
-                const profileRes = await fetch("../api/staff_get_profile"));
+                const profileRes = await fetch("../api/staff_get_profile.php");
                 if (!profileRes.ok) throw new Error(`HTTP error! status: ${profileRes.status}`);
 
                 const profile = await profileRes.json();
@@ -298,7 +298,7 @@ flowchart TD
 
             // Fetch Stats (History) & Update Real-time tracking
             try {
-                const historyRes = await fetch("../api/staff_get_history"));
+                const historyRes = await fetch("../api/staff_get_history.php");
                 const history = await historyRes.json();
 
                 if (history.status === 'success') {
@@ -369,7 +369,7 @@ flowchart TD
             // Fetch Recent Activity
             const activityList = document.getElementById('activity-list');
             try {
-                const activityRes = await fetch("../api/staff_get_activity"));
+                const activityRes = await fetch("../api/staff_get_activity.php");
                 const activity = await activityRes.json();
 
                 if (activity.status === 'success' && activity.data.length > 0) {

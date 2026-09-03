@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sejarah Laporan - ICT Careline Center</title>
+    <title>Sejarah Laporan - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <script src="../assets/js/global.js?v=10"></script>
     <style>
@@ -145,7 +145,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <div class="user-profile"
                 style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
@@ -476,7 +476,7 @@
 
         async function handleLogout() {
             try {
-                await fetch("../api/logout"));
+                await fetch("../api/logout.php");
             } catch (err) { }
             sessionStorage.clear();
             sessionStorage.clear();

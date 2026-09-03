@@ -70,9 +70,9 @@ try {
     $mail->Port       = (int)$smtp_port;
     $mail->CharSet    = 'UTF-8';
 
-    $mail->setFrom($smtp_user, 'ICT Careline Center');
+    $mail->setFrom($smtp_user, 'eICT Desk');
     $mail->addAddress($email, $user['name']);
-    $mail->Subject = 'Tetapan Semula Kata Laluan - ICT Careline Center';
+    $mail->Subject = 'Tetapan Semula Kata Laluan - eICT Desk';
     $mail->isHTML(true);
     $mail->Body = '
     <!DOCTYPE html>
@@ -82,7 +82,7 @@ try {
         <div style="max-width: 500px; margin: 0 auto; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
             <div style="background: linear-gradient(135deg, #6366f1, #4f46e5); padding: 2rem; text-align: center;">
                 <div style="font-size: 2.5rem;">🔐</div>
-                <h1 style="color: #fff; margin: 0.5rem 0 0; font-size: 1.4rem;">ICT Careline Center</h1>
+                <h1 style="color: #fff; margin: 0.5rem 0 0; font-size: 1.4rem;">eICT Desk</h1>
             </div>
             <div style="padding: 2rem;">
                 <p style="color: #374151; font-size: 1rem;">Salam, <strong>' . htmlspecialchars($user['name']) . '</strong>,</p>

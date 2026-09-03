@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tetapan Semula Kata Laluan - ICT Careline Center</title>
+    <title>Tetapan Semula Kata Laluan - eICT Desk</title>
     <link rel="stylesheet" href="assets/css/style.css?v=15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,7 +52,7 @@
 
     <nav class="navbar container" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; border-bottom: none;">
         <div class="logo">
-            <a href="login.php" style="text-decoration:none; color:inherit;">ICT Careline <span>Center</span></a>
+            <a href="login.php" style="text-decoration:none; color:inherit;">eICT <span>Desk</span></a>
         </div>
     </nav>
 
@@ -180,7 +180,7 @@
             formData.append('confirm_password', cpw);
 
             try {
-                const res  = await fetch("api/reset_password.php")), { method: 'POST', body: formData });
+                const res  = await fetch("api/reset_password.php", { method: 'POST', body: formData });
                 const data = await res.json();
 
                 if (data.status === 'success') {

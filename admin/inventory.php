@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assets Inventory - ICT Careline Center</title>
+    <title>Assets Inventory - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <script src="../assets/js/global.js?v=10"></script>
 </head>
@@ -15,7 +15,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <div class="user-profile"
                 style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
@@ -406,7 +406,7 @@
 
             const formData = new FormData(e.target);
             try {
-                const response = await fetch("../api/admin_update_dept_inventory"), {
+                const response = await fetch("../api/admin_update_dept_inventory.php", {
                     method: 'POST',
                     body: formData
                 });

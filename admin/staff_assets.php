@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Assets - ICT Careline Center</title>
+    <title>Staff Assets - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
         .dept-filter-opt {
@@ -22,7 +22,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <div class="user-profile" style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
@@ -417,7 +417,7 @@
             btn.textContent = 'Menyimpan...';
 
             try {
-                const res = await fetch("../api/admin_update_asset"), {
+                const res = await fetch("../api/admin_update_asset.php", {
                     method: 'POST',
                     body: formData
                 });

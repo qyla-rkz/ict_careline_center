@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin Dashboard - ICT Careline Center</title>
+    <title>Super Admin Dashboard - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <div class="user-profile"
                 style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
@@ -168,7 +168,7 @@
 
             // Fetch profile to check password age
             try {
-                const profileRes = await fetch("../api/admin_get_profile"));
+                const profileRes = await fetch("../api/admin_get_profile.php");
                 const profile = await profileRes.json();
                 if (profile.status === 'success') {
                     sessionStorage.setItem('user', JSON.stringify(profile.data));
@@ -208,7 +208,7 @@
 
         async function loadDeanName() {
             try {
-                const res = await fetch("../api/superadmin/settings"));
+                const res = await fetch("../api/superadmin/settings.php");
                 const data = await res.json();
             } catch (e) {
                 console.error('Ralat mengambil nama dekan:', e);
@@ -217,7 +217,7 @@
 
         async function fetchStats() {
             try {
-                const res = await fetch("../api/superadmin/system_stats"));
+                const res = await fetch("../api/superadmin/system_stats.php");
                 const data = await res.json();
 
                 if (data.status === 'success') {

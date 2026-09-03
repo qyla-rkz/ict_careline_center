@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sejarah Laporan - ICT Careline Center</title>
+    <title>Sejarah Laporan - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=15">
     <style>
         @media print {
@@ -45,7 +45,7 @@
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
-                <h2>ICT Careline Center</h2>
+                <h2>eICT Desk</h2>
             </div>
             <nav class="nav-links">
                 <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
@@ -280,7 +280,7 @@
     <script>
         async function handleLogout() {
             try {
-                await fetch("../api/logout"));
+                await fetch("../api/logout.php");
             } catch (err) {}
             sessionStorage.clear();
             sessionStorage.clear();
@@ -300,7 +300,7 @@
 
         async function fetchHistory() {
             try {
-                const response = await fetch("../api/staff_get_history"));
+                const response = await fetch("../api/staff_get_history.php");
                 const result = await response.json();
                 if (result.status === 'success') {
                     reportsData = result.data;

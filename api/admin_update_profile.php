@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone   = trim($_POST['phone'] ?? '');
     $office  = trim($_POST['office'] ?? '');
     $jawatan = trim($_POST['jawatan'] ?? '');
+    $department = trim($_POST['department'] ?? '');
 
     if (empty($name)) {
         jsonResponse('error', 'Nama tidak boleh kosong');
@@ -21,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
 
-        $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ?, office = ?, jawatan = ? WHERE id = ?");
-        $stmt->execute([$name, $phone, $office, $jawatan, $_SESSION['user_id']]);
+        $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ?, office = ?, jawatan = ?, department = ? WHERE id = ?");
+        $stmt->execute([$name, $phone, $office, $jawatan, $department, $_SESSION['user_id']]);
 
         // Handle profile picture upload
         if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
