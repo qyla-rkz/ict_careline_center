@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya - Super Admin</title>
     <link rel="stylesheet" href="../assets/css/style.css">
-    <script src="../assets/js/global.js?v=10"></script>
+    <script src="../assets/js/global.js?v=12"></script>
 </head>
 
 <body>
@@ -24,13 +24,13 @@
                     Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">ðŸ“Š Papan Pemuka</a>
-                <a href="profile.php" class="nav-link active">ðŸ‘¤ Profil Saya</a>
-                <a href="users.php" class="nav-link">ðŸ‘¥ Pengguna</a>
-                <a href="audit_logs.php" class="nav-link">ðŸ“œ Jejak Audit</a>
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link active">👤 Profil Saya</a>
+                <a href="users.php" class="nav-link">👥 Pengguna</a>
+                <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">ðŸšª
+                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
                     Log Keluar</a>
             </div>
         </aside>
@@ -61,7 +61,7 @@
                                 title="Klik untuk menukar gambar profil">
                                 <img id="p_profile_pic" src=""
                                     style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                                <span id="p_profile_pic_placeholder" style="font-size: 3rem;">ðŸ‘¤</span>
+                                <span id="p_profile_pic_placeholder" style="font-size: 3rem;">👤</span>
                                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s;"
                                     onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
                                     <span
@@ -105,7 +105,7 @@
                             <input type="hidden" id="p_dept" name="department" required>
                             <div id="dept_display_box" class="form-control" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; position:relative;">
                                 <span id="dept_display_text" style="color:var(--text-muted);">Pilih Jabatan / Unit</span>
-                                <span style="font-size:0.8rem;">â–¼</span>
+                                <span style="font-size:0.8rem;">▼</span>
                             </div>
                             <div id="dept_options" style="display:none; position:absolute; width:100%; background:white; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); z-index:1000; max-height:220px; overflow-y:auto; margin-top:4px;">
                                 <div class="dept-opt" data-value="Jabatan Bangunan">Jabatan Bangunan</div>

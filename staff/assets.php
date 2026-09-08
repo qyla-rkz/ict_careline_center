@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aset Saya - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=15">
-    <script src="../assets/js/global.js?v=10"></script>
+    <script src="../assets/js/global.js?v=12"></script>
 </head>
 <body>
     <div class="app-container">

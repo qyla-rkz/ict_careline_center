@@ -37,7 +37,7 @@
             border-color: var(--border) !important;
         }
     </style>
-    <script src="../assets/js/global.js?v=10"></script>
+    <script src="../assets/js/global.js?v=12"></script>
 </head>
 <body>
     <div class="app-container">

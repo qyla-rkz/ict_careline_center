@@ -45,7 +45,7 @@
         .alert-error   { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
         .alert-success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
     </style>
-    <script src="assets/js/global.js?v=10"></script>
+    <script src="assets/js/global.js?v=12"></script>
 </head>
 
 <body class="portal-body">

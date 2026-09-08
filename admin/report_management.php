@@ -136,7 +136,7 @@
             flex-shrink: 0;
         }
     </style>
-    <script src="../assets/js/global.js?v=10"></script>
+    <script src="../assets/js/global.js?v=12"></script>
 </head>
 
 <body>

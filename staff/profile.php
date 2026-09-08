@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=15">
-    <script src="../assets/js/global.js?v=10"></script>
+    <script src="../assets/js/global.js?v=12"></script>
 </head>
 <body>
     <div class="app-container">
@@ -16,14 +16,14 @@
                 <h2>eICT Desk</h2>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">ðŸ“Š Papan Pemuka</a>
-                <a href="profile.php" class="nav-link active">ðŸ‘¤ Profil Saya</a>
-                <a href="assets.php" class="nav-link">ðŸ–¥ï¸ Aset Saya</a>
-                <a href="report_form.php" class="nav-link">ðŸ“ Hantar KEW.PA-9</a>
-                <a href="history.php" class="nav-link">ðŸ“œ Laporan Saya</a>
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link active">👤 Profil Saya</a>
+                <a href="assets.php" class="nav-link">🖥️ Aset Saya</a>
+                <a href="report_form.php" class="nav-link">📝 Hantar KEW.PA-9</a>
+                <a href="history.php" class="nav-link">📜 Laporan Saya</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">ðŸšª Log Keluar</a>
+                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 
@@ -47,7 +47,7 @@
                         <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; padding: 1.5rem; background: rgba(79, 70, 229, 0.03); border: 1px solid var(--border); border-radius: 16px;">
                             <div id="avatar-container" style="width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--primary); overflow: hidden; background: #e2e8f0; box-shadow: var(--shadow); margin-bottom: 1rem; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;" title="Klik untuk menukar gambar profil">
                                 <img id="p_profile_pic" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                                <span id="p_profile_pic_placeholder" style="font-size: 3rem;">ðŸ‘¤</span>
+                                <span id="p_profile_pic_placeholder" style="font-size: 3rem;">👤</span>
                                 <!-- Hover dark overlay -->
                                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
                                     <span style="color: white; font-size: 0.8rem; font-weight: 600; text-align: center; padding: 5px;">Tukar Gambar</span>
@@ -85,7 +85,7 @@
                             <input type="hidden" id="p_dept" name="department" required>
                             <div id="dept_display_box" class="form-control" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; position:relative;">
                                 <span id="dept_display_text" style="color:var(--text-muted);">Pilih Jabatan / Unit</span>
-                                <span style="font-size:0.8rem;">â–¼</span>
+                                <span style="font-size:0.8rem;">▼</span>
                             </div>
                             <div id="dept_options" style="display:none; position:absolute; width:100%; background:white; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); z-index:1000; max-height:220px; overflow-y:auto; margin-top:4px;">
                                 <div class="dept-opt" data-value="Jabatan Bangunan">Jabatan Bangunan</div>

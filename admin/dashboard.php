@@ -7,7 +7,7 @@
     <title>Admin Dashboard - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../assets/js/global.js?v=10"></script>
+    <script src="../assets/js/global.js?v=12"></script>
     <style>
         @media print {
             @page {

@@ -532,11 +532,72 @@ function setupDashboardBackGuard() {
     });
 }
 
+function setupFormAccessibility() {
+    const controls = document.querySelectorAll('input, select, textarea');
+    const usedIds = new Set(Array.from(document.querySelectorAll('[id]')).map(element => element.id));
+
+    controls.forEach(control => {
+        if (!control.hasAttribute('autocomplete')) {
+            const fieldName = `${control.name || ''} ${control.id || ''}`.toLowerCase();
+            let autocomplete = 'off';
+
+            if (control.type === 'password') {
+                autocomplete = /current|old/.test(fieldName) ? 'current-password' : 'new-password';
+            } else if (control.type === 'email' || /email/.test(fieldName)) {
+                autocomplete = 'email';
+            } else if (/username|staff_id|user/.test(fieldName)) {
+                autocomplete = 'username';
+            } else if (/full_name|nama|name/.test(fieldName)) {
+                autocomplete = 'name';
+            } else if (/phone|telefon|tel/.test(fieldName)) {
+                autocomplete = 'tel';
+            } else if (control.type === 'file' || control.type === 'hidden' || control.type === 'search') {
+                autocomplete = 'off';
+            }
+
+            control.setAttribute('autocomplete', autocomplete);
+        }
+    });
+
+    document.querySelectorAll('label').forEach(label => {
+        if (label.htmlFor && document.getElementById(label.htmlFor)) return;
+
+        let control = label.querySelector('input, select, textarea');
+        if (!control && label.parentElement) {
+            const parentControls = Array.from(label.parentElement.querySelectorAll('input, select, textarea'))
+                .filter(element => element.type !== 'hidden');
+            control = parentControls[0] || null;
+        }
+        if (!control) {
+            const text = document.createElement('span');
+            text.innerHTML = label.innerHTML;
+            text.className = label.className;
+            text.style.cssText = label.style.cssText;
+            label.replaceWith(text);
+            return;
+        }
+
+        if (!control.id) {
+            const baseId = (control.name || 'field').replace(/[^a-zA-Z0-9_-]/g, '_');
+            let generatedId = baseId;
+            let suffix = 2;
+            while (usedIds.has(generatedId)) generatedId = `${baseId}_${suffix++}`;
+            control.id = generatedId;
+            usedIds.add(generatedId);
+        }
+        label.setAttribute('for', control.id);
+    });
+}
+
 // Initialise everything when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    setupFormAccessibility();
     setupThemeToggle();
     initInactivityTimer();
     setupPasswordStrength();
     setupStaffSidebarProfile();
     setupDashboardBackGuard();
+
+    const formObserver = new MutationObserver(() => setupFormAccessibility());
+    formObserver.observe(document.body, { childList: true, subtree: true });
 });

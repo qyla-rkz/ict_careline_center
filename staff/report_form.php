@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hantar KEW.PA-9 - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css?v=15">
-    <script src="../assets/js/global.js?v=10"></script>
+    <script src="../assets/js/global.js?v=12"></script>
     <style>
         /* --- Print Watermark Styles --- */
         #print-watermark {

@@ -17,7 +17,7 @@
         .pw-toggle-btn svg { width: 18px; height: 18px; display: block; }
         .pw-toggle-btn:hover { color: var(--primary); }
     </style>
-    <script src="assets/js/global.js?v=10"></script>
+    <script src="assets/js/global.js?v=12"></script>
 </head>
 
 <body class="portal-body">

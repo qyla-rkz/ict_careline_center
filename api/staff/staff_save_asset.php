@@ -26,6 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ip_address     = $_POST['ip_address'] ?? '';
     $printer        = $_POST['printer'] ?? '';
     $perisian_lain  = $_POST['perisian_lain'] ?? '';
+    $nama_pegawai   = $_SESSION['full_name'] ?? '';
+    $jawatan        = $_SESSION['jawatan'] ?? '';
+    $jabatan_unit   = $_SESSION['department'] ?? '';
 
     if (empty($asset_type) || empty($serial_number)) {
         jsonResponse('error', 'Asset Type and Serial Number are required');
@@ -47,14 +50,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     asset_type = ?, serial_number = ?, model_komputer = ?, model_monitor = ?, 
                     serial_monitor = ?, os = ?, processor = ?, ram = ?, hard_disk = ?, 
                     mouse = ?, keyboard = ?, ms_office = ?, antivirus = ?, ip_address = ?, 
-                    printer = ?, perisian_lain = ? 
+                    printer = ?, perisian_lain = ?, no_siri_pendaftaran = ?, nama_pegawai = ?,
+                    jawatan = ?, jabatan_unit = ?
                     WHERE id = ? AND user_id = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 $asset_type, $serial_number, $model_komputer, $model_monitor, 
                 $serial_monitor, $os, $processor, $ram, $hard_disk, 
                 $mouse, $keyboard, $ms_office, $antivirus, $ip_address, 
-                $printer, $perisian_lain, $id, $_SESSION['user_id']
+                $printer, $perisian_lain, $serial_number, $nama_pegawai, $jawatan,
+                $jabatan_unit, $id, $_SESSION['user_id']
             ]);
             $asset_id = $id;
         } else {
@@ -63,14 +68,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         user_id, asset_type, serial_number, model_komputer, model_monitor, 
                         serial_monitor, os, processor, ram, hard_disk, 
                         mouse, keyboard, ms_office, antivirus, ip_address, 
-                        printer, perisian_lain
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        printer, perisian_lain, no_siri_pendaftaran, nama_pegawai,
+                        jawatan, jabatan_unit
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 $_SESSION['user_id'], $asset_type, $serial_number, $model_komputer, $model_monitor, 
                 $serial_monitor, $os, $processor, $ram, $hard_disk, 
                 $mouse, $keyboard, $ms_office, $antivirus, $ip_address, 
-                $printer, $perisian_lain
+                $printer, $perisian_lain, $serial_number, $nama_pegawai, $jawatan,
+                $jabatan_unit
             ]);
             $asset_id = $pdo->lastInsertId();
         }

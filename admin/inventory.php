@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assets Inventory - eICT Desk</title>
     <link rel="stylesheet" href="../assets/css/style.css">
-    <script src="../assets/js/global.js?v=10"></script>
+    <script src="../assets/js/global.js?v=12"></script>
 </head>
 
 <body>

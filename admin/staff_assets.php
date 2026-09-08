@@ -14,7 +14,7 @@
             color: var(--primary) !important;
         }
     </style>
-    <script src="../assets/js/global.js?v=10"></script>
+    <script src="../assets/js/global.js?v=12"></script>
 </head>
 <body>
     <div class="app-container">
@@ -60,13 +60,13 @@
             <div class="card" style="margin-bottom: 1.5rem; position: relative; z-index: 100; overflow: visible !important;">
                 <div style="display: flex; gap: 1rem; align-items: flex-end; padding: 0.5rem;">
                     <div class="form-group" style="margin-bottom: 0; flex: 2;">
-                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Carian Aset</label>
+                        <label for="filterSearch" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Carian Aset</label>
                         <input type="text" id="filterSearch" class="form-control" placeholder="Cari Nama atau ID Aset..." oninput="handleSearch()">
                     </div>
                     <div class="form-group" style="margin-bottom: 0; flex: 1; position: relative;">
-                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Pilih Jabatan</label>
+                        <div id="filterDeptLabel" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Pilih Jabatan</div>
                         <input type="hidden" id="filterDept" value="">
-                        <div id="customDeptSelect" class="form-control" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fff;">
+                        <div id="customDeptSelect" class="form-control" role="combobox" aria-labelledby="filterDeptLabel" aria-controls="deptDropdownOptions" aria-expanded="false" tabindex="0" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fff;">
                             <span id="deptDisplay">Semua Jabatan</span>
                             <span style="font-size: 0.75rem; color: var(--text-muted);">▼</span>
                         </div>
@@ -127,7 +127,7 @@
         </main>
     </div>
 
-    <div id="assetModal" class="modal">
+    <div id="assetModal" class="modal" style="display: none; pointer-events: none;">
         <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <h2 id="modalTitle">Butiran Aset</h2>
@@ -141,7 +141,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const user = JSON.parse(sessionStorage.getItem('user'));
+            let user = null;
+            try {
+                user = JSON.parse(sessionStorage.getItem('user') || 'null');
+            } catch (error) {
+                sessionStorage.removeItem('user');
+            }
             if (user && user.full_name) {
                 document.getElementById('sidebarAdminName').textContent = user.full_name;
             }
@@ -156,6 +161,7 @@
                 e.stopPropagation();
                 const isVisible = deptDropdownOptions.style.display === 'block';
                 deptDropdownOptions.style.display = isVisible ? 'none' : 'block';
+                customDeptSelect.setAttribute('aria-expanded', String(!isVisible));
             });
 
             deptDropdownOptions.addEventListener('click', (e) => {
@@ -172,6 +178,7 @@
 
             document.addEventListener('click', () => {
                 deptDropdownOptions.style.display = 'none';
+                customDeptSelect.setAttribute('aria-expanded', 'false');
             });
 
             fetchAssets();
@@ -186,7 +193,12 @@
             const tbody = document.getElementById('assetTableBody');
             tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">⏳ Memuatkan data...</td></tr>';
             try {
-                const response = await fetch('../api/admin/admin_get_assets.php?_t=' + new Date().getTime());
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 10000);
+                const response = await fetch('../api/admin/admin_get_assets.php?_t=' + new Date().getTime(), {
+                    signal: controller.signal
+                });
+                clearTimeout(timeout);
                 const rawText = await response.text();
                 console.log('[DEBUG] Raw response dari admin_get_assets.php:', rawText);
                 let result;
@@ -210,7 +222,10 @@
                     console.error('[DEBUG] API returned error:', result);
                 }
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:red;">❌ Fetch gagal: ${err.message}</td></tr>`;
+                const message = err.name === 'AbortError'
+                    ? 'Sambungan API mengambil masa terlalu lama.'
+                    : err.message;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:red;">❌ Fetch gagal: ${message}</td></tr>`;
                 console.error('[DEBUG] Fetch error:', err);
             }
         }
@@ -316,15 +331,15 @@
                     <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid var(--border);">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                             <div>
-                                <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Nama Pemilik</label>
+                                <div style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Nama Pemilik</div>
                                 <div style="font-weight:600;">${a.name || '-'}</div>
                             </div>
                             <div>
-                                <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Jawatan</label>
+                                <div style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Jawatan</div>
                                 <div style="font-weight:600;">${a.jawatan || '-'}</div>
                             </div>
                             <div style="grid-column: span 2;">
-                                <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Bahagian / Unit</label>
+                                <div style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Bahagian / Unit</div>
                                 <div style="font-weight:600;">${a.department || '-'}</div>
                             </div>
                         </div>
@@ -348,15 +363,15 @@
                     </div>
 
                     <div style="margin-bottom: 2rem;">
-                        <label style="font-weight:700; display:block; margin-bottom:0.5rem; color:var(--primary);">PERISIAN LAIN</label>
-                        <textarea name="perisian_lain" class="form-control" rows="3" style="width: 100%;">${a.perisian_lain || ''}</textarea>
+                        <label for="asset_other_software" style="font-weight:700; display:block; margin-bottom:0.5rem; color:var(--primary);">PERISIAN LAIN</label>
+                        <textarea id="asset_other_software" name="perisian_lain" class="form-control" rows="3" style="width: 100%;">${a.perisian_lain || ''}</textarea>
                     </div>
 
                     <div style="margin-bottom: 2rem;">
-                        <label style="font-weight:700; display:block; margin-bottom:1rem; color:var(--primary);">GAMBAR LAMPIRAN</label>
+                        <div style="font-weight:700; display:block; margin-bottom:1rem; color:var(--primary);">GAMBAR LAMPIRAN</div>
                         ${imagesHtml}
                         <div style="margin-top: 1rem;">
-                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Muat Naik Gambar Baru (Maksimum 3 keping, Pilihan)</label>
+                            <label for="asset_images" style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Muat Naik Gambar Baru (Maksimum 3 keping, Pilihan)</label>
                             <div style="border: 2px dashed var(--border); padding: 1.5rem; border-radius: 12px; text-align: center; background: #fafafa; transition: all 0.3s ease; position: relative; margin-top: 0.5rem;">
                                 <input type="file" name="images[]" id="asset_images" multiple accept="image/*" 
                                        style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer;" onchange="handleImagePreview(event)">
@@ -374,7 +389,9 @@
                     </div>
                 </form>
             `;
-            document.getElementById('assetModal').style.display = 'flex';
+            const assetModal = document.getElementById('assetModal');
+            assetModal.style.display = 'flex';
+            assetModal.style.pointerEvents = 'auto';
         }
 
         function viewUserHistoryFromBtn(btn) {
@@ -391,7 +408,9 @@
             const content = document.getElementById('assetDetailsContent');
             document.getElementById('modalTitle').textContent = `Sejarah Laporan - ${userName}`;
             content.innerHTML = '<p style="padding:1rem; color:var(--text-muted);">⏳ Memuatkan sejarah...</p>';
-            document.getElementById('assetModal').style.display = 'flex';
+            const assetModal = document.getElementById('assetModal');
+            assetModal.style.display = 'flex';
+            assetModal.style.pointerEvents = 'auto';
             try {
                 const res = await fetch(`../api/admin/admin_get_reports.php?user_id=${encodeURIComponent(userId)}`);
                 const result = await res.json();
@@ -429,7 +448,11 @@
                                         end.setHours(0,0,0,0);
                                         const days = Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24));
                                         const pass = days <= 14;
-                                        return \`<span style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: \${pass ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)'}; color: \${pass ? '#059669' : '#dc2626'}; border: 1px solid \${pass ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};">\${pass ? '✅' : '⚠️'} \${days} hari</span>\`;
+                                        return '<span style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:700;background:' +
+                                            (pass ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)') +
+                                            ';color:' + (pass ? '#059669' : '#dc2626') +
+                                            ';border:1px solid ' + (pass ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)') +
+                                            ';">' + (pass ? '✅' : '⚠️') + ' ' + days + ' hari</span>';
                                     })()}</div>
                                 </div>
                                 <div style="margin-bottom:0.5rem; font-size: 0.9rem;"><strong>Perihal Kerosakan:</strong> <span style="color:var(--text-main);">${r.perihal_kerosakan || r.perihal || '-'}</span></div>
@@ -492,7 +515,7 @@
                     ` : ''}
 
                     <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
-                        <button class="btn btn-secondary" onclick="viewUserHistory(${r.user_id || ''}, '${(r.full_name||r.nama_pelapor||'Staf').replace(/'/g,'\\\\\\'')}')">Kembali</button>
+                        <button class="btn btn-secondary" onclick='viewUserHistory(${r.user_id || ''}, ${JSON.stringify(r.full_name || r.nama_pelapor || 'Staf')})'>Kembali</button>
                         <button class="btn btn-secondary" onclick="closeModal()">Tutup</button>
                     </div>
                 </div>
@@ -528,8 +551,8 @@
         function renderInputRow(label, name, value) {
             return `
                 <div style="display: flex; flex-direction: column;">
-                    <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">${label}</label>
-                    <input type="text" name="${name}" class="form-control" value="${(value || '').replace(/"/g, '&quot;')}" style="font-weight: 500;">
+                    <label for="asset_${name}" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">${label}</label>
+                    <input type="text" id="asset_${name}" name="${name}" class="form-control" value="${(value || '').replace(/"/g, '&quot;')}" style="font-weight: 500;">
                 </div>
             `;
         }
@@ -565,7 +588,9 @@
         }
 
         function closeModal() {
-            document.getElementById('assetModal').style.display = 'none';
+            const assetModal = document.getElementById('assetModal');
+            assetModal.style.display = 'none';
+            assetModal.style.pointerEvents = 'none';
         }
 
 
