@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -168,7 +168,7 @@
 
             // Fetch profile to check password age
             try {
-                const profileRes = await fetch("../api/admin_get_profile.php");
+                const profileRes = await fetch("../api/admin/admin_get_profile.php");
                 const profile = await profileRes.json();
                 if (profile.status === 'success') {
                     sessionStorage.setItem('user', JSON.stringify(profile.data));

@@ -2,7 +2,7 @@
 // api/staff_submit_report.php
 session_start();
 header('Content-Type: application/json');
-require_once 'config.php';
+require_once '../config.php';
 
 if (!isset($_SESSION['user_id'])) {
     jsonResponse('error', 'Not logged in');
@@ -43,14 +43,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Handle Image Uploads
         if (!empty($_FILES['images']['name'][0])) {
-            $upload_dir = '../uploads/';
+            $upload_dir = __DIR__ . '/../../uploads/';
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
             $image_count = 0;
             foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
                 if ($image_count >= 3) break;
                 if ($_FILES['images']['error'][$key] === UPLOAD_ERR_OK) {
-                    $file_ext = pathinfo($_FILES['images']['name'][$key], PATHINFO_EXTENSION);
+                    $file_ext = strtolower(pathinfo($_FILES['images']['name'][$key], PATHINFO_EXTENSION));
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                    if (!in_array($file_ext, $allowedExtensions, true) || @getimagesize($tmp_name) === false) {
+                        continue;
+                    }
                     $file_name = "report_" . $report_id . "_" . $key . "_" . time() . "." . $file_ext;
                     $target_file = $upload_dir . $file_name;
 

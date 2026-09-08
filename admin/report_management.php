@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -160,7 +160,7 @@
                 <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
                     Log Keluar</a>
             </div>
         </aside>
@@ -500,7 +500,7 @@
 
         async function fetchReports() {
             try {
-                const res = await fetch("../api/admin_get_reports.php");
+                const res = await fetch("../api/admin/admin_get_reports.php");
                 const result = await res.json();
                 if (result.status === 'success') {
                     allReports = result.data;
@@ -717,7 +717,7 @@
             formData.append('id', id);
             formData.append('proses_semasa', proses);
             try {
-                const res = await fetch("../api/admin_update_proses.php", { method: 'POST', body: formData });
+                const res = await fetch("../api/admin/admin_update_proses.php", { method: 'POST', body: formData });
                 const result = await res.json();
                 if (result.status === 'success') {
                     // Show brief success toast
@@ -737,7 +737,7 @@
             e.preventDefault();
             const formData = new FormData(e.target);
             try {
-                const res = await fetch("../api/admin_update_report.php", { method: 'POST', body: formData });
+                const res = await fetch("../api/admin/admin_update_report.php", { method: 'POST', body: formData });
                 const result = await res.json();
                 if (result.status === 'success') {
                     alert('Laporan berjaya dikemaskini!');

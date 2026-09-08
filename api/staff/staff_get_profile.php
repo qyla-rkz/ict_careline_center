@@ -1,7 +1,7 @@
 <?php
 // api/staff_get_profile.php
 session_start();
-require_once 'config.php';
+require_once '../config.php';
 
 // Debug: Log session status to a file (temporary)
 // file_put_contents('session_debug.txt', "Session ID: " . session_id() . " | User ID: " . ($_SESSION['user_id'] ?? 'NONE') . "\n", FILE_APPEND);

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -194,7 +194,7 @@
 
         async function fetchProfile() {
             try {
-                const response = await fetch("../api/staff_get_profile.php");
+                const response = await fetch("../api/staff/staff_get_profile.php");
                 const result = await response.json();
                 if (result.status === 'success') {
                     document.getElementById('f_nama').value = result.data.full_name || '';
@@ -223,7 +223,7 @@
                 btn.disabled = true;
                 btn.textContent = 'Menghantar...';
 
-                const response = await fetch("../api/staff_submit_report.php", {
+                const response = await fetch("../api/staff/staff_submit_report.php", {
                     method: 'POST',
                     body: formData
                 });
@@ -248,3 +248,4 @@
 </body>
 
 </html>
+

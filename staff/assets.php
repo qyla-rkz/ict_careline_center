@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -212,7 +212,7 @@
 
         async function fetchProfile() {
             try {
-                const response = await fetch("../api/staff_get_profile.php");
+                const response = await fetch("../api/staff/staff_get_profile.php");
                 const result = await response.json();
                 if (result.status === 'success') {
                     document.getElementById('user_nama').value = result.data.full_name || '';
@@ -224,7 +224,7 @@
 
         async function loadAssetData() {
             try {
-                const response = await fetch("../api/staff_get_assets.php");
+                const response = await fetch("../api/staff/staff_get_assets.php");
                 const result = await response.json();
                 if (result.status === 'success' && result.data.length > 0) {
                     const a = result.data[0];
@@ -275,7 +275,7 @@
                 btn.disabled = true;
                 btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Menyimpan Butiran...';
                 
-                const response = await fetch("../api/staff_save_asset.php", {
+                const response = await fetch("../api/staff/staff_save_asset.php", {
                     method: 'POST',
                     body: formData
                 });
@@ -299,3 +299,4 @@
 
 </body>
 </html>
+

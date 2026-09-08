@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -39,7 +39,7 @@
                 <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
                     Log Keluar</a>
             </div>
         </aside>
@@ -423,7 +423,7 @@
 
             // Fetch admin profile to check password age
             try {
-                const profileRes = await fetch("../api/admin_get_profile.php");
+                const profileRes = await fetch("../api/admin/admin_get_profile.php");
                 const profile = await profileRes.json();
                 if (profile.status === 'success') {
                     sessionStorage.setItem('user', JSON.stringify(profile.data));
@@ -683,7 +683,7 @@
 
         async function fetchReports() {
             try {
-                const response = await fetch("../api/admin_get_reports.php");
+                const response = await fetch("../api/admin/admin_get_reports.php");
                 const result = await response.json();
 
                 if (result.status === 'success') {
@@ -799,7 +799,7 @@
             fd.append('proses_semasa', pSemasa);
 
             try {
-                const res = await fetch("../api/admin_update_proses.php", { method: 'POST', body: fd });
+                const res = await fetch("../api/admin/admin_update_proses.php", { method: 'POST', body: fd });
                 const data = await res.json();
                 if (data.status === 'success') {
                     alert('Proses Semasa berjaya dikemas kini!');
@@ -817,7 +817,7 @@
             e.preventDefault();
             const formData = new FormData(e.target);
             try {
-                const response = await fetch("../api/admin_update_report.php", {
+                const response = await fetch("../api/admin/admin_update_report.php", {
                     method: 'POST',
                     body: formData
                 });
@@ -1019,3 +1019,4 @@
 </body>
 
 </html>
+

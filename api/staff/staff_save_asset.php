@@ -2,7 +2,7 @@
 // api/staff_save_asset.php
 session_start();
 header('Content-Type: application/json');
-require_once 'config.php';
+require_once '../config.php';
 
 if (!isset($_SESSION['user_id'])) {
     jsonResponse('error', 'Not logged in');
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Handle Image Uploads
         if (!empty($_FILES['images']['name'][0])) {
-            $upload_dir = '../uploads/';
+            $upload_dir = __DIR__ . '/../../uploads/';
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
             // If editing and new images were uploaded, remove previous image records first
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $oldImages = $oldImagesStmt->fetchAll(PDO::FETCH_ASSOC);
 
                 foreach ($oldImages as $oldImage) {
-                    $oldPath = __DIR__ . '/../' . $oldImage['image_path'];
+                    $oldPath = __DIR__ . '/../../' . ltrim($oldImage['image_path'], '/\\');
                     if (is_file($oldPath)) {
                         @unlink($oldPath);
                     }
@@ -103,7 +103,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             for ($i = 0; $i < $image_count; $i++) {
                 if ($_FILES['images']['error'][$i] === UPLOAD_ERR_OK) {
-                    $file_ext = pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION);
+                    $file_ext = strtolower(pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION));
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                    if (!in_array($file_ext, $allowedExtensions, true) || @getimagesize($_FILES['images']['tmp_name'][$i]) === false) {
+                        continue;
+                    }
                     $file_name = "asset_" . $asset_id . "_" . $i . "_" . time() . "." . $file_ext;
                     $target_file = $upload_dir . $file_name;
 

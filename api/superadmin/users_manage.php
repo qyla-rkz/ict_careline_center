@@ -41,14 +41,14 @@ elseif ($method === 'POST') {
             $new_role = $_POST['role'] ?? '';
             $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
             $stmt->execute([$new_role, $id]);
-            logAudit($pdo, 'UPDATE_ROLE', "Mengubah peranan pengguna ID: $id kepada $new_role");
+            logAudit($pdo, $_SESSION['user_id'], 'UPDATE_ROLE', "Mengubah peranan pengguna ID: $id kepada $new_role");
             jsonResponse('success', 'Peranan pengguna berjaya dikemaskini.');
         } 
         elseif ($action === 'update_status') {
             $new_status = $_POST['status'] ?? '';
             $stmt = $pdo->prepare("UPDATE users SET status = ? WHERE id = ?");
             $stmt->execute([$new_status, $id]);
-            logAudit($pdo, 'UPDATE_STATUS', "Mengubah status pengguna ID: $id kepada $new_status");
+            logAudit($pdo, $_SESSION['user_id'], 'UPDATE_STATUS', "Mengubah status pengguna ID: $id kepada $new_status");
             jsonResponse('success', 'Status pengguna berjaya dikemaskini.');
         }
         elseif ($action === 'reset_password') {
@@ -61,7 +61,7 @@ elseif ($method === 'POST') {
             
             $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
             $stmt->execute([$new_pass_hash, $id]);
-            logAudit($pdo, 'RESET_PASSWORD', "Menetapkan semula kata laluan bagi pengguna ID: $id");
+            logAudit($pdo, $_SESSION['user_id'], 'RESET_PASSWORD', "Menetapkan semula kata laluan bagi pengguna ID: $id");
             jsonResponse('success', "Kata laluan berjaya di-reset ke ID Staf pengguna ($new_pass_plain).");
         }
     } catch (PDOException $e) {
@@ -85,7 +85,7 @@ elseif ($method === 'DELETE') {
     try {
         $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
         $stmt->execute([$id]);
-        logAudit($pdo, 'DELETE_USER', "Memadam pengguna ID: $id dari sistem");
+        logAudit($pdo, $_SESSION['user_id'], 'DELETE_USER', "Memadam pengguna ID: $id dari sistem");
         jsonResponse('success', 'Pengguna berjaya dipadam dari pangkalan data.');
     } catch (PDOException $e) {
         // Handle foreign key constraint error (if user has reports/assets)

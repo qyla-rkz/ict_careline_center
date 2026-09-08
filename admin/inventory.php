@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -31,7 +31,7 @@
                 <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
                     Log Keluar</a>
             </div>
         </aside>
@@ -158,7 +158,7 @@
 
         async function fetchInventory() {
             try {
-                const response = await fetch('../api/admin_get_dept_inventory.php?_=' + new Date().getTime());
+                const response = await fetch('../api/admin/admin_get_dept_inventory.php?_=' + new Date().getTime());
                 const result = await response.json();
 
                 if (result.status === 'success') {
@@ -406,7 +406,7 @@
 
             const formData = new FormData(e.target);
             try {
-                const response = await fetch("../api/admin_update_dept_inventory.php", {
+                const response = await fetch("../api/admin/admin_update_dept_inventory.php", {
                     method: 'POST',
                     body: formData
                 });
@@ -426,7 +426,7 @@
         async function deleteDept(id) {
             if (!confirm('Adakah anda pasti mahu memadam inventori jabatan ini?')) return;
             try {
-                const response = await fetch(`../api/admin_delete_dept_inventory.php?id=${id}`);
+                const response = await fetch(`../api/admin/admin_delete_dept_inventory.php?id=${id}`);
                 const res = await response.json();
                 if (res.status === 'success') {
                     fetchInventory();

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -300,7 +300,7 @@
 
         async function fetchHistory() {
             try {
-                const response = await fetch("../api/staff_get_history.php");
+                const response = await fetch("../api/staff/staff_get_history.php");
                 const result = await response.json();
                 if (result.status === 'success') {
                     reportsData = result.data;
@@ -576,3 +576,4 @@
 
 </body>
 </html>
+

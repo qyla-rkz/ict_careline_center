@@ -1,7 +1,7 @@
 <?php
 // api/admin_get_profile.php
 session_start();
-require_once 'config.php';
+require_once '../config.php';
 
 if (!isset($_SESSION['user_id'])) {
     jsonResponse('error', 'Not logged in');

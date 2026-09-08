@@ -20,15 +20,15 @@
                 <p id="sidebarAdminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link active">👤 Profil Saya</a>
-                <a href="report_management.php" class="nav-link">📝 Pengurusan Laporan</a>
-                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
+                <a href="dashboard.php" class="nav-link">ðŸ“Š Papan Pemuka</a>
+                <a href="profile.php" class="nav-link active">ðŸ‘¤ Profil Saya</a>
+                <a href="report_management.php" class="nav-link">ðŸ“ Pengurusan Laporan</a>
+                <a href="inventory.php" class="nav-link">ðŸ–¥ï¸ Inventori Aset</a>
+                <a href="staff_assets.php" class="nav-link">ðŸ‘¥ Aset Staf</a>
+                <a href="history_reports.php" class="nav-link">ðŸ“œ Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">ðŸšª Log Keluar</a>
             </div>
         </aside>
 
@@ -52,7 +52,7 @@
                         <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; padding: 1.5rem; background: rgba(79, 70, 229, 0.03); border: 1px solid var(--border); border-radius: 16px;">
                             <div id="avatar-container" style="width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--primary); overflow: hidden; background: #e2e8f0; box-shadow: var(--shadow); margin-bottom: 1rem; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;" title="Klik untuk menukar gambar profil">
                                 <img id="p_profile_pic" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                                <span id="p_profile_pic_placeholder" style="font-size: 3rem;">👤</span>
+                                <span id="p_profile_pic_placeholder" style="font-size: 3rem;">ðŸ‘¤</span>
                                 <!-- Hover dark overlay -->
                                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
                                     <span style="color: white; font-size: 0.8rem; font-weight: 600; text-align: center; padding: 5px;">Tukar Gambar</span>
@@ -90,7 +90,7 @@
                             <input type="hidden" id="p_dept" name="department" required>
                             <div id="dept_display_box" class="form-control" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; position:relative;">
                                 <span id="dept_display_text" style="color:var(--text-muted);">Pilih Jabatan / Unit</span>
-                                <span style="font-size:0.8rem;">▼</span>
+                                <span style="font-size:0.8rem;">â–¼</span>
                             </div>
                             <div id="dept_options" style="display:none; position:absolute; width:100%; background:white; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); z-index:1000; max-height:220px; overflow-y:auto; margin-top:4px;">
                                 <div class="dept-opt" data-value="Jabatan Bangunan">Jabatan Bangunan</div>
@@ -272,7 +272,7 @@
 
             const loadProfile = async () => {
                 try {
-                    const response = await fetch("../api/admin_get_profile.php");
+                    const response = await fetch("../api/admin/admin_get_profile.php");
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     
                     const result = await response.json();
@@ -322,7 +322,7 @@
                     btn.textContent = 'Menyimpan...';
 
                     const formData = new FormData(e.target);
-                    const response = await fetch("../api/admin_update_profile.php", {
+                    const response = await fetch("../api/admin/admin_update_profile.php", {
                         method: 'POST',
                         body: formData
                     });
@@ -358,7 +358,7 @@
                     btn.disabled = true;
                     btn.textContent = 'Mengemaskini...';
 
-                    const response = await fetch("../api/admin_change_password.php", {
+                    const response = await fetch("../api/admin/admin_change_password.php", {
                         method: 'POST',
                         body: formData
                     });

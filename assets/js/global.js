@@ -1,4 +1,4 @@
-﻿/**
+/**
  * eICT Desk - Global Core Features Script
  * Handles:
  * 1. Premium Dark Theme Switcher & Persistence
@@ -480,7 +480,7 @@ function setupStaffSidebarProfile() {
     }
 
     // 3. Fetch FRESH profile from API to update picture (solves stale sessionStorage issue)
-    fetch("../api/staff_get_profile.php")
+    fetch("../api/staff/staff_get_profile.php")
         .then(r => r.json())
         .then(result => {
             if (result.status !== 'success') return;

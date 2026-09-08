@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -37,7 +37,7 @@
                 <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 
@@ -186,7 +186,7 @@
             const tbody = document.getElementById('assetTableBody');
             tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">⏳ Memuatkan data...</td></tr>';
             try {
-                const response = await fetch('../api/admin_get_assets.php?_t=' + new Date().getTime());
+                const response = await fetch('../api/admin/admin_get_assets.php?_t=' + new Date().getTime());
                 const rawText = await response.text();
                 console.log('[DEBUG] Raw response dari admin_get_assets.php:', rawText);
                 let result;
@@ -393,7 +393,7 @@
             content.innerHTML = '<p style="padding:1rem; color:var(--text-muted);">⏳ Memuatkan sejarah...</p>';
             document.getElementById('assetModal').style.display = 'flex';
             try {
-                const res = await fetch(`../api/admin_get_reports.php?user_id=${encodeURIComponent(userId)}`);
+                const res = await fetch(`../api/admin/admin_get_reports.php?user_id=${encodeURIComponent(userId)}`);
                 const result = await res.json();
                 if (result.status !== 'success') {
                     content.innerHTML = `<p style="padding:1rem;color:red;">Ralat: ${result.message || 'Gagal memuatkan sejarah.'}</p>`;
@@ -413,14 +413,32 @@
                                     <div style="font-weight:700;">${r.nama_pelapor || r.full_name || '-'}</div>
                                     <div style="font-size:0.8rem; color:var(--text-muted);">${new Date(r.created_at).toLocaleString()}</div>
                                 </div>
-                                <div style="margin-bottom:0.5rem;"><strong>Aset:</strong> ${r.jenis_aset || '-'} ${r.nombor_siri ? '('+r.nombor_siri+')' : ''} &nbsp; <strong>Keputusan:</strong> ${r.keputusan || r.status || '-'}</div>
-                                <div style="margin-bottom:0.5rem; color:var(--text-main);">${r.perihal_kerosakan || r.perihal || '-'}</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                    <div><strong>Jenis Aset:</strong> ${r.jenis_aset || '-'}</div>
+                                    <div><strong>No. Siri Pendaftaran:</strong> ${r.nombor_siri || '-'}</div>
+                                    <div><strong>Tarikh Kerosakan:</strong> ${r.tarikh_kerosakan ? new Date(r.tarikh_kerosakan).toLocaleDateString('ms-MY') : '-'}</div>
+                                    <div><strong>Keputusan:</strong> ${r.keputusan || r.status || '-'}</div>
+                                    <div><strong>Tarikh Aduan:</strong> ${r.created_at ? new Date(r.created_at).toLocaleDateString('ms-MY') : '-'}</div>
+                                    <div><strong>Tarikh Siap:</strong> ${(r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected' || r.keputusan === 'Syor Dilupuskan') && r.admin_tarikh ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY') : '-'}</div>
+                                    <div style="grid-column: 1 / -1;"><strong>Pematuhan ISO:</strong> ${(() => {
+                                        const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected' || r.keputusan === 'Syor Dilupuskan';
+                                        if (!isCompleted || !r.admin_tarikh) return '<span style="color: var(--text-muted);">—</span>';
+                                        const start = new Date(r.created_at);
+                                        const end = new Date(r.admin_tarikh);
+                                        start.setHours(0,0,0,0);
+                                        end.setHours(0,0,0,0);
+                                        const days = Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24));
+                                        const pass = days <= 14;
+                                        return \`<span style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: \${pass ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)'}; color: \${pass ? '#059669' : '#dc2626'}; border: 1px solid \${pass ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};">\${pass ? '✅' : '⚠️'} \${days} hari</span>\`;
+                                    })()}</div>
+                                </div>
+                                <div style="margin-bottom:0.5rem; font-size: 0.9rem;"><strong>Perihal Kerosakan:</strong> <span style="color:var(--text-main);">${r.perihal_kerosakan || r.perihal || '-'}</span></div>
                                 ${r.images && r.images.length ? `
                                     <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap:0.5rem; margin-top:0.5rem;">
                                         ${r.images.map(img => `<div style="aspect-ratio:1; overflow:hidden; border-radius:6px; border:1px solid var(--border);"><img src="../${img.image_path}" style="width:100%; height:100%; object-fit:cover;"></div>`).join('')}
                                     </div>
                                 ` : ''}
-                                <div style="margin-top:0.5rem; text-align:right;"><button onclick='showReportDetails(${JSON.stringify(r).replace(/'/g, "\\'")})' class="btn btn-primary" style="padding:0.35rem 0.6rem; font-size:0.8rem;">Lihat Butiran</button></div>
+                                <div style="margin-top:0.5rem; text-align:right;"><button onclick='showReportDetails(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-primary" style="padding:0.35rem 0.6rem; font-size:0.8rem;">Lihat Butiran</button></div>
                             </div>
                         `).join('')}
                     </div>
@@ -474,7 +492,7 @@
                     ` : ''}
 
                     <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
-                        <button class="btn btn-secondary" onclick="viewUserHistory(${r.user_id || ''}, '${(r.full_name||r.nama_pelapor||'Staf').replace(/'/g,'\'')}')">Kembali</button>
+                        <button class="btn btn-secondary" onclick="viewUserHistory(${r.user_id || ''}, '${(r.full_name||r.nama_pelapor||'Staf').replace(/'/g,'\\\\\\'')}')">Kembali</button>
                         <button class="btn btn-secondary" onclick="closeModal()">Tutup</button>
                     </div>
                 </div>
@@ -525,7 +543,7 @@
             btn.textContent = 'Menyimpan...';
 
             try {
-                const res = await fetch("../api/admin_update_asset.php", {
+                const res = await fetch("../api/admin/admin_update_asset.php", {
                     method: 'POST',
                     body: formData
                 });
@@ -554,3 +572,4 @@
     </script>
 </body>
 </html>
+

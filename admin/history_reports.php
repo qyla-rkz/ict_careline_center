@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -161,7 +161,7 @@
                 <a href="history_reports.php" class="nav-link active">📜 Sejarah Laporan</a>
             </nav>
             <div style="margin-top: auto;">
-                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
+                <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
                     Log Keluar</a>
             </div>
         </aside>
@@ -501,7 +501,7 @@
         let filteredHistory = [];
 
         async function fetchHistory() {
-            const url = `../api/admin_get_reports.php`;
+            const url = `../api/admin/admin_get_reports.php`;
 
             try {
                 const response = await fetch(url);

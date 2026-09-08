@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -271,7 +271,7 @@ flowchart TD
 
             // Fetch Profile (Critical for welcome message)
             try {
-                const profileRes = await fetch("../api/staff_get_profile.php");
+                const profileRes = await fetch("../api/staff/staff_get_profile.php");
                 if (!profileRes.ok) throw new Error(`HTTP error! status: ${profileRes.status}`);
 
                 const profile = await profileRes.json();
@@ -298,7 +298,7 @@ flowchart TD
 
             // Fetch Stats (History) & Update Real-time tracking
             try {
-                const historyRes = await fetch("../api/staff_get_history.php");
+                const historyRes = await fetch("../api/staff/staff_get_history.php");
                 const history = await historyRes.json();
 
                 if (history.status === 'success') {
@@ -369,7 +369,7 @@ flowchart TD
             // Fetch Recent Activity
             const activityList = document.getElementById('activity-list');
             try {
-                const activityRes = await fetch("../api/staff_get_activity.php");
+                const activityRes = await fetch("../api/staff/staff_get_activity.php");
                 const activity = await activityRes.json();
 
                 if (activity.status === 'success' && activity.data.length > 0) {
