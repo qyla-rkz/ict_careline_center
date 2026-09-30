@@ -23,17 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
                 
                 if (data.status === 'success') {
-                    // Simpan data user ke dalam sessionStorage supaya dashboard tidak tendang keluar
+                    // Simpan data user ke dalam sessionStorage
                     sessionStorage.setItem('user', JSON.stringify(data.data));
 
-                    // Redirect based on role
-                    const role = data.data.role.toLowerCase();
+                    // Redirect berdasarkan peranan
+                    const role = (data.data.role || '').toLowerCase();
                     if (role === 'super admin' || role === 'superadmin') {
-                        window.location.href="superadmin/dashboard.php";
+                        window.location.href = "superadmin/dashboard.php";
                     } else if (role === 'admin') {
-                        window.location.href="admin/dashboard.php";
+                        window.location.href = "admin/dashboard.php";
                     } else {
-                        window.location.href="staff/dashboard.php";
+                        // Staff ke halaman Pilih Portal
+                        window.location.href = "portal.php";
                     }
                 } else {
                     alert(data.message || 'Log Masuk gagal.');

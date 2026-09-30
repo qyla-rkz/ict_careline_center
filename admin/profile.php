@@ -44,116 +44,154 @@
                 </div>
             </header>
 
-            <section>
-                <h1>Maklumat Akaun</h1>
-                <div class="card" style="margin-top: 2rem; max-width: 600px;">
-                    <form id="profile-form" enctype="multipart/form-data">
-                        <!-- Profile Picture Edit Section -->
-                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; padding: 1.5rem; background: rgba(79, 70, 229, 0.03); border: 1px solid var(--border); border-radius: 16px;">
-                            <div id="avatar-container" style="width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--primary); overflow: hidden; background: #e2e8f0; box-shadow: var(--shadow); margin-bottom: 1rem; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;" title="Klik untuk menukar gambar profil">
-                                <img id="p_profile_pic" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                                <span id="p_profile_pic_placeholder" style="font-size: 3rem;">👤</span>
-                                <!-- Hover dark overlay -->
-                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
-                                    <span style="color: white; font-size: 0.8rem; font-weight: 600; text-align: center; padding: 5px;">Tukar Gambar</span>
+            <section style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+                <!-- Ruangan Kiri: Maklumat Akaun -->
+                <div>
+                    <h1>Maklumat Akaun</h1>
+                    <div class="card" style="margin-top: 1.5rem;">
+                        <form id="profile-form" enctype="multipart/form-data">
+                            <!-- Profile Picture Edit Section -->
+                            <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; padding: 1.5rem; background: rgba(79, 70, 229, 0.03); border: 1px solid var(--border); border-radius: 16px;">
+                                <div id="avatar-container" style="width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--primary); overflow: hidden; background: #e2e8f0; box-shadow: var(--shadow); margin-bottom: 1rem; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;" title="Klik untuk menukar gambar profil">
+                                    <img id="p_profile_pic" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                    <span id="p_profile_pic_placeholder" style="font-size: 3rem;">👤</span>
+                                    <!-- Hover dark overlay -->
+                                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                                        <span style="color: white; font-size: 0.8rem; font-weight: 600; text-align: center; padding: 5px;">Tukar Gambar</span>
+                                    </div>
+                                </div>
+                                <input type="file" name="profile_picture" id="profile_picture_input" accept="image/*" style="display: none;">
+                                <span style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">Gambar Profil Formal</span>
+                                <div style="margin-top: 0.5rem; text-align: center; font-size: 0.8rem; color: var(--text-muted); max-width: 320px; line-height: 1.4;">
+                                    Klik gambar di atas untuk memuat naik gambar profil baru anda.
                                 </div>
                             </div>
-                            <input type="file" name="profile_picture" id="profile_picture_input" accept="image/*" style="display: none;">
-                            <span style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">Gambar Profil Formal</span>
-                            <div style="margin-top: 0.5rem; text-align: center; font-size: 0.8rem; color: var(--text-muted); max-width: 320px; line-height: 1.4;">
-                                Klik gambar di atas untuk memuat naik gambar profil baru anda.
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label>Nama Penuh</label>
-                            <input type="text" id="p_name" name="full_name" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>ID Staf / Username</label>
-                            <input type="text" id="p_user" name="username" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
-                        </div>
-                        <div class="form-group">
-                            <label>No. Telefon</label>
-                            <input type="text" id="p_phone" name="phone" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Sambungan Pejabat</label>
-                            <input type="text" id="p_office" name="office" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Jawatan</label>
-                            <input type="text" id="p_jawatan" name="jawatan" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Jabatan / Unit</label>
-                            <input type="hidden" id="p_dept" name="department" required>
-                            <div id="dept_display_box" class="form-control" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; position:relative;">
-                                <span id="dept_display_text" style="color:var(--text-muted);">Pilih Jabatan / Unit</span>
-                                <span style="font-size:0.8rem;">▼</span>
+                            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            <div class="form-group">
+                                <label>Nama Penuh</label>
+                                <input type="text" id="p_name" name="full_name" class="form-control" required>
                             </div>
-                            <div id="dept_options" style="display:none; position:absolute; width:100%; background:white; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); z-index:1000; max-height:220px; overflow-y:auto; margin-top:4px;">
-                                <div class="dept-opt" data-value="Jabatan Bangunan">Jabatan Bangunan</div>
-                                <div class="dept-opt" data-value="Jabatan Kejuruteraan">Jabatan Kejuruteraan</div>
-                                <div class="dept-opt" data-value="Jabatan Kesihatan dan Pelesenan">Jabatan Kesihatan dan Pelesenan</div>
-                                <div class="dept-opt" data-value="Jabatan Kewangan">Jabatan Kewangan</div>
-                                <div class="dept-opt" data-value="Jabatan Khidmat Pengurusan">Jabatan Khidmat Pengurusan</div>
-                                <div class="dept-opt" data-value="Jabatan Komunikasi Koprat dan Kemasyarakatan">Jabatan Komunikasi Koprat dan Kemasyarakatan</div>
-                                <div class="dept-opt" data-value="Jabatan Penguatkuasaan">Jabatan Penguatkuasaan</div>
-                                <div class="dept-opt" data-value="Jabatan Penilaian dan Pengurusan Harta">Jabatan Penilaian dan Pengurusan Harta</div>
-                                <div class="dept-opt" data-value="Jabatan Perancangan dan Pembangunan Landskap">Jabatan Perancangan dan Pembangunan Landskap</div>
-                                <div class="dept-opt" data-value="Kaunter Hasil">Kaunter Hasil</div>
-                                <div class="dept-opt" data-value="Pejabat Setiausaha">Pejabat Setiausaha</div>
-                                <div class="dept-opt" data-value="Pejabat YDP">Pejabat YDP</div>
-                                <div class="dept-opt" data-value="Unit Audit Dalaman">Unit Audit Dalaman</div>
-                                <div class="dept-opt" data-value="Unit Perolehan dan Pengurusan Kontrak">Unit Perolehan dan Pengurusan Kontrak</div>
-                                <div class="dept-opt" data-value="Unit Persuruhjaya Bangunan">Unit Persuruhjaya Bangunan</div>
-                                <div class="dept-opt" data-value="Unit Pusat Setempat">Unit Pusat Setempat</div>
-                                <div class="dept-opt" data-value="Unit Teknologi Maklumat">Unit Teknologi Maklumat</div>
-                                <div class="dept-opt" data-value="Unit Undang-Undang">Unit Undang-Undang</div>
+                            <div class="form-group">
+                                <label>ID Staf / Username</label>
+                                <input type="text" id="p_user" name="username" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
                             </div>
-                        </div>
-                        
-                        <div style="margin-top: 2rem;">
-                            <button type="submit" id="save-btn" class="btn btn-primary" style="width: 100%;">Simpan Perubahan</button>
-                        </div>
-                    </form>
+                            <div class="form-group">
+                                <label>No. Telefon</label>
+                                <input type="text" id="p_phone" name="phone" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Sambungan Pejabat</label>
+                                <input type="text" id="p_office" name="office" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Jawatan</label>
+                                <input type="text" id="p_jawatan" name="jawatan" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Jabatan / Unit</label>
+                                <input type="hidden" id="p_dept" name="department" required>
+                                <div id="dept_display_box" class="form-control" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; position:relative;">
+                                    <span id="dept_display_text" style="color:var(--text-muted);">Pilih Jabatan / Unit</span>
+                                    <span style="font-size:0.8rem;">▼</span>
+                                </div>
+                                <div id="dept_options" style="display:none; position:absolute; width:100%; background:white; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); z-index:1000; max-height:220px; overflow-y:auto; margin-top:4px;">
+                                    <div class="dept-opt" data-value="Jabatan Bangunan">Jabatan Bangunan</div>
+                                    <div class="dept-opt" data-value="Jabatan Kejuruteraan">Jabatan Kejuruteraan</div>
+                                    <div class="dept-opt" data-value="Jabatan Kesihatan dan Pelesenan">Jabatan Kesihatan dan Pelesenan</div>
+                                    <div class="dept-opt" data-value="Jabatan Kewangan">Jabatan Kewangan</div>
+                                    <div class="dept-opt" data-value="Jabatan Khidmat Pengurusan">Jabatan Khidmat Pengurusan</div>
+                                    <div class="dept-opt" data-value="Jabatan Komunikasi Koprat dan Kemasyarakatan">Jabatan Komunikasi Koprat dan Kemasyarakatan</div>
+                                    <div class="dept-opt" data-value="Jabatan Penguatkuasaan">Jabatan Penguatkuasaan</div>
+                                    <div class="dept-opt" data-value="Jabatan Penilaian dan Pengurusan Harta">Jabatan Penilaian dan Pengurusan Harta</div>
+                                    <div class="dept-opt" data-value="Jabatan Perancangan dan Pembangunan Landskap">Jabatan Perancangan dan Pembangunan Landskap</div>
+                                    <div class="dept-opt" data-value="Kaunter Hasil">Kaunter Hasil</div>
+                                    <div class="dept-opt" data-value="Pejabat Setiausaha">Pejabat Setiausaha</div>
+                                    <div class="dept-opt" data-value="Pejabat YDP">Pejabat YDP</div>
+                                    <div class="dept-opt" data-value="Unit Audit Dalaman">Unit Audit Dalaman</div>
+                                    <div class="dept-opt" data-value="Unit Perolehan dan Pengurusan Kontrak">Unit Perolehan dan Pengurusan Kontrak</div>
+                                    <div class="dept-opt" data-value="Unit Persuruhjaya Bangunan">Unit Persuruhjaya Bangunan</div>
+                                    <div class="dept-opt" data-value="Unit Pusat Setempat">Unit Pusat Setempat</div>
+                                    <div class="dept-opt" data-value="Unit Teknologi Maklumat">Unit Teknologi Maklumat</div>
+                                    <div class="dept-opt" data-value="Unit Undang-Undang">Unit Undang-Undang</div>
+                                </div>
+                            </div>
+                            </div>
+                            
+                            <div style="margin-top: 2rem;">
+                                <button type="submit" id="save-btn" class="btn btn-primary" style="width: 100%;">Simpan Perubahan</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
-                <h1 style="margin-top: 3rem;">Keselamatan</h1>
-                <div class="card" style="margin-top: 2rem; max-width: 600px;">
-                    <form id="password-form">
-                        <div class="form-group">
-                            <label>Kata Laluan Semasa</label>
-                            <div class="pw-field-wrap" style="position: relative;">
-                                <input type="password" id="a_current_password" name="current_password" class="form-control" style="padding-right: 2.6rem;" required placeholder="Masukkan kata laluan semasa">
-                                <button type="button" class="pw-toggle-btn" onclick="togglePw('a_current_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false"></button>
+                <!-- Ruangan Kanan: Keselamatan -->
+                <div>
+                    <h1>Keselamatan</h1>
+                    <div class="card" style="margin-top: 1.5rem;">
+                        <form id="password-form">
+                            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            <div class="form-group">
+                                <label>Kata Laluan Semasa</label>
+                                <div class="pw-field-wrap" style="position: relative;">
+                                    <input type="password" id="a_current_password" name="current_password" class="form-control" style="padding-right: 2.6rem;" required placeholder="Masukkan kata laluan semasa">
+                                    <button type="button" class="pw-toggle-btn" onclick="togglePw('a_current_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false"></button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Kata Laluan Baru</label>
-                            <div class="pw-field-wrap" style="position: relative;">
-                                <input type="password" id="a_new_password" name="new_password" class="form-control" style="padding-right: 2.6rem;" required placeholder="Masukkan kata laluan baru">
-                                <button type="button" class="pw-toggle-btn" onclick="togglePw('a_new_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false"></button>
+                            <div class="form-group">
+                                <label style="display:flex;align-items:center;">Kata Laluan Baru
+                                    <span class="pw-info-wrap">
+                                        <span class="pw-info-icon">i</span>
+                                        <span class="pw-info-tooltip">
+                                            <strong style="display:block;margin-bottom:.5rem;color:#1e293b;">Syarat Kata Laluan:</strong>
+                                            <div style="display:flex;align-items:flex-start;gap:.4rem;margin-bottom:.4rem;line-height:1.35;color:#334155;">
+                                                <span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;background:#22c55e;border-radius:3px;color:white;font-size:10px;font-weight:bold;flex-shrink:0;margin-top:2px;">✓</span>
+                                                <span>Sekurang-kurangnya 8 aksara</span>
+                                            </div>
+                                            <div style="display:flex;align-items:flex-start;gap:.4rem;margin-bottom:.4rem;line-height:1.35;color:#334155;">
+                                                <span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;background:#22c55e;border-radius:3px;color:white;font-size:10px;font-weight:bold;flex-shrink:0;margin-top:2px;">✓</span>
+                                                <span>Mengandungi huruf besar & kecil</span>
+                                            </div>
+                                            <div style="display:flex;align-items:flex-start;gap:.4rem;margin-bottom:.4rem;line-height:1.35;color:#334155;">
+                                                <span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;background:#22c55e;border-radius:3px;color:white;font-size:10px;font-weight:bold;flex-shrink:0;margin-top:2px;">✓</span>
+                                                <span>Mengandungi sekurang-kurangnya 1 nombor</span>
+                                            </div>
+                                            <div style="display:flex;align-items:flex-start;gap:.4rem;line-height:1.35;color:#334155;">
+                                                <span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;background:#22c55e;border-radius:3px;color:white;font-size:10px;font-weight:bold;flex-shrink:0;margin-top:2px;">✓</span>
+                                                <span>Mengandungi 1 simbol khas (e.g. @, #, $, !)</span>
+                                            </div>
+                                        </span>
+                                    </span>
+                                </label>
+                                <div class="pw-field-wrap" style="position: relative;">
+                                    <input type="password" id="a_new_password" name="new_password" class="form-control" style="padding-right: 2.6rem;" required placeholder="Min 8 aksara">
+                                    <button type="button" class="pw-toggle-btn" onclick="togglePw('a_new_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false"></button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Sahkan Kata Laluan Baru</label>
-                            <div class="pw-field-wrap" style="position: relative;">
-                                <input type="password" id="a_confirm_password" name="confirm_password" class="form-control" style="padding-right: 2.6rem;" required placeholder="Ulang kata laluan baru">
-                                <button type="button" class="pw-toggle-btn" onclick="togglePw('a_confirm_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false"></button>
+                            <div class="form-group">
+                                <label>Sahkan Kata Laluan Baru</label>
+                                <div class="pw-field-wrap" style="position: relative;">
+                                    <input type="password" id="a_confirm_password" name="confirm_password" class="form-control" style="padding-right: 2.6rem;" required placeholder="Ulang kata laluan baru">
+                                    <button type="button" class="pw-toggle-btn" onclick="togglePw('a_confirm_password', this)" aria-label="Tunjukkan kata laluan" aria-pressed="false"></button>
+                                </div>
                             </div>
-                        </div>
-                        <div style="margin-top: 2rem;">
-                            <button type="submit" id="pass-btn" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--border); background: transparent; color: var(--text-main);">Kemaskini Kata Laluan</button>
-                        </div>
-                    </form>
+                            </div>
+                            <div style="margin-top: 2rem;">
+                                <button type="submit" id="pass-btn" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--border); background: transparent; color: var(--text-main);">Kemaskini Kata Laluan</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </section>
         </main>
     </div>
 
     <style>
+        .pw-info-wrap { position: relative; display: inline-flex; align-items: center; margin-left: .35rem; }
+        .pw-info-icon { width: 16px; height: 16px; border-radius: 50%; background: rgba(37,99,235,.12); color: #2563eb; font-size: .65rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; line-height: 1; }
+        .pw-info-tooltip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: rgba(255,255,255,.97); border: 1px solid rgba(37,99,235,.18); border-radius: 12px; padding: .75rem 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.12); width: 260px; z-index: 50; font-size: .72rem; color: #24324b; }
+        .pw-info-tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: rgba(37,99,235,.18); }
+        .pw-info-wrap:hover .pw-info-tooltip { display: block; }
         .dept-opt { padding: 0.7rem 1.2rem; cursor: pointer; font-size: 0.9rem; }
         .dept-opt:hover { background: rgba(79,70,229,0.07); color: var(--primary); }
         #dept_display_box { position: relative; }

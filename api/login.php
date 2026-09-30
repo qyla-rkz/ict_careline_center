@@ -53,12 +53,13 @@ try {
         session_unset();
         
         // Set new session
-        $_SESSION['user_id']    = $user['id'];
-        $_SESSION['username']   = $user['staff_id'] ?? $user['name'];
-        $_SESSION['full_name']  = $user['name'];
-        $_SESSION['role']       = $user['role'];
-        $_SESSION['jawatan']    = $user['jawatan'] ?? '';
-        $_SESSION['department'] = $user['department'] ?? '';
+        $_SESSION['user_id']        = $user['id'];
+        $_SESSION['username']       = $user['staff_id'] ?? $user['name'];
+        $_SESSION['full_name']      = $user['name'];
+        $_SESSION['role']           = $user['role'];
+        $_SESSION['jawatan']        = $user['jawatan'] ?? '';
+        $_SESSION['department']     = $user['department'] ?? '';
+        $_SESSION['profile_picture']= $user['profile_picture'] ?? '';
         
         // Force session to save
         session_write_close();
@@ -67,11 +68,13 @@ try {
         logAudit($pdo, $user['id'], 'Log Masuk', "Pengguna '{$user['name']}' ({$user['staff_id']}) berjaya log masuk sebagai {$user['role']}.");
 
         jsonResponse('success', 'Login successful', [
-            'id'        => $user['id'],
-            'username'  => $user['staff_id'] ?? $user['name'],
-            'role'      => $user['role'],
-            'full_name' => $user['name'],
-            'jawatan'   => $user['jawatan'] ?? ''
+            'id'              => $user['id'],
+            'username'        => $user['staff_id'] ?? $user['name'],
+            'role'            => $user['role'],
+            'full_name'       => $user['name'],
+            'jawatan'         => $user['jawatan'] ?? '',
+            'department'      => $user['department'] ?? '',
+            'profile_picture' => $user['profile_picture'] ?? ''
         ]);
     } else {
         logAudit($pdo, null, 'Log Masuk Gagal', "Cubaan log masuk gagal untuk ID: '$username'.");

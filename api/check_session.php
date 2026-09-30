@@ -10,11 +10,13 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
     echo json_encode([
         'status' => 'success',
         'data' => [
-            'id'        => $_SESSION['user_id'],
-            'full_name' => $_SESSION['full_name'] ?? '',
-            'role'      => $_SESSION['role'],
-            'jawatan'   => $_SESSION['jawatan'] ?? '',
-            'username'  => $_SESSION['username'] ?? ''
+            'id'              => $_SESSION['user_id'],
+            'full_name'       => $_SESSION['full_name'] ?? '',
+            'role'            => $_SESSION['role'],
+            'jawatan'         => $_SESSION['jawatan'] ?? '',
+            'department'      => $_SESSION['department'] ?? '',
+            'profile_picture' => $_SESSION['profile_picture'] ?? '',
+            'username'        => $_SESSION['username'] ?? ''
         ]
     ]);
 } else {

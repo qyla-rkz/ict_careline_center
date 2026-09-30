@@ -9,12 +9,16 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $current_password = $_POST['current_password'] ?? '';
-    $new_password = $_POST['new_password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
+    $current_password = trim($_POST['current_password'] ?? '');
+    $new_password = trim($_POST['new_password'] ?? '');
+    $confirm_password = trim($_POST['confirm_password'] ?? '');
 
-    if (empty($current_password) || empty($new_password)) {
+    if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
         jsonResponse('error', 'All fields are required');
+    }
+
+    if (strlen($new_password) < 6) {
+        jsonResponse('error', 'Kata laluan baru mesti sekurang-kurangnya 6 aksara');
     }
 
     if ($new_password !== $confirm_password) {

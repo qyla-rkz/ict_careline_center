@@ -215,6 +215,13 @@
                             <option value="11">Disember</option>
                         </select>
                     </div>
+                    <div class="form-group" style="margin-bottom: 0; flex: 1;">
+                        <label
+                            style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Jabatan / Unit</label>
+                        <select id="filterDept" class="form-control" onchange="applyFilters()">
+                            <option value="">Semua Jabatan</option>
+                        </select>
+                    </div>
                     <div style="display: flex; gap: 0.5rem;">
                         <button onclick="applyFilters()" class="btn btn-primary" style="padding: 0.6rem 1.25rem;">🔍
                             Cari</button>
@@ -229,6 +236,7 @@
                             <tr style="text-align: left;">
                                 <th style="padding: 1rem;">ID</th>
                                 <th style="padding: 1rem;">Pengadu</th>
+                                <th style="padding: 1rem;">Jabatan / Unit</th>
                                 <th style="padding: 1rem;">Keputusan</th>
                                 <th style="padding: 1rem;">Diproses Oleh</th>
                                 <th style="padding: 1rem; white-space: nowrap;">Tarikh Aduan</th>
@@ -525,6 +533,18 @@
                         });
                     }
 
+                    // Populate Jabatan/Unit Dropdown dynamically
+                    const deptSelect = document.getElementById('filterDept');
+                    if (deptSelect.options.length <= 1) {
+                        const depts = [...new Set(allHistory.map(r => r.department).filter(d => d && d.trim() !== ''))].sort();
+                        depts.forEach(d => {
+                            const opt = document.createElement('option');
+                            opt.value = d;
+                            opt.textContent = d;
+                            deptSelect.appendChild(opt);
+                        });
+                    }
+
                     applyFilters();
                 }
             } catch (err) { console.error(err); }
@@ -534,6 +554,7 @@
             const name = document.getElementById('filterName').value.toLowerCase();
             const y = document.getElementById('filterYear').value;
             const m = document.getElementById('filterMonth').value;
+            const dept = document.getElementById('filterDept').value.toLowerCase();
 
             filteredHistory = allHistory.filter(r => {
                 const date = new Date(r.created_at);
@@ -544,7 +565,10 @@
                     (r.nama_pelapor && r.nama_pelapor.toLowerCase().includes(name)) ||
                     (r.full_name && r.full_name.toLowerCase().includes(name));
 
-                return yearMatch && monthMatch && nameMatch;
+                const deptMatch = !dept ||
+                    (r.department && r.department.toLowerCase().includes(dept));
+
+                return yearMatch && monthMatch && nameMatch && deptMatch;
             });
 
             currentPage = 1;
@@ -598,6 +622,7 @@
                 <tr style="border-bottom: 1px solid var(--border);">
                     <td style="padding: 1rem; font-weight: 600; color: var(--primary);">#${r.id}</td>
                     <td style="padding: 1rem;">${r.nama_pelapor || r.full_name}</td>
+                    <td style="padding: 1rem; white-space: nowrap;">${r.department || '<span style="color:var(--text-muted);font-size:0.85rem;">—</span>'}</td>
                     <td style="padding: 1rem;"><span class="badge badge-${r.keputusan === 'Diluluskan' ? 'resolved' : r.keputusan === 'Syor Dilupuskan' ? 'disposed' : 'rejected'}" style="white-space: nowrap;">${r.keputusan || 'N/A'}</span></td>
                     <td style="padding: 1rem;">${r.keputusan_nama || r.admin_name_jawatan || 'System'}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</td>

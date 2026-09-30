@@ -15,8 +15,9 @@
 (function () {
     const path = window.location.pathname;
     const inSubdir = path.includes('/staff/') || path.includes('/admin/') || path.includes('/superadmin/');
+    const isPortalPage = path.endsWith('portal.php');
     const isWelcomePage = path.endsWith('/') || path === '/';
-    const isGuestPage = !inSubdir;
+    const isGuestPage = !inSubdir && !isPortalPage;
 
     function hidePortalUntilAuth() {
         document.documentElement.style.visibility = 'hidden';
@@ -64,7 +65,41 @@
                 }
             });
 
-    } else if (!isWelcomePage) {
+    } else if (isPortalPage) {
+        // ── portal.php: untuk Staff sahaja. Admin/Super Admin redirect ke dashboard ──
+        if (sessionStorage.getItem('pending_inactivity_logout') === 'true') {
+            sessionStorage.clear();
+            fetch("./api/logout.php", { cache: 'no-store' }).catch(() => {});
+            window.location.replace('login.php');
+            return;
+        }
+        fetch("./api/check_session.php", { cache: 'no-store', credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (result) {
+                if (result.status !== 'success') {
+                    sessionStorage.clear();
+                    window.location.replace('login.php');
+                } else {
+                    // Sync sessionStorage
+                    if (!sessionStorage.getItem('user')) {
+                        sessionStorage.setItem('user', JSON.stringify(result.data));
+                    }
+                    // Redirect admin terus ke dashboard — portal hanya untuk staff
+                    const role = (result.data.role || '').toLowerCase();
+                    if (role === 'super admin' || role === 'superadmin') {
+                        window.location.replace('superadmin/dashboard.php');
+                    } else if (role === 'admin') {
+                        window.location.replace('admin/dashboard.php');
+                    }
+                }
+            })
+            .catch(function () {
+                if (!sessionStorage.getItem('user')) {
+                    window.location.replace('login.php');
+                }
+            });
+
+    } else if (!isWelcomePage && isGuestPage) {
         // ── Guest auth page (login, register, select-portal) ──
         // If sessionStorage says logged in, verify with server then redirect to dashboard
         const userStr = sessionStorage.getItem('user');
@@ -277,12 +312,6 @@ function setupPasswordStrength() {
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.25rem;">
             <span id="password-strength-text" class="password-strength-text">Kekuatan Kata Laluan: Belum diisi</span>
         </div>
-        <ul class="password-requirements" style="margin-top: 0.5rem; padding-left: 0; list-style: none;">
-            <li id="req-length" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.35rem;">❌ Sekurang-kurangnya 8 aksara</li>
-            <li id="req-case" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.35rem;">❌ Mengandungi huruf besar & kecil</li>
-            <li id="req-number" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.35rem;">❌ Mengandungi sekurang-kurangnya 1 nombor</li>
-            <li id="req-special" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.35rem;">❌ Mengandungi 1 simbol khas (e.g. @, #, $, !)</li>
-        </ul>
     `;
 
     // Insert after the password field's positioning wrapper (if one exists),
@@ -308,12 +337,6 @@ function setupPasswordStrength() {
         const hasCase = /[a-z]/.test(val) && /[A-Z]/.test(val);
         const hasNumber = /\d/.test(val);
         const hasSpecial = /[^A-Za-z0-9]/.test(val);
-
-        // Update requirements indicator
-        updateRequirement('req-length', hasLength);
-        updateRequirement('req-case', hasCase);
-        updateRequirement('req-number', hasNumber);
-        updateRequirement('req-special', hasSpecial);
 
         // Calculate score
         let score = 0;
@@ -356,19 +379,6 @@ function setupPasswordStrength() {
             txt.style.color = 'var(--success)';
         }
     });
-}
-
-function updateRequirement(id, isValid) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const text = el.textContent.substring(2); // Strip icon
-    if (isValid) {
-        el.innerHTML = `<span style="color: var(--success);">✔</span> ${text}`;
-        el.style.color = 'var(--success)';
-    } else {
-        el.innerHTML = `<span style="color: var(--danger);">❌</span> ${text}`;
-        el.style.color = 'var(--text-muted)';
-    }
 }
 
 function setupStaffSidebarProfile() {
@@ -510,28 +520,6 @@ function setupStaffSidebarProfile() {
         .catch(e => console.error('Profile fetch error:', e));
 }
 
-// (setupBackButtonBlock removed: the navigation guard IIFE above already
-//  redirects logged-in users away from guest pages, making pushState loops
-//  unnecessary. Using replace() in the guard also keeps history clean so
-//  the back button works naturally after logout.)
-
-function setupDashboardBackGuard() {
-    const path = window.location.pathname.toLowerCase();
-    const isDashboardPage = path.endsWith('/dashboard.php');
-    if (!isDashboardPage) return;
-
-    // Push a state so that when user hits back, we can intercept it
-    if (window.history && window.history.pushState) {
-        window.history.pushState({ dashboardGuard: true }, '', window.location.href);
-    }
-
-    window.addEventListener('popstate', function (event) {
-        // When back is pressed, trigger global logout which clears session
-        // and uses location.replace() to destroy the forward history
-        triggerGlobalLogout();
-    });
-}
-
 function setupFormAccessibility() {
     const controls = document.querySelectorAll('input, select, textarea');
     const usedIds = new Set(Array.from(document.querySelectorAll('[id]')).map(element => element.id));
@@ -596,7 +584,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initInactivityTimer();
     setupPasswordStrength();
     setupStaffSidebarProfile();
-    setupDashboardBackGuard();
 
     const formObserver = new MutationObserver(() => setupFormAccessibility());
     formObserver.observe(document.body, { childList: true, subtree: true });
