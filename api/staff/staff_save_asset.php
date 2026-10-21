@@ -8,6 +8,10 @@ if (!isset($_SESSION['user_id'])) {
     jsonResponse('error', 'Not logged in');
 }
 
+if (!in_array($_SESSION['role'] ?? '', ['Admin', 'Super Admin'])) {
+    jsonResponse('error', 'Akses tidak dibenarkan. Hanya Pentadbir (Admin) yang dibenarkan untuk mendaftar atau mengemaskini maklumat aset.');
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id             = $_POST['id'] ?? null; // If ID is present, we are editing
     $asset_type     = $_POST['asset_type'] ?? '';
@@ -29,6 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama_pegawai   = $_SESSION['full_name'] ?? '';
     $jawatan        = $_SESSION['jawatan'] ?? '';
     $jabatan_unit   = $_SESSION['department'] ?? '';
+
+    if (empty($nama_pegawai) || empty($jawatan) || empty($jabatan_unit)) {
+        $uStmt = $pdo->prepare("SELECT name, jawatan, department FROM users WHERE id = ?");
+        $uStmt->execute([$_SESSION['user_id']]);
+        if ($u = $uStmt->fetch()) {
+            if (empty($nama_pegawai)) $nama_pegawai = $u['name'] ?? '';
+            if (empty($jawatan)) $jawatan = $u['jawatan'] ?? '';
+            if (empty($jabatan_unit)) $jabatan_unit = $u['department'] ?? '';
+        }
+    }
 
     if (empty($asset_type) || empty($serial_number)) {
         jsonResponse('error', 'Asset Type and Serial Number are required');

@@ -12,17 +12,30 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['Admin', 'Supe
 }
 
 try {
-    $stmt = $pdo->query("SELECT sa.*, u.name, u.department, u.jawatan
+    $stmt = $pdo->query("SELECT sa.*, 
+                                COALESCE(u.name, sa.nama_pegawai, 'Staf') as name, 
+                                COALESCE(u.department, sa.jabatan_unit, '-') as department, 
+                                COALESCE(u.jawatan, sa.jawatan, '-') as jawatan
                          FROM staff_assets sa
                          LEFT JOIN users u ON sa.user_id = u.id
                          ORDER BY sa.created_at DESC");
-    $assets = $stmt->fetchAll();
+    $assets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Keep the list response lightweight; images are not needed to render the table.
+    // Fetch images mapped by asset_id
+    $imgStmt = $pdo->query("SELECT asset_id, image_path FROM asset_images");
+    $allImages = $imgStmt->fetchAll(PDO::FETCH_ASSOC);
+    $imagesByAsset = [];
+    foreach ($allImages as $img) {
+        $imagesByAsset[$img['asset_id']][] = $img;
+    }
+
+    // Fetch report counts mapped by user_id
+    $repStmt = $pdo->query("SELECT user_id, COUNT(*) as cnt FROM reports WHERE user_id IS NOT NULL GROUP BY user_id");
+    $reportCounts = $repStmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
     foreach ($assets as &$asset) {
-        $asset['images'] = [];
-        $asset['report_count'] = 0;
-        $asset['total_report_count'] = 0;
+        $asset['images'] = $imagesByAsset[$asset['id']] ?? [];
+        $asset['total_report_count'] = isset($asset['user_id']) ? (int)($reportCounts[$asset['user_id']] ?? 0) : 0;
     }
 
     jsonResponse('success', 'Assets fetched', $assets);

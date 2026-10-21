@@ -167,6 +167,33 @@
         .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; }
         .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #66768c; line-height: 1; }
 
+        /* ── Stylings for Aset Saya ── */
+        .asset-view-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+        .asset-tab-pill { padding: .45rem 1rem; border-radius: 20px; font-size: .8rem; font-weight: 700; border: 1px solid rgba(37,99,235,.2); background: rgba(255,255,255,.7); color: #24324b; cursor: pointer; transition: all .2s; }
+        .asset-tab-pill:hover { background: rgba(37,99,235,.1); }
+        .asset-tab-pill.active { background: linear-gradient(135deg, #2563eb, #dc2626); color: #fff; border-color: transparent; box-shadow: 0 4px 12px rgba(37,99,235,.2); }
+        .asset-card { background: rgba(255,255,255,.88); border: 1px solid rgba(37,99,235,.18); border-radius: 16px; padding: 1.3rem; margin-bottom: 1rem; box-shadow: 0 4px 20px rgba(0,0,0,.03); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; position: relative; }
+        .asset-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(37,99,235,.12); border-color: rgba(37,99,235,.35); }
+        .asset-card-top { display: flex; justify-content: space-between; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: .75rem; }
+        .asset-card-badges { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+        .asset-badge { font-size: .72rem; font-weight: 800; padding: .25rem .65rem; border-radius: 20px; letter-spacing: .02em; display: inline-flex; align-items: center; gap: .35rem; }
+        .asset-badge-type { background: #dbeafe; color: #1d4ed8; border: 1px solid rgba(37,99,235,.2); }
+        .asset-badge-admin { background: #dcfce7; color: #15803d; border: 1px solid rgba(34,197,94,.25); }
+        .asset-badge-sn { font-family: monospace; font-size: .82rem; font-weight: 700; background: #f1f5f9; color: #1e293b; padding: .25rem .6rem; border-radius: 6px; border: 1px solid #cbd5e1; }
+        .asset-card-title { font-size: 1.2rem; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: .5rem; }
+        .asset-specs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .65rem; margin: .9rem 0; background: rgba(248,250,252,.85); border: 1px solid rgba(226,232,240,.9); border-radius: 12px; padding: .85rem 1rem; }
+        .asset-spec-item { display: flex; flex-direction: column; gap: 2px; }
+        .asset-spec-label { font-size: .68rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .05em; }
+        .asset-spec-value { font-size: .84rem; font-weight: 700; color: #1e293b; word-break: break-word; }
+        .asset-thumb-strip { display: flex; gap: .5rem; margin: .75rem 0; align-items: center; }
+        .asset-thumb { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(37,99,235,.2); cursor: pointer; transition: transform .2s; }
+        .asset-thumb:hover { transform: scale(1.08); }
+        .asset-card-actions { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-top: .85rem; padding-top: .85rem; border-top: 1px solid rgba(37,99,235,.12); }
+        .btn-asset-report { background: linear-gradient(135deg, #2563eb, #dc2626); color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: .78rem; padding: .45rem .95rem; cursor: pointer; display: inline-flex; align-items: center; gap: .35rem; transition: all .2s; }
+        .btn-asset-report:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(220,38,38,.25); }
+        .btn-asset-action { background: rgba(255,255,255,.9); color: #24324b; border: 1px solid rgba(37,99,235,.22); border-radius: 10px; font-weight: 700; font-size: .78rem; padding: .45rem .85rem; cursor: pointer; display: inline-flex; align-items: center; gap: .35rem; transition: all .2s; }
+        .btn-asset-action:hover { background: rgba(37,99,235,.08); color: #2563eb; }
+
         @media(max-width:768px) { body { overflow:auto; } .portal-layout { flex-direction: column; max-height: none; overflow: visible; } .card-shell, .dashboard-side-view { flex: 0 0 auto; max-width: 100%; width: 100%; } .home-grid { grid-template-columns: 1fr; gap: 2rem; } .form-grid, .form-grid-3, .modal-grid { grid-template-columns: 1fr; } .view { padding: 1.8rem 1.4rem; } .dashboard-summary { grid-template-columns: 1fr; } .card-shell.wide-borang { flex: 0 0 100%; max-width: 100%; } .hist-legend { margin-left: 0; width: 100%; } .portal-static-scroll { max-height: none; } }
     </style>
 </head>
@@ -440,111 +467,43 @@
     </div>
 </div>
 
-<!-- VIEW: ASET SAYA -->
+<!-- VIEW: ASET SAYA (PAPARAN STAF - BACA SAHAJA) -->
 <div class="view" id="view-aset">
     <button class="back-btn" onclick="showView('view-home')">‹ Kembali</button>
-    <div class="view-subheading">Staff Portal</div>
-    <div class="view-heading">Aset Saya</div>
+    
+    <div class="asset-view-header">
+        <div>
+            <div class="view-subheading">Portal Staf</div>
+            <div class="view-heading" style="margin-bottom:.3rem;">Aset Saya</div>
+            <p style="font-size:.82rem;color:#66768c;">Senarai peralatan ICT dan komputer yang didaftarkan oleh Pentadbir ICT MPM untuk kegunaan anda.</p>
+        </div>
+        <div style="background:rgba(37,99,235,.08);color:#2563eb;font-weight:700;font-size:.82rem;padding:.45rem 1.1rem;border-radius:20px;border:1px solid rgba(37,99,235,.2);display:inline-flex;align-items:center;gap:.4rem;">
+            📋 Jumlah Aset: <span id="assetCountBadge" style="font-weight:800;color:#1e40af;">0</span>
+        </div>
+    </div>
+
     <div class="view-scroll">
         <div id="asetAlert" class="alert"></div>
-        <form id="assetForm">
-            <input type="hidden" name="id" id="a_asset_id">
 
-            <div class="dashboard-list" style="margin-top:0;">
-                <div class="dashboard-list-title">Bahagian A: Maklumat Pemohon</div>
-                <div class="form-grid-3">
-                    <div class="form-group">
-                        <label class="form-label">Nama Pemohon</label>
-                        <input type="text" id="a_user_nama" class="form-input" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Jawatan</label>
-                        <input type="text" id="a_user_jawatan" class="form-input" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Bahagian / Unit</label>
-                        <input type="text" id="a_user_dept" class="form-input" readonly>
-                    </div>
+        <!-- SENARAI ASET SAYA -->
+        <div id="assetListView">
+            <!-- Search & Status Bar -->
+            <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1.1rem;flex-wrap:wrap;">
+                <div style="position:relative;flex:1;min-width:240px;">
+                    <input type="text" id="assetSearchInput" class="form-input" placeholder="🔍 Cari model komputer, no. siri, atau spesifikasi..." oninput="filterUserAssets(this.value)">
+                </div>
+                <div style="font-size:.78rem;color:#66768c;background:rgba(255,255,255,.75);padding:.6rem 1rem;border-radius:12px;border:1px solid rgba(37,99,235,.15);font-weight:600;display:flex;align-items:center;gap:.4rem;">
+                    <span>Status Rekod:</span> <span style="color:#15803d;font-weight:800;">● Aktif</span>
                 </div>
             </div>
 
-            <div class="dashboard-list">
-                <div class="dashboard-list-title">Bahagian B: Maklumat Komputer / Komputer Riba</div>
-                <div class="form-grid-3">
-                    <div class="form-group">
-                        <label class="form-label">Model Komputer / Laptop</label>
-                        <input type="text" name="model_komputer" id="a_model_comp" class="form-input" placeholder="Cth: Acer / HP / Dell..." required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">No. Siri CPU / Laptop</label>
-                        <input type="text" name="serial_number" id="a_serial" class="form-input" placeholder="Cth: S/N:ABC123..." required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Model Monitor</label>
-                        <input type="text" name="model_monitor" id="a_model_mon" class="form-input" placeholder="Cth: Samsung / Dell / Acer..." required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">No. Siri Monitor</label>
-                        <input type="text" name="serial_monitor" id="a_serial_mon" class="form-input" placeholder="Cth: S/N:XYZ123..." required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Sistem Operasi (Windows)</label>
-                        <input type="text" name="os" id="a_os" class="form-input" placeholder="Cth: Windows/MacOS/Linux...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Model Pemproses</label>
-                        <input type="text" name="processor" id="a_processor" class="form-input" placeholder="Cth: i5/i7/Ryzen...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Model dan Kapasiti RAM</label>
-                        <input type="text" name="ram" id="a_ram" class="form-input" placeholder="Cth: 4GB/8GB/16GB, DDR4/DDR5/LPDDR4...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Jenis Cakera Keras</label>
-                        <input type="text" name="hard_disk" id="a_disk" class="form-input"  placeholder="Cth: 256GB/512GB, SSD/HDD/NVMe...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Jenis Tetikus</label>
-                        <input type="text" name="mouse" id="a_mouse" class="form-input" placeholder="Cth: Wired/Wireless/Bluetooth...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Jenis Papan Kekunci</label>
-                        <input type="text" name="keyboard" id="a_keyboard" class="form-input" placeholder="Cth: Wired/Wireless/Bluetooth...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Versi Microsoft Office</label>
-                        <input type="text" name="ms_office" id="a_office" class="form-input" placeholder="Cth: Office 2019/Office 2021...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Versi Antivirus</label>
-                        <input type="text" name="antivirus" id="a_antivirus" class="form-input" placeholder="Cth: Panda Dome/Window Security...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">No. Alamat IP</label>
-                        <input type="text" name="ip_address" id="a_ip" class="form-input" placeholder="Cth: 192.168.1.1...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Pencetak (Printer)</label>
-                        <input type="text" name="printer" id="a_printer" class="form-input" placeholder="Cth: HP/Cannon/Xerox...">
-                    </div>
-                    <div class="form-group full">
-                        <label class="form-label">Perisian Lain</label>
-                        <textarea name="perisian_lain" id="a_others" class="form-textarea" placeholder="Cth: Telegram/Whatsapp/Zoom..."></textarea>
-                    </div>
+            <!-- List Cards Container -->
+            <div id="assetCardsContainer">
+                <div style="text-align:center;padding:3rem 1rem;color:#66768c;">
+                    ⏳ Memuatkan senarai aset anda...
                 </div>
             </div>
-
-            <div class="dashboard-list">
-                <div class="dashboard-list-title">Bahagian C: Maklumat Gambar Aset (Max 3)</div>
-                <div class="form-group">
-                    <label class="form-label">Lampiran Gambar Aset</label>
-                    <input type="file" name="images[]" id="a_images" accept="image/*" multiple style="font-size:.82rem;">
-                </div>
-                <div id="assetImagePreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.75rem;margin-top:1rem;"></div>
-            </div>
-
-            <button type="submit" id="saveAssetBtn" class="btn-primary" style="width:100%;margin-top:1rem;">Simpan Maklumat Aset</button>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -761,6 +720,61 @@
     </div>
 </div>
 
+<!-- Asset Detail Modal -->
+<div id="assetDetailModal" class="portal-modal" onclick="if(event.target===this)closeAssetModal()">
+    <div class="portal-modal-content">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+            <div>
+                <span style="font-size:.72rem;font-weight:800;color:#2563eb;text-transform:uppercase;letter-spacing:.06em;">Maklumat Lengkap Aset</span>
+                <h2 id="adm_title" style="margin-top:.2rem;">Butiran Aset ICT</h2>
+            </div>
+            <button type="button" class="modal-close" onclick="closeAssetModal()">&times;</button>
+        </div>
+
+        <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+            <span id="adm_badge_type" class="asset-badge asset-badge-type">Desktop PC</span>
+            <span class="asset-badge asset-badge-admin">🛡️ Didaftarkan Melalui Admin</span>
+            <span id="adm_badge_sn" class="asset-badge asset-badge-sn">S/N: -</span>
+        </div>
+
+        <h4>Bahagian A: Maklumat Pemohon / Staf</h4>
+        <div class="modal-grid">
+            <div class="form-group"><label class="form-label">Nama Pemohon</label><input type="text" id="adm_nama" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Jawatan</label><input type="text" id="adm_jawatan" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Bahagian / Unit</label><input type="text" id="adm_dept" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Tarikh Pendaftaran</label><input type="text" id="adm_tarikh" class="form-input" readonly></div>
+        </div>
+
+        <h4>Bahagian B: Maklumat Komputer &amp; Perkakasan</h4>
+        <div class="modal-grid">
+            <div class="form-group"><label class="form-label">Model Komputer / Laptop</label><input type="text" id="adm_model_comp" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">No. Siri CPU / Laptop</label><input type="text" id="adm_serial_comp" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Model Monitor</label><input type="text" id="adm_model_mon" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">No. Siri Monitor</label><input type="text" id="adm_serial_mon" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Sistem Operasi (OS)</label><input type="text" id="adm_os" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Pemproses (CPU)</label><input type="text" id="adm_proc" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">RAM</label><input type="text" id="adm_ram" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Cakera Keras (Storage)</label><input type="text" id="adm_disk" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Alamat IP</label><input type="text" id="adm_ip" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Pencetak (Printer)</label><input type="text" id="adm_printer" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Tetikus &amp; Papan Kekunci</label><input type="text" id="adm_accessories" class="form-input" readonly></div>
+            <div class="form-group"><label class="form-label">Microsoft Office &amp; Antivirus</label><input type="text" id="adm_software" class="form-input" readonly></div>
+        </div>
+        <div class="form-group" style="margin-top:.85rem;">
+            <label class="form-label">Perisian Lain</label>
+            <textarea id="adm_perisian_lain" class="form-textarea" rows="2" readonly></textarea>
+        </div>
+
+        <h4>Bahagian C: Gambar Lampiran Aset</h4>
+        <div id="adm_images" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:1rem;margin-top:.5rem;"></div>
+
+        <div style="display:flex;gap:.75rem;margin-top:1.5rem;justify-content:flex-end;">
+            <button type="button" id="adm_btn_report" class="btn-asset-report" style="padding:.6rem 1.2rem;font-size:.85rem;">📤 Lapor Kerosakan (KEW.PA-9)</button>
+            <button type="button" onclick="closeAssetModal()" class="btn-ghost" style="padding:.6rem 1.2rem;font-size:.85rem;">Tutup</button>
+        </div>
+    </div>
+</div>
+
 </div><!-- portal-layout -->
 
 <script>
@@ -927,110 +941,259 @@
         } catch(err) { showAlert(alertEl,'❌ Ralat sambungan.','error'); }
     });
 
-    /* ── Aset Saya ── */
-    function populateAssetUserInfo() {
-        if (!currentUser) return;
-        document.getElementById('a_user_nama').value = currentUser.full_name || currentUser.name || '';
-        document.getElementById('a_user_jawatan').value = currentUser.jawatan || '';
-        document.getElementById('a_user_dept').value = currentUser.department || '';
-    }
+    /* ── Aset Saya (Staf Read-Only) ── */
+    let userAssetsList = [];
 
     async function populateAssetView() {
-        populateAssetUserInfo();
         await loadAssetData();
     }
 
-    function setAssetField(id, value) {
-        const el = document.getElementById(id);
-        if (el) el.value = value || '';
-    }
-
     async function loadAssetData() {
+        const container = document.getElementById('assetCardsContainer');
+        if (!container) return;
+        container.innerHTML = '<div style="text-align:center;padding:3rem 1rem;color:#66768c;">⏳ Memuatkan rekod aset anda...</div>';
+
         try {
-            const response = await fetch('api/staff/staff_get_assets.php');
+            const response = await fetch('api/staff/staff_get_assets.php?_t=' + Date.now());
             const result = await response.json();
-            if (result.status !== 'success' || !result.data.length) return;
+            if (result.status !== 'success') {
+                container.innerHTML = `<div style="text-align:center;padding:2.5rem;color:#dc2626;">❌ ${result.message || 'Gagal memuatkan data aset.'}</div>`;
+                return;
+            }
 
-            const a = result.data[0];
-            setAssetField('a_asset_id', a.id);
-            setAssetField('a_model_comp', a.model_komputer);
-            setAssetField('a_serial', a.serial_number);
-            setAssetField('a_model_mon', a.model_monitor);
-            setAssetField('a_serial_mon', a.serial_monitor);
-            setAssetField('a_os', a.os);
-            setAssetField('a_processor', a.processor);
-            setAssetField('a_ram', a.ram);
-            setAssetField('a_disk', a.hard_disk);
-            setAssetField('a_mouse', a.mouse);
-            setAssetField('a_keyboard', a.keyboard);
-            setAssetField('a_office', a.ms_office);
-            setAssetField('a_antivirus', a.antivirus);
-            setAssetField('a_ip', a.ip_address);
-            setAssetField('a_printer', a.printer);
-            setAssetField('a_others', a.perisian_lain);
+            userAssetsList = result.data || [];
+            const badge = document.getElementById('assetCountBadge');
+            if (badge) badge.textContent = userAssetsList.length;
 
-            const grid = document.getElementById('assetImagePreview');
-            grid.innerHTML = '';
-            (a.images || []).forEach(img => {
-                const div = document.createElement('div');
-                div.style.cssText = 'aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid rgba(37,99,235,.16);';
-                div.innerHTML = `<img src="${img.image_path}" style="width:100%;height:100%;object-fit:cover;">`;
-                grid.appendChild(div);
-            });
+            renderAssetList(userAssetsList);
         } catch (err) {
-            console.error(err);
+            console.error('loadAssetData error:', err);
+            container.innerHTML = `<div style="text-align:center;padding:2.5rem;color:#dc2626;">❌ Ralat sambungan memuatkan aset: ${err.message}</div>`;
         }
     }
 
-    document.getElementById('a_images').addEventListener('change', e => {
-        const input = e.target;
-        const grid = document.getElementById('assetImagePreview');
-        grid.innerHTML = '';
-        if (input.files.length > 3) {
-            showAlert(document.getElementById('asetAlert'), '❌ Maksimum 3 gambar sahaja.', 'error');
-            input.value = '';
+    function renderAssetList(assets) {
+        const container = document.getElementById('assetCardsContainer');
+        if (!container) return;
+
+        if (!assets || assets.length === 0) {
+            container.innerHTML = `
+                <div style="background:rgba(255,255,255,.8);border:2px dashed rgba(37,99,235,.2);border-radius:18px;padding:3rem 1.5rem;text-align:center;margin-top:.5rem;">
+                    <div style="width:64px;height:64px;background:#e0f2fe;color:#0284c7;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem;">💻</div>
+                    <h3 style="font-size:1.15rem;font-weight:800;color:#24324b;margin-bottom:.35rem;">Tiada Aset Didaftarkan</h3>
+                    <p style="font-size:.84rem;color:#66768c;max-width:480px;margin:0 auto;line-height:1.5;">
+                        Belum ada aset komputer atau perkakasan ICT yang didaftarkan untuk akaun anda oleh Pentadbir ICT MPM. Sila hubungi Admin untuk pendaftaran dan penetapan aset bagi akaun anda.
+                    </p>
+                </div>
+            `;
             return;
         }
-        Array.from(input.files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = event => {
-                const div = document.createElement('div');
-                div.style.cssText = 'aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid rgba(37,99,235,.16);';
-                div.innerHTML = `<img src="${event.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
-                grid.appendChild(div);
-            };
-            reader.readAsDataURL(file);
-        });
-    });
 
-    document.getElementById('assetForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const alertEl = document.getElementById('asetAlert');
-        const btn = document.getElementById('saveAssetBtn');
-        const formData = new FormData(e.target);
-        if (!formData.get('asset_type')) formData.append('asset_type', 'Desktop PC');
+        container.innerHTML = assets.map(a => {
+            const typeLower = (a.asset_type || '').toLowerCase();
+            let icon = '💻';
+            if (typeLower.includes('desktop') || typeLower.includes('pc')) icon = '🖥️';
+            else if (typeLower.includes('laptop') || typeLower.includes('notebook')) icon = '💻';
+            else if (typeLower.includes('printer') || typeLower.includes('cetak')) icon = '🖨️';
+            else if (typeLower.includes('monitor')) icon = '🖥️';
+            else icon = '📟';
 
-        try {
-            btn.disabled = true;
-            btn.textContent = 'Menyimpan Maklumat...';
-            const response = await fetch('api/staff/staff_save_asset.php', { method: 'POST', body: formData });
-            const result = await response.json();
-            if (result.status === 'success') {
-                showAlert(alertEl, '✅ Maklumat aset berjaya disimpan!', 'success');
-                const asetScroll = document.querySelector('#view-aset .view-scroll');
-                if (asetScroll) asetScroll.scrollTo({ top: 0, behavior: 'smooth' });
-                loadAssetData();
-            } else {
-                showAlert(alertEl, '❌ ' + (result.message || 'Ralat.'), 'error');
+            const assetTypeDisplay = a.asset_type || 'Desktop PC';
+            const model = a.model_komputer || 'Model Tidak Dinyatakan';
+            const serial = a.serial_number || 'N/A';
+            const regDate = a.created_at ? new Date(a.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+
+            // Image thumbnails
+            let imagesHtml = '';
+            if (a.images && a.images.length > 0) {
+                imagesHtml = `
+                    <div class="asset-thumb-strip">
+                        <span style="font-size:.7rem;font-weight:700;color:#64748b;margin-right:.25rem;">Gambar:</span>
+                        ${a.images.map(img => `<img src="${img.image_path}" class="asset-thumb" title="Klik untuk lihat butiran" onclick="openAssetDetail(${a.id})">`).join('')}
+                    </div>
+                `;
             }
-        } catch (err) {
-            console.error(err);
-            showAlert(alertEl, '❌ Ralat sambungan berlaku.', 'error');
-        } finally {
-            btn.disabled = false;
-            btn.textContent = 'Simpan Maklumat Aset';
+
+            return `
+                <div class="asset-card">
+                    <div class="asset-card-top">
+                        <div class="asset-card-badges">
+                            <span class="asset-badge asset-badge-type">${icon} ${assetTypeDisplay}</span>
+                            <span class="asset-badge asset-badge-admin">🛡️ Didaftarkan Melalui Admin</span>
+                            <span class="asset-badge asset-badge-sn">S/N: ${serial}</span>
+                        </div>
+                        <div style="font-size:.74rem;color:#64748b;font-weight:600;">
+                            📅 Didaftar: ${regDate}
+                        </div>
+                    </div>
+
+                    <div class="asset-card-title">
+                        <div>
+                            <span>${model}</span>
+                            ${a.no_siri_pendaftaran ? `<span style="font-size:.75rem;font-weight:600;color:#64748b;margin-left:.5rem;">(No. Pendaftaran: <strong>${a.no_siri_pendaftaran}</strong>)</span>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="asset-specs-grid">
+                        <div class="asset-spec-item">
+                            <span class="asset-spec-label">🖥️ Monitor</span>
+                            <span class="asset-spec-value">${a.model_monitor ? a.model_monitor + (a.serial_monitor ? ' (' + a.serial_monitor + ')' : '') : 'Tiada / Bersepadu'}</span>
+                        </div>
+                        <div class="asset-spec-item">
+                            <span class="asset-spec-label">⚙️ OS &amp; Pemproses</span>
+                            <span class="asset-spec-value">${(a.os || '-') + ' / ' + (a.processor || '-')}</span>
+                        </div>
+                        <div class="asset-spec-item">
+                            <span class="asset-spec-label">💾 RAM &amp; Storan</span>
+                            <span class="asset-spec-value">${(a.ram || '-') + ' / ' + (a.hard_disk || '-')}</span>
+                        </div>
+                        <div class="asset-spec-item">
+                            <span class="asset-spec-label">🌐 Alamat IP</span>
+                            <span class="asset-spec-value">${a.ip_address || '-'}</span>
+                        </div>
+                        <div class="asset-spec-item">
+                            <span class="asset-spec-label">🖨️ Pencetak</span>
+                            <span class="asset-spec-value">${a.printer || 'Tiada'}</span>
+                        </div>
+                        <div class="asset-spec-item">
+                            <span class="asset-spec-label">📄 Perisian Office</span>
+                            <span class="asset-spec-value">${(a.ms_office ? 'Office ' + a.ms_office : '-') + (a.antivirus ? ' | ' + a.antivirus : '')}</span>
+                        </div>
+                    </div>
+
+                    ${imagesHtml}
+
+                    <div class="asset-card-actions">
+                        <button type="button" class="btn-asset-report" onclick="quickReportAsset(${a.id})" title="Hantar borang aduan KEW.PA-9 dengan maklumat aset ini">
+                            📤 Lapor Kerosakan (KEW.PA-9)
+                        </button>
+                        <button type="button" class="btn-asset-action" onclick="openAssetDetail(${a.id})">
+                            👁️ Butiran Penuh
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function filterUserAssets(term) {
+        const query = (term || '').toLowerCase().trim();
+        if (!query) {
+            renderAssetList(userAssetsList);
+            return;
         }
-    });
+
+        const filtered = userAssetsList.filter(a => {
+            const m = (a.model_komputer || '').toLowerCase();
+            const s = (a.serial_number || '').toLowerCase();
+            const t = (a.asset_type || '').toLowerCase();
+            const mon = (a.model_monitor || '').toLowerCase();
+            const os = (a.os || '').toLowerCase();
+            const ip = (a.ip_address || '').toLowerCase();
+            const reg = (a.no_siri_pendaftaran || '').toLowerCase();
+            return m.includes(query) || s.includes(query) || t.includes(query) || mon.includes(query) || os.includes(query) || ip.includes(query) || reg.includes(query);
+        });
+
+        renderAssetList(filtered);
+    }
+
+    function openAssetDetail(assetId) {
+        const a = userAssetsList.find(item => item.id == assetId);
+        if (!a) return;
+
+        document.getElementById('adm_title').textContent = a.model_komputer || 'Butiran Aset ICT';
+        document.getElementById('adm_badge_type').textContent = a.asset_type || 'Desktop PC';
+        document.getElementById('adm_badge_sn').textContent = 'S/N: ' + (a.serial_number || '-');
+
+        document.getElementById('adm_nama').value = a.display_name || a.nama_pegawai || (currentUser ? currentUser.full_name : '-');
+        document.getElementById('adm_jawatan').value = a.display_jawatan || a.jawatan || (currentUser ? currentUser.jawatan : '-');
+        document.getElementById('adm_dept').value = a.display_dept || a.jabatan_unit || (currentUser ? currentUser.department : '-');
+        document.getElementById('adm_tarikh').value = a.created_at ? new Date(a.created_at).toLocaleString('ms-MY') : '-';
+
+        document.getElementById('adm_model_comp').value = a.model_komputer || '-';
+        document.getElementById('adm_serial_comp').value = a.serial_number || '-';
+        document.getElementById('adm_model_mon').value = a.model_monitor || '-';
+        document.getElementById('adm_serial_mon').value = a.serial_monitor || '-';
+        document.getElementById('adm_os').value = a.os || '-';
+        document.getElementById('adm_proc').value = a.processor || '-';
+        document.getElementById('adm_ram').value = a.ram || '-';
+        document.getElementById('adm_disk').value = a.hard_disk || '-';
+        document.getElementById('adm_ip').value = a.ip_address || '-';
+        document.getElementById('adm_printer').value = a.printer || 'Tiada';
+        document.getElementById('adm_accessories').value = 'Tetikus: ' + (a.mouse || '-') + ' | Papan Kekunci: ' + (a.keyboard || '-');
+        document.getElementById('adm_software').value = 'Office: ' + (a.ms_office || '-') + ' | Antivirus: ' + (a.antivirus || '-');
+        document.getElementById('adm_perisian_lain').value = a.perisian_lain || 'Tiada';
+
+        // Images preview
+        const imgContainer = document.getElementById('adm_images');
+        imgContainer.innerHTML = '';
+        if (a.images && a.images.length > 0) {
+            a.images.forEach(img => {
+                const div = document.createElement('div');
+                div.style.cssText = 'aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid rgba(37,99,235,.2);box-shadow:0 4px 10px rgba(0,0,0,.06);';
+                div.innerHTML = `<a href="${img.image_path}" target="_blank" title="Buka gambar saiz penuh"><img src="${img.image_path}" style="width:100%;height:100%;object-fit:cover;cursor:pointer;"></a>`;
+                imgContainer.appendChild(div);
+            });
+        } else {
+            imgContainer.innerHTML = '<p style="color:#64748b;font-size:.82rem;">Tiada gambar lampiran dimuat naik.</p>';
+        }
+
+        // Setup report button inside modal
+        const repBtn = document.getElementById('adm_btn_report');
+        if (repBtn) {
+            repBtn.onclick = () => {
+                closeAssetModal();
+                quickReportAsset(a.id);
+            };
+        }
+
+        document.getElementById('assetDetailModal').classList.add('active');
+    }
+
+    function closeAssetModal() {
+        const modal = document.getElementById('assetDetailModal');
+        if (modal) modal.classList.remove('active');
+    }
+
+    function quickReportAsset(assetId) {
+        const a = userAssetsList.find(item => item.id == assetId);
+        if (!a) return;
+
+        showView('view-borang');
+
+        // Map asset type
+        const t = (a.asset_type || '').toLowerCase();
+        let jenisOption = 'Desktop PC';
+        if (t.includes('laptop') || t.includes('notebook')) {
+            jenisOption = 'Laptop/NoteBook';
+        } else if (t.includes('desktop') || t.includes('pc')) {
+            jenisOption = 'Desktop PC';
+        } else {
+            jenisOption = 'Lain-lain';
+        }
+
+        const bJenis = document.getElementById('b_jenis');
+        if (bJenis) bJenis.value = jenisOption;
+
+        const bSiri = document.getElementById('b_siri');
+        if (bSiri) bSiri.value = a.serial_number || a.no_siri_pendaftaran || '';
+
+        if (currentUser) {
+            const bPengguna = document.getElementById('b_pengguna');
+            if (bPengguna && !bPengguna.value) bPengguna.value = currentUser.full_name || '';
+
+            const bLokasi = document.getElementById('b_lokasi');
+            if (bLokasi && !bLokasi.value) bLokasi.value = currentUser.department || '';
+        }
+
+        const alertEl = document.getElementById('borangAlert');
+        if (alertEl) {
+            showAlert(alertEl, `ℹ️ Maklumat aset (${a.model_komputer || 'Aset'}) telah diisi secara automatik. Sila huraikan perihal kerosakan.`, 'success');
+        }
+
+        const perihalEl = document.getElementById('b_perihal');
+        if (perihalEl) perihalEl.focus();
+    }
 
     /* ── Settings ── */
     function populateSettings() {
