@@ -49,6 +49,21 @@
                         // Restore sessionStorage from server session (handles refresh / new tab)
                         sessionStorage.setItem('user', JSON.stringify(result.data));
                     }
+
+                    // Role-based subdirectory access guard
+                    const role = (result.data.role || '').toLowerCase();
+                    const isSuper = role === 'super admin' || role === 'superadmin';
+                    const isAdmin = role === 'admin';
+
+                    if (path.includes('/superadmin/') && !isSuper) {
+                        window.location.replace(isAdmin ? '../admin/dashboard.php' : '../staff/dashboard.php');
+                        return;
+                    }
+                    if (path.includes('/admin/') && !isAdmin && !isSuper) {
+                        window.location.replace('../staff/dashboard.php');
+                        return;
+                    }
+
                     restorePortalVisibility();
                 } else {
                     // No server session — clear any stale client data and redirect
@@ -212,15 +227,15 @@ function showInactivityWarning() {
 
     const modalHtml = `
         <div id="inactivity-modal" class="modal" style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 99999;">
-            <div class="modal-content" style="max-width: 420px; text-align: center; padding: 2.5rem; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow);">
+            <div class="modal-content" style="max-width: 420px; width: 90%; text-align: center; padding: 2.5rem; border-radius: 24px; background: var(--bg-card, #ffffff); border: 1px solid var(--border, #e2e8f0); box-shadow: var(--shadow, 0 20px 60px rgba(0, 0, 0, 0.2)); color: var(--text-main, #24324b);">
                 <div style="font-size: 3.5rem; margin-bottom: 1.5rem; filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4));">⚠️</div>
-                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">Sesi Anda Hampir Tamat</h2>
-                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6;">
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main, #24324b);">Sesi Anda Hampir Tamat</h2>
+                <p style="color: var(--text-muted, #66768c); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6;">
                     Sistem mengesan tiada aktiviti daripada anda. Sesi anda akan ditamatkan secara automatik dalam masa 
-                    <span id="inactivity-countdown" style="font-weight: 700; color: var(--danger); font-size: 1.25rem; display: inline-block; min-width: 2ch;">60</span> saat demi keselamatan.
+                    <span id="inactivity-countdown" style="font-weight: 700; color: var(--danger, #dc2626); font-size: 1.25rem; display: inline-block; min-width: 2ch;">60</span> saat demi keselamatan.
                 </p>
                 <div style="display: flex; gap: 1rem; justify-content: center;">
-                    <button id="inactivity-keep-alive" class="btn btn-primary" style="padding: 0.8rem 1.8rem; font-weight: 600; width: 100%; border-radius: 12px; cursor: pointer;">
+                    <button id="inactivity-keep-alive" class="btn btn-primary" style="padding: 0.85rem 1.8rem; font-weight: 700; width: 100%; border-radius: 12px; cursor: pointer; background: linear-gradient(135deg, #dc2626, #2563eb); color: #ffffff; border: none; font-size: 0.95rem; font-family: inherit; transition: all 0.2s ease; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);" onmouseover="this.style.opacity='0.9'; this.style.transform='translateY(-1px)';" onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)';">
                         Kekal Log Masuk
                     </button>
                 </div>

@@ -4,8 +4,8 @@ session_start();
 header('Content-Type: application/json');
 require_once '../config.php';
 
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['Admin', 'Super Admin'])) {
-    jsonResponse('error', 'Unauthorized');
+if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''), ['super admin', 'superadmin'])) {
+    jsonResponse('error', 'Akses ditolak. Fungsi Inventori Aset kini hanya untuk Super Admin.');
 }
 
 try {

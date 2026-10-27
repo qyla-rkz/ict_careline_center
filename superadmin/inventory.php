@@ -1,0 +1,460 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''), ['super admin', 'superadmin'])) {
+    header("Location: ../login.php");
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="ms">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventori Aset - Super Admin</title>
+    <link rel="stylesheet" href="../assets/css/style.css?v=15">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="../assets/js/global.js?v=12"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="../assets/images/logo-mpm.png" alt="MPM Logo" class="logo-image">
+                <h2>eICT Desk</h2>
+            </div>
+            <div class="user-profile"
+                style="margin-top: -1rem; margin-bottom: -1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
+                <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super Admin</p>
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="reports.php" class="nav-link">📝 Kelulusan Laporan</a>
+                <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
+                <a href="users.php" class="nav-link">👥 Pengguna</a>
+                <a href="inventory.php" class="nav-link active">🖥️ Inventori Aset</a>
+                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
+                <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
+            </nav>
+            <div style="margin-top: auto;">
+                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem;">
+                <div>
+                    <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Super Admin Portal</p>
+                    <h2 style="font-size: 1.8rem; color: var(--text-main);">Inventori Aset</h2>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div id="current-date"
+                        style="background: rgba(255,255,255,0.9); padding: 0.6rem 1.25rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: var(--text-main); backdrop-filter: blur(10px); font-size: 0.9rem;">
+                        <!-- Date via JS -->
+                    </div>
+                    <button onclick="addDept()" class="btn btn-primary"
+                        style="padding: 0.6rem 1.25rem; border-radius: 20px;">➕ Pilih Jabatan / Bahagian / Unit</button>
+                </div>
+            </header>
+
+            <div class="card table-card">
+                <div class="table-container">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left;">
+                                <th style="padding: 1rem;">Jabatan/Bahagian/Unit</th>
+                                <th style="padding: 1rem; text-align: center;">Jumlah Keseluruhan</th>
+                                <th style="padding: 1rem; text-align: center;">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                            <!-- Loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info" id="paginationInfo">Menunjukkan 0 hingga 0 daripada 0 entri</div>
+                    <div class="pagination-controls">
+                        <button onclick="prevPage()" id="prevBtn" class="pagination-btn" disabled>Sebelumnya</button>
+                        <button onclick="nextPage()" id="nextBtn" class="pagination-btn">Seterusnya</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ─── Dept Modal ─── -->
+    <div id="deptModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 id="modalTitle">Kemaskini Jabatan</h2>
+                <button onclick="closeModal()"
+                    style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+
+            <form id="deptForm">
+                <input type="hidden" id="edit_dept_id" name="id">
+                <input type="hidden" id="edit_assets_data" name="assets_data" value="{}">
+
+                <div class="form-group">
+                    <label>Nama Jabatan / Bahagian / Unit</label>
+                    <input type="hidden" id="edit_dept_name" name="department_name">
+                    <div id="inv_dept_trigger" class="form-control"
+                        style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;">
+                        <span id="inv_dept_display" style="color: var(--text-muted);">Pilih Jabatan / Bahagian /
+                            Unit</span>
+                        <span style="font-size: 0.8rem;">▼</span>
+                    </div>
+                    <div id="inv_dept_options"
+                        style="display: none; position: absolute; width: calc(100% - 5rem); background: white; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 9999; max-height: 200px; overflow-y: auto; margin-top: 4px;">
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem; margin-bottom: 1rem;">
+                    <label
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-weight: 600;">
+                        Senarai Aset
+                        <button type="button" class="btn btn-secondary" onclick="addAssetRow('', 1)"
+                            style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">+ Tambah Aset</button>
+                    </label>
+                    <div id="dynamicAssetsContainer" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <!-- JS injected rows -->
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Simpan
+                    Perubahan</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = sessionStorage.getItem('user');
+            if (!userStr) {
+                window.location.replace('../login.php');
+                return;
+            }
+            const user = JSON.parse(userStr);
+            const userRole = (user.role || '').toLowerCase();
+            if (userRole !== 'super admin' && userRole !== 'superadmin') {
+                alert('Akses Ditolak. Anda bukan Super Admin.');
+                window.location.replace('../login.php');
+                return;
+            }
+
+            const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            const dateEl = document.getElementById('current-date');
+            if (dateEl) dateEl.textContent = new Date().toLocaleDateString('ms-MY', opts);
+
+            if (user && user.full_name) {
+                document.getElementById('sidebarSuperadminName').textContent = user.full_name;
+            }
+
+            fetchInventory();
+        });
+
+        function parseAssets(dataString) {
+            if (!dataString) return {};
+            try {
+                const txt = document.createElement("textarea");
+                txt.innerHTML = dataString;
+                return JSON.parse(txt.value);
+            } catch (e) {
+                return {};
+            }
+        }
+
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let allData = [];
+
+        async function fetchInventory() {
+            try {
+                const response = await fetch('../api/admin/admin_get_dept_inventory.php?_=' + new Date().getTime());
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    allData = result.data;
+                    renderInventory();
+                } else {
+                    console.error('Gagal mengambil data inventori:', result.message);
+                }
+            } catch (err) { console.error(err); }
+        }
+        function renderInventory() {
+            const tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = '';
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = allData.slice(start, end);
+
+            pageItems.forEach(d => {
+                let assets = parseAssets(d.assets_data);
+
+                let total = 0;
+                let badgesHtml = '';
+                for (let [name, count] of Object.entries(assets)) {
+                    total += parseInt(count);
+                    badgesHtml += `<span style="display: inline-block; background: var(--primary-light); color: var(--primary); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-right: 0.25rem; margin-bottom: 0.25rem; border: 1px solid rgba(0,0,0,0.05);">${name}: <b>${count}</b></span>`;
+                }
+
+                if (badgesHtml === '') badgesHtml = '<span class="text-muted" style="font-size: 0.85rem;">Tiada Aset</span>';
+
+                const accordionId = 'assets-' + d.id;
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid var(--border)';
+                tr.innerHTML = `
+                    <td style="padding: 1rem; font-weight: 600; cursor: pointer; color: var(--primary);" onclick="toggleAssets('${accordionId}')" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+                        ${d.department_name} <span style="font-size: 0.8rem; margin-left: 0.5rem;">▼</span>
+                    </td>
+                    <td style="padding: 1rem; text-align: center; font-weight: 700; color: var(--primary);">${total}</td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                            <button onclick='editDept(${d.id})' class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Kemaskini</button>
+                            <button onclick='deleteDept(${d.id})' class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; background: var(--danger); color: white;">Padam</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                const trAccordion = document.createElement('tr');
+                trAccordion.id = accordionId;
+                trAccordion.style.display = 'none';
+                trAccordion.style.backgroundColor = 'rgba(0,0,0,0.02)';
+                trAccordion.style.borderBottom = '1px solid var(--border)';
+                trAccordion.innerHTML = `
+                    <td colspan="3" style="padding: 1.5rem 2rem;">
+                        <div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--text-main);">Senarai Aset (${total} Jumlah Keseluruhan) :</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">${badgesHtml}</div>
+                    </td>
+                `;
+                tbody.appendChild(trAccordion);
+            });
+
+            updatePagination(allData.length);
+        }
+
+        function toggleAssets(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'none') {
+                el.style.display = 'table-row';
+            } else {
+                el.style.display = 'none';
+            }
+        }
+
+        function updatePagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(currentPage * itemsPerPage, totalItems);
+
+            document.getElementById('paginationInfo').textContent = totalItems > 0
+                ? `Menunjukkan ${start} hingga ${end} daripada ${totalItems} entri`
+                : `Menunjukkan 0 hingga 0 daripada 0 entri`;
+
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        function nextPage() {
+            currentPage++;
+            renderInventory();
+            document.querySelector('.table-container').scrollTop = 0;
+        }
+
+        function prevPage() {
+            currentPage--;
+            renderInventory();
+            document.querySelector('.table-container').scrollTop = 0;
+        }
+
+        function addAssetRow(name = '', count = 1) {
+            const container = document.getElementById('dynamicAssetsContainer');
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.gap = '0.5rem';
+            row.innerHTML = `
+                <input type="text" class="form-control asset-name-input" placeholder="Nama Aset" value="${name}" required style="flex: 2;">
+                <input type="number" class="form-control asset-count-input" placeholder="Kuantiti" value="${count}" required style="flex: 1;" min="1">
+                <button type="button" class="btn" style="background: var(--danger); color: white; padding: 0.4rem 0.8rem;" onclick="this.parentElement.remove()">X</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function addDept() {
+            document.getElementById('modalTitle').textContent = 'Pilih Jabatan / Bahagian / Unit';
+            document.getElementById('edit_dept_id').value = '';
+            document.getElementById('deptForm').reset();
+            document.getElementById('dynamicAssetsContainer').innerHTML = '';
+            addAssetRow();
+
+            const existingDepts = allData.map(d => d.department_name);
+            populateDeptDropdown(null, existingDepts);
+
+            document.getElementById('deptModal').style.display = 'flex';
+        }
+
+        function editDept(id) {
+            const d = allData.find(item => item.id == id);
+            if (!d) return;
+
+            document.getElementById('modalTitle').textContent = 'Kemaskini Jabatan';
+            document.getElementById('edit_dept_id').value = d.id;
+
+            populateDeptDropdown(d.department_name, []);
+
+            document.getElementById('edit_dept_name').value = d.department_name;
+
+            const container = document.getElementById('dynamicAssetsContainer');
+            container.innerHTML = '';
+            let assets = parseAssets(d.assets_data);
+
+            const entries = Object.entries(assets);
+            if (entries.length === 0) {
+                addAssetRow();
+            } else {
+                for (let [name, count] of entries) {
+                    addAssetRow(name, count);
+                }
+            }
+
+            document.getElementById('deptModal').style.display = 'flex';
+        }
+
+        const SEMUA_JABATAN = [
+            'Jabatan Bangunan',
+            'Jabatan Kejuruteraan',
+            'Jabatan Kesihatan dan Pelesenan',
+            'Jabatan Kewangan',
+            'Jabatan Khidmat Pengurusan',
+            'Jabatan Komunikasi Koprat dan Kemasyarakatan',
+            'Jabatan Penguatkuasaan',
+            'Jabatan Penilaian dan Pengurusan Harta',
+            'Jabatan Perancangan dan Pembangunan Landskap',
+            'Kaunter Hasil',
+            'Pejabat Setiausaha',
+            'Pejabat YDP',
+            'Unit Audit Dalaman',
+            'Unit Perolehan dan Pengurusan Kontrak',
+            'Unit Persuruhjaya Bangunan',
+            'Unit Pusat Setempat',
+            'Unit Teknologi Maklumat',
+            'Unit Undang-Undang',
+        ];
+
+        function populateDeptDropdown(currentValue, excludeList) {
+            const hiddenInput = document.getElementById('edit_dept_name');
+            const display = document.getElementById('inv_dept_display');
+            const optionsBox = document.getElementById('inv_dept_options');
+
+            hiddenInput.value = '';
+            display.textContent = currentValue || 'Pilih Jabatan / Bahagian / Unit';
+            display.style.color = currentValue ? 'var(--text-main)' : 'var(--text-muted)';
+            if (currentValue) hiddenInput.value = currentValue;
+
+            optionsBox.innerHTML = '';
+            SEMUA_JABATAN.forEach(jabatan => {
+                if (excludeList && excludeList.includes(jabatan)) return;
+                const div = document.createElement('div');
+                div.textContent = jabatan;
+                div.style.cssText = 'padding: 0.75rem 1.25rem; cursor: pointer; font-size: 0.95rem; transition: background 0.15s;';
+                div.addEventListener('mouseenter', () => div.style.background = 'var(--primary-light)');
+                div.addEventListener('mouseleave', () => div.style.background = 'white');
+                div.addEventListener('click', () => {
+                    hiddenInput.value = jabatan;
+                    display.textContent = jabatan;
+                    display.style.color = 'var(--text-main)';
+                    optionsBox.style.display = 'none';
+                });
+                optionsBox.appendChild(div);
+            });
+        }
+
+        document.getElementById('inv_dept_trigger').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const box = document.getElementById('inv_dept_options');
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', () => {
+            const box = document.getElementById('inv_dept_options');
+            if (box) box.style.display = 'none';
+        });
+
+        document.getElementById('inv_dept_options').addEventListener('click', e => e.stopPropagation());
+
+        function closeModal() {
+            document.getElementById('deptModal').style.display = 'none';
+        }
+
+        document.getElementById('deptForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const deptName = document.getElementById('edit_dept_name').value;
+            if (!deptName) {
+                alert('Sila pilih jabatan.');
+                return;
+            }
+
+            const assetNames = document.querySelectorAll('.asset-name-input');
+            const assetCounts = document.querySelectorAll('.asset-count-input');
+            let assetsObj = {};
+
+            assetNames.forEach((input, index) => {
+                const name = input.value.trim();
+                const count = parseInt(assetCounts[index].value);
+                if (name && count > 0) {
+                    assetsObj[name] = (assetsObj[name] || 0) + count;
+                }
+            });
+
+            document.getElementById('edit_assets_data').value = JSON.stringify(assetsObj);
+
+            const formData = new FormData(e.target);
+            try {
+                const response = await fetch("../api/admin/admin_update_dept_inventory.php", {
+                    method: 'POST',
+                    body: formData
+                });
+                const res = await response.json();
+                if (res.status === 'success') {
+                    closeModal();
+                    fetchInventory();
+                } else {
+                    alert(res.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Terdapat ralat teknikal: ' + err.message);
+            }
+        });
+
+        async function deleteDept(id) {
+            if (!confirm('Adakah anda pasti mahu memadam inventori jabatan ini?')) return;
+            try {
+                const response = await fetch(`../api/admin/admin_delete_dept_inventory.php?id=${id}`);
+                const res = await response.json();
+                if (res.status === 'success') {
+                    fetchInventory();
+                } else {
+                    alert(res.message || 'Gagal memadam.');
+                }
+            } catch (err) { console.error(err); }
+        }
+    </script>
+</body>
+
+</html>

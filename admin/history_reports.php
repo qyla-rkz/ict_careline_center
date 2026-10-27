@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sejarah Laporan - eICT Desk</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <script src="../assets/js/global.js?v=12"></script>
+    <link rel="stylesheet" href="../assets/css/style.css?v=4">
+    <script src="../assets/js/global.js?v=14"></script>
     <style>
         @media print {
             @page {
@@ -33,6 +33,12 @@
 
             .no-print {
                 display: none !important;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid-responsive {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
             }
         }
 
@@ -136,6 +142,41 @@
             width: 240px;
             flex-shrink: 0;
         }
+
+        .readonly-sec {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 1.25rem;
+        }
+        .form-control-readonly,
+        .readonly-sec input.form-control,
+        .readonly-sec textarea.form-control {
+            background-color: #f1f5f9 !important;
+            color: #475569 !important;
+            border: 1.5px solid #cbd5e1 !important;
+            cursor: not-allowed !important;
+            font-weight: 600;
+            user-select: none;
+        }
+        .form-control-readonly:focus,
+        .readonly-sec input.form-control:focus,
+        .readonly-sec textarea.form-control:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.dark-theme .readonly-sec {
+            background: rgba(30, 41, 59, 0.45) !important;
+            border-color: #334155 !important;
+        }
+        body.dark-theme .form-control-readonly,
+        body.dark-theme .readonly-sec input.form-control,
+        body.dark-theme .readonly-sec textarea.form-control {
+            background-color: #0f172a !important;
+            color: #94a3b8 !important;
+            border-color: #334155 !important;
+        }
     </style>
 </head>
 
@@ -156,8 +197,6 @@
                 <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
                 <a href="profile.php" class="nav-link">👤 Profil Saya</a>
                 <a href="report_management.php" class="nav-link">📝 Pengurusan Laporan</a>
-                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
                 <a href="history_reports.php" class="nav-link active">📜 Sejarah Laporan</a>
             </nav>
             <div style="margin-top: auto;">
@@ -179,6 +218,45 @@
                     <!-- Date loaded via JS -->
                 </div>
             </header>
+
+            <!-- Statistik Keseluruhan -->
+            <div class="stats-grid-responsive no-print" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
+                    <div class="stat-icon" style="background: #eff6ff; color: #1e40af; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📥</div>
+                    <div>
+                        <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Laporan <span style="font-size:0.75rem;"><p>(Keseluruhan)</p></span></div>
+                        <div id="stat-total" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                    </div>
+                </div>
+                <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
+                    <div class="stat-icon" style="background: #fef3c7; color: #92400e; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">⏳</div>
+                    <div>
+                        <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Menunggu <span style="font-size:0.75rem;"><p>(Keseluruhan)</p></span></div>
+                        <div id="stat-pending" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                    </div>
+                </div>
+                <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
+                    <div class="stat-icon" style="background: #dcfce7; color: #166534; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">✅</div>
+                    <div>
+                        <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Selesai <span style="font-size:0.75rem;"><p>(Keseluruhan)</p></span></div>
+                        <div id="stat-resolved" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                    </div>
+                </div>
+                <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
+                    <div class="stat-icon" style="background: #fee2e2; color: #991b1b; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">❌</div>
+                    <div>
+                        <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Ditolak <span style="font-size:0.75rem;"><p>(Keseluruhan)</p></span></div>
+                        <div id="stat-rejected" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                    </div>
+                </div>
+                <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
+                    <div class="stat-icon" style="background: #e2e8f0; color: #475569; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🗂️</div>
+                    <div>
+                        <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Syor Dilupuskan <span style="font-size:0.75rem;"><p>(Keseluruhan)</p></span></div>
+                        <div id="stat-disposed" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
+                    </div>
+                </div>
+            </div>
 
             <div class="card" style="margin-bottom: 1.5rem;">
                 <div style="display: flex; gap: 1rem; align-items: flex-end; padding: 0.5rem;">
@@ -220,6 +298,16 @@
                             style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Jabatan / Unit</label>
                         <select id="filterDept" class="form-control" onchange="applyFilters()">
                             <option value="">Semua Jabatan</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0; flex: 1;">
+                        <label
+                            style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">Keputusan</label>
+                        <select id="filterKeputusan" class="form-control" onchange="applyFilters()">
+                            <option value="">Semua Keputusan</option>
+                            <option value="Diluluskan">Diluluskan (Selesai)</option>
+                            <option value="Tidak Diluluskan">Tidak Diluluskan (Ditolak)</option>
+                            <option value="Syor Dilupuskan">Syor Dilupuskan</option>
                         </select>
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
@@ -267,7 +355,7 @@
     <div id="viewModal" class="modal">
         <div class="modal-content" style="max-width: 860px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2>Butiran Laporan KEW.PA-9</h2>
+                <h2 id="modalHistoryTitle">Butiran Laporan KEW.PA-9</h2>
                 <button onclick="closeModal()"
                     style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
@@ -278,27 +366,65 @@
                 <input type="hidden" id="p_created_at" name="created_at">
 
                 <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                    <!-- Bahagian I -->
-                    <div>
-                        <h4
-                            style="color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">
-                            Bahagian I: Maklumat Pengadu</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="form-group"><label>Jenis Aset</label><input type="text" id="v_jenis"
-                                    class="form-control" readonly></div>
-                            <div class="form-group"><label>No. Siri Pendaftaran</label><input type="text" id="v_siri"
-                                    class="form-control" readonly></div>
-                            <div class="form-group"><label>Pengguna Terakhir</label><input type="text" id="v_pengguna"
-                                    class="form-control" readonly></div>
-                            <div class="form-group"><label>Tarikh Kerosakan</label><input type="text"
-                                    id="v_tarikh_rosak" class="form-control" readonly></div>
-                            <div class="form-group"><label>Nama Pelapor & Jawatan</label><input type="text"
-                                    id="v_nama_jawatan" class="form-control" readonly></div>
-                            <div class="form-group"><label>Lokasi</label><input type="text" id="v_lokasi"
-                                    class="form-control" readonly></div>
+                    <!-- Bahagian I (Maklumat Pengadu - Read-only) -->
+                    <div class="readonly-sec">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 0.5rem;">
+                            <h4 style="margin: 0; color: var(--primary); font-size: 1rem;">Bahagian I: Maklumat Pengadu</h4>
                         </div>
-                        <div class="form-group"><label>Perihal Kerosakan</label><textarea id="v_perihal"
-                                class="form-control" rows="3" readonly></textarea></div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Jenis Aset</label>
+                                <input type="text" id="v_jenis" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">No. Siri Pendaftaran</label>
+                                <input type="text" id="v_siri" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Pengguna Terakhir</label>
+                                <input type="text" id="v_pengguna" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tarikh Kerosakan</label>
+                                <input type="text" id="v_tarikh_rosak" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Nama Pelapor & Jawatan</label>
+                                <input type="text" id="v_nama_jawatan" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Lokasi</label>
+                                <input type="text" id="v_lokasi" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 0.75rem;">
+                            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Perihal Kerosakan</label>
+                            <textarea id="v_perihal" readonly tabindex="-1" class="form-control form-control-readonly" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Lampiran Spesifikasi Aset Yang Rosak -->
+                    <div id="v_spec_container" style="background: rgba(241, 245, 249, 0.7); border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 1.25rem;">
+                        <h4 style="color: var(--primary); margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem;">
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                💻 Lampiran Spesifikasi Aset Yang Rosak
+                            </span>
+                            <span id="v_spec_status_badge" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 700;"></span>
+                        </h4>
+                        <div id="v_spec_body">
+                            <!-- Populated via renderAttachedSpec -->
+                        </div>
+                    </div>
+
+                    <!-- Gambar / Dokumen Lampiran Kerosakan (Jika Ada) -->
+                    <div id="v_images_container" style="background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem;">
+                        <h4 style="color: var(--text-main); margin-bottom: 0.75rem; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between;">
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">📸 Gambar / Bukti Kerosakan Aset</span>
+                            <span id="v_images_count_badge" style="font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 600; background: #e2e8f0; color: #475569;"></span>
+                        </h4>
+                        <div id="v_images_body">
+                            <!-- Populated via renderReportImages -->
+                        </div>
                     </div>
 
                     <!-- Bahagian II -->
@@ -515,9 +641,25 @@
                 const response = await fetch(url);
                 const result = await response.json();
                 if (result.status === 'success') {
+                    // Statistik Keseluruhan
+                    const allReports = result.data;
+                    let pending = 0, resolved = 0, rejected = 0, disposed = 0;
+                    allReports.forEach(r => {
+                        if (r.status === 'Pending' && r.keputusan !== 'Syor Dilupuskan') pending++;
+                        if (r.status === 'Resolved' && r.keputusan !== 'Syor Dilupuskan') resolved++;
+                        if (r.status === 'Rejected') rejected++;
+                        if (r.keputusan === 'Syor Dilupuskan') disposed++;
+                    });
+
+                    document.getElementById('stat-total').textContent = allReports.length;
+                    document.getElementById('stat-pending').textContent = pending;
+                    document.getElementById('stat-resolved').textContent = resolved;
+                    document.getElementById('stat-rejected').textContent = rejected;
+                    document.getElementById('stat-disposed').textContent = disposed;
+
                     // Show reports based on final decision (`keputusan`) rather than internal `status`.
-                    // Include any report that has a keputusan set and is not 'Pending'.
-                    allHistory = result.data.filter(r => (r.keputusan && r.keputusan !== '' && r.keputusan !== 'Pending'));
+                    // Include any report that has a keputusan set and is not 'Pending' or has completed status.
+                    allHistory = result.data.filter(r => (r.status === 'Resolved' || r.status === 'Rejected' || r.status === 'Completed' || (r.keputusan && r.keputusan !== '' && r.keputusan !== 'Pending')));
                     
                     // Populate Year Dropdown dynamically
                     const yearSelect = document.getElementById('filterYear');
@@ -555,6 +697,7 @@
             const y = document.getElementById('filterYear').value;
             const m = document.getElementById('filterMonth').value;
             const dept = document.getElementById('filterDept').value.toLowerCase();
+            const kep = document.getElementById('filterKeputusan').value;
 
             filteredHistory = allHistory.filter(r => {
                 const date = new Date(r.created_at);
@@ -568,7 +711,9 @@
                 const deptMatch = !dept ||
                     (r.department && r.department.toLowerCase().includes(dept));
 
-                return yearMatch && monthMatch && nameMatch && deptMatch;
+                const kepMatch = !kep || r.keputusan === kep;
+
+                return yearMatch && monthMatch && nameMatch && deptMatch && kepMatch;
             });
 
             currentPage = 1;
@@ -600,6 +745,13 @@
             ">${pass ? '✅' : '⚠️'} ${days} hari</span>`;
         }
 
+        function formatReportId(id) {
+            if (!id && id !== 0) return '';
+            const num = parseInt(id);
+            if (isNaN(num)) return `#ICT${id}`;
+            return `#ICT${String(num).padStart(2, '0')}`;
+        }
+
         function renderHistory() {
             const tbody = document.getElementById('historyTableBody');
             if (!filteredHistory.length) {
@@ -618,18 +770,21 @@
                     ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })
                     : '<span style="color:var(--text-muted);font-size:0.85rem;">Belum Diproses</span>';
 
+                const rawOfficer = (r.keputusan_nama || r.admin_name_jawatan || '').trim();
+                const diprosesOleh = (!rawOfficer || rawOfficer.toLowerCase() === 'system') ? 'Tiada' : rawOfficer;
+
                 return `
                 <tr style="border-bottom: 1px solid var(--border);">
-                    <td style="padding: 1rem; font-weight: 600; color: var(--primary);">#${r.id}</td>
+                    <td style="padding: 1rem; font-weight: 600; color: var(--primary);">${formatReportId(r.id)}</td>
                     <td style="padding: 1rem;">${r.nama_pelapor || r.full_name}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${r.department || '<span style="color:var(--text-muted);font-size:0.85rem;">—</span>'}</td>
                     <td style="padding: 1rem;"><span class="badge badge-${r.keputusan === 'Diluluskan' ? 'resolved' : r.keputusan === 'Syor Dilupuskan' ? 'disposed' : 'rejected'}" style="white-space: nowrap;">${r.keputusan || 'N/A'}</span></td>
-                    <td style="padding: 1rem;">${r.keputusan_nama || r.admin_name_jawatan || 'System'}</td>
+                    <td style="padding: 1rem;">${diprosesOleh}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${tarikhSiap}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${isobadge(r)}</td>
                     <td style="padding: 1rem; text-align: center; white-space: nowrap;">
-                        <button onclick='showReportDetails(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Lihat / Cetak</button>
+                        <button onclick="showReportDetails(${r.id})" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Lihat / Cetak</button>
                     </td>
                 </tr>
             `;
@@ -663,8 +818,17 @@
             document.querySelector('.table-container').scrollTop = 0;
         }
 
-        function showReportDetails(r) {
+        function showReportDetails(reportOrId) {
+            let r = reportOrId;
+            if (typeof reportOrId === 'number' || typeof reportOrId === 'string') {
+                r = allHistory.find(item => parseInt(item.id) === parseInt(reportOrId));
+            }
+            if (!r) return;
             currentReport = r;
+
+            const titleEl = document.getElementById('modalHistoryTitle');
+            if (titleEl) titleEl.textContent = 'Butiran Laporan KEW.PA-9 (' + formatReportId(r.id) + ')';
+
             document.getElementById('p_id').value = r.id;
             document.getElementById('p_reporter').value = r.nama_pelapor || r.full_name || '';
             document.getElementById('p_created_at').value = r.created_at;
@@ -675,6 +839,11 @@
             document.getElementById('v_perihal').value = r.perihal_kerosakan;
             document.getElementById('v_nama_jawatan').value = (r.nama_pelapor || r.full_name || '') + ' / ' + (r.jawatan_pelapor || '');
             document.getElementById('v_lokasi').value = r.location || '-';
+            
+            // Papar Spesifikasi Aset dan Gambar Lampiran
+            renderAttachedSpec(r.lampiran_spec);
+            renderReportImages(r.images);
+
             document.getElementById('v_kos_dahulu').value = r.kos_penyelenggaraan_dahulu || '';
             document.getElementById('v_anggaran_kos').value = r.anggaran_kos || '';
             document.getElementById('v_syor').value = r.syor_ulasan || '';
@@ -712,6 +881,113 @@
 
         function closeModal() {
             document.getElementById('viewModal').style.display = 'none';
+        }
+
+        function renderAttachedSpec(specData) {
+            const bodyEl = document.getElementById('v_spec_body');
+            const badgeEl = document.getElementById('v_spec_status_badge');
+            if (!bodyEl) return;
+
+            let spec = null;
+            if (typeof specData === 'string') {
+                let cleanStr = specData.trim();
+                if (cleanStr.includes('&quot;') || cleanStr.includes('&#039;') || cleanStr.includes('&amp;')) {
+                    const txt = document.createElement('textarea');
+                    txt.innerHTML = cleanStr;
+                    cleanStr = txt.value;
+                }
+                if (cleanStr.startsWith('{')) {
+                    try { spec = JSON.parse(cleanStr); } catch (e) { spec = null; }
+                }
+            } else if (typeof specData === 'object' && specData !== null) {
+                spec = specData;
+            }
+
+            if (!spec) {
+                if (badgeEl) {
+                    badgeEl.textContent = 'Tiada Lampiran';
+                    badgeEl.style.background = '#f1f5f9';
+                    badgeEl.style.color = '#64748b';
+                    badgeEl.style.border = '1px solid #cbd5e1';
+                }
+                bodyEl.innerHTML = `
+                    <div style="padding:0.75rem 1rem;color:var(--text-muted);font-style:italic;font-size:0.83rem;background:#ffffff;border-radius:8px;border:1px dashed var(--border);">
+                        ℹ️ Tiada spesifikasi aset dilampirkan bagi aduan ini.
+                    </div>`;
+                return;
+            }
+
+            if (badgeEl) {
+                badgeEl.textContent = '✅ Spesifikasi Dilampirkan';
+                badgeEl.style.background = 'rgba(16, 185, 129, 0.12)';
+                badgeEl.style.color = '#059669';
+                badgeEl.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+            }
+
+            const items = [
+                { label: 'Model Komputer / Peranti', val: spec.model_komputer },
+                { label: 'No. Siri Pendaftaran', val: spec.no_siri_pendaftaran },
+                { label: 'No. Siri Komputer (S/N)', val: spec.serial_number },
+                { label: 'Model & No. Siri Monitor', val: spec.model_monitor ? `${spec.model_monitor} (${spec.serial_monitor || '-'})` : spec.serial_monitor },
+                { label: 'Sistem Pengendalian (OS)', val: spec.os },
+                { label: 'Pemproses (CPU)', val: spec.processor },
+                { label: 'RAM', val: spec.ram },
+                { label: 'Storan (Hard Disk/SSD)', val: spec.hard_disk },
+                { label: 'Alamat IP', val: spec.ip_address },
+                { label: 'Pencetak (Printer)', val: spec.printer },
+                { label: 'Tetikus & Papan Kekunci', val: (spec.mouse || spec.keyboard) ? `${spec.mouse || '-'} / ${spec.keyboard || '-'}` : '' },
+                { label: 'Perisian (Office & Antivirus)', val: (spec.ms_office || spec.antivirus) ? `${spec.ms_office ? 'Office ' + spec.ms_office : '-'} | ${spec.antivirus || '-'}` : '' },
+                { label: 'Perisian Lain / Catatan', val: spec.perisian_lain || spec.maklumat_ict }
+            ];
+
+            const gridHtml = items
+                .filter(it => it.val && it.val !== '-' && it.val !== '')
+                .map(it => `
+                    <div style="background:#ffffff;padding:0.55rem 0.8rem;border-radius:8px;border:1px solid var(--border);">
+                        <div style="font-size:0.73rem;font-weight:600;color:var(--text-muted);margin-bottom:0.15rem;">${it.label}</div>
+                        <div style="font-size:0.84rem;font-weight:700;color:var(--text-main);word-break:break-word;">${escapeHtml(it.val)}</div>
+                    </div>
+                `).join('');
+
+            bodyEl.innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:0.6rem;">
+                    ${gridHtml || '<div style="color:var(--text-muted);font-size:0.83rem;">Maklumat spesifikasi kosong.</div>'}
+                </div>
+            `;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function renderReportImages(images) {
+            const container = document.getElementById('v_images_container');
+            const bodyEl = document.getElementById('v_images_body');
+            const countEl = document.getElementById('v_images_count_badge');
+            if (!container || !bodyEl) return;
+
+            if (images && images.length > 0) {
+                if (countEl) countEl.textContent = `${images.length} fail`;
+                bodyEl.innerHTML = `
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:0.75rem;">
+                        ${images.map(img => {
+                            const p = typeof img === 'string' ? img : (img.image_path || '');
+                            const cleanPath = '../' + p.replace(/^\/+/, '');
+                            return `
+                                <div style="aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--border);position:relative;background:#000;">
+                                    <a href="${cleanPath}" target="_blank" title="Klik untuk besarkan">
+                                        <img src="${cleanPath}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                    </a>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            } else {
+                if (countEl) countEl.textContent = '0 fail';
+                bodyEl.innerHTML = `<div style="color:var(--text-muted);font-size:0.83rem;font-style:italic;">Tiada gambar kerosakan dimuat naik oleh pengadu.</div>`;
+            }
         }
 
         function printKEWPA9() {

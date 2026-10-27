@@ -41,6 +41,13 @@ try {
 
 function sanitizeOutput($data) {
     if (is_string($data)) {
+        $trimmed = trim($data);
+        if ($trimmed !== '' && ($trimmed[0] === '{' || $trimmed[0] === '[')) {
+            $testJson = json_decode($data);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $data;
+            }
+        }
         return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
     }
     if (is_array($data)) {

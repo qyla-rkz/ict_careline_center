@@ -9,34 +9,60 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $asset_id = !empty($_POST['asset_id']) ? $_POST['asset_id'] : null;
+    // Pastikan kolum asset_id dan lampiran_spec wujud dalam reports
+    try {
+        $checkCol = $pdo->query("SHOW COLUMNS FROM reports LIKE 'asset_id'")->fetch();
+        if (!$checkCol) {
+            $pdo->exec("ALTER TABLE reports ADD COLUMN asset_id INT(11) DEFAULT NULL");
+        }
+    } catch (Exception $e) {}
+
+    try {
+        $checkSpecCol = $pdo->query("SHOW COLUMNS FROM reports LIKE 'lampiran_spec'")->fetch();
+        if (!$checkSpecCol) {
+            $pdo->exec("ALTER TABLE reports ADD COLUMN lampiran_spec LONGTEXT DEFAULT NULL");
+        }
+    } catch (Exception $e) {}
+
+    $asset_id = !empty($_POST['asset_id']) ? intval($_POST['asset_id']) : null;
+    $lampiran_spec = !empty($_POST['lampiran_spec']) ? trim($_POST['lampiran_spec']) : null;
+    $confirm_spec = !empty($_POST['confirm_spec']) ? trim($_POST['confirm_spec']) : '';
+
     $nama_aset = $_POST['nama_aset'] ?? '';
     $jenis_aset = $_POST['jenis_aset'] ?? '';
     $nombor_siri = $_POST['nombor_siri'] ?? '';
     $tarikh_kerosakan = $_POST['tarikh_kerosakan'] ?? '';
-    $lokasi = $_POST['lokasi'] ?? '';
+    $lokasi = $_POST['lokasi'] ?? $_POST['location'] ?? '';
     $perihal = $_POST['perihal_kerosakan'] ?? '';
     
+    // Pengesahan Wajib Lampiran Spesifikasi Aset
+    if (empty($lampiran_spec) || ($confirm_spec !== '1' && $confirm_spec !== 'true' && $confirm_spec !== 'on')) {
+        jsonResponse('error', 'Spesifikasi aset wajib dilampirkan dan kotak pengesahan mesti ditanda sebelum menghantar borang KEW.PA-9.');
+    }
+
     // Auto-fill/Override from POST
-    $pengguna = !empty($_POST['pengguna_terakhir']) ? $_POST['pengguna_terakhir'] : $_SESSION['full_name'];
-    $jawatan = $_SESSION['jawatan'] ?? $_SESSION['role']; 
+    $pengguna = !empty($_POST['pengguna_terakhir']) ? $_POST['pengguna_terakhir'] : ($_SESSION['full_name'] ?? '');
+    $nama_pelapor = !empty($_POST['nama_pelapor']) ? trim($_POST['nama_pelapor']) : ($_SESSION['full_name'] ?? '');
+    $jawatan = !empty($_POST['jawatan_pelapor']) ? trim($_POST['jawatan_pelapor']) : ($_SESSION['jawatan'] ?? $_SESSION['role'] ?? ''); 
 
     try {
         $pdo->beginTransaction();
 
-        $stmt = $pdo->prepare("INSERT INTO reports (user_id, jenis_aset, nombor_siri, pengguna_terakhir, tarikh_kerosakan, perihal_kerosakan, nama_pelapor, jawatan_pelapor, location, status) 
-                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')");
+        $stmt = $pdo->prepare("INSERT INTO reports (user_id, asset_id, lampiran_spec, jenis_aset, nombor_siri, pengguna_terakhir, tarikh_kerosakan, perihal_kerosakan, nama_pelapor, jawatan_pelapor, location, status) 
+                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')");
         
         $stmt->execute([
             $_SESSION['user_id'], 
+            $asset_id,
+            $lampiran_spec,
             $jenis_aset, 
             $nombor_siri, 
             $pengguna, 
             $tarikh_kerosakan, 
             $perihal,
-            $_SESSION['full_name'], // nama_pelapor
-            $jawatan,               // jawatan_pelapor
-            $lokasi                 // location
+            $nama_pelapor,
+            $jawatan,
+            $lokasi
         ]);
 
         $report_id = $pdo->lastInsertId();
@@ -71,7 +97,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         logAudit($pdo, $_SESSION['user_id'], 'Hantar Laporan', "Laporan KEW.PA-9 baru dihantar untuk aset '$jenis_aset' (S/N: $nombor_siri). ID Laporan: $report_id.");
 
         $pdo->commit();
-        jsonResponse('success', 'Report submitted successfully');
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Report submitted successfully',
+            'report_id' => (int)$report_id,
+            'data' => [
+                'report_id' => (int)$report_id
+            ]
+        ]);
+        exit;
 
     } catch (Exception $e) {
         $pdo->rollBack();

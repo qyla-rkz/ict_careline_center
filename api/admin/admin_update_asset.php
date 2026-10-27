@@ -4,8 +4,8 @@ session_start();
 header('Content-Type: application/json');
 require_once '../config.php';
 
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['Admin', 'Super Admin'])) {
-    jsonResponse('error', 'Unauthorized');
+if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''), ['super admin', 'superadmin'])) {
+    jsonResponse('error', 'Akses ditolak. Pengurusan Aset Staf kini hanya untuk Super Admin.');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->prepare("DELETE FROM asset_images WHERE asset_id = ?")->execute([$id]);
             $pdo->prepare("DELETE FROM staff_assets WHERE id = ?")->execute([$id]);
 
-            logAudit($pdo, $_SESSION['user_id'], 'Padam Aset (Admin)', "Admin '{$_SESSION['full_name']}' memadam rekod aset ID: $id.");
+            logAudit($pdo, $_SESSION['user_id'], 'Padam Aset (Super Admin)', "Super Admin '{$_SESSION['full_name']}' memadam rekod aset ID: $id.");
 
             $pdo->commit();
             jsonResponse('success', 'Rekod aset berjaya dipadam.');
@@ -119,8 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $id
             ]);
             $target_asset_id = $id;
-            $auditAction = 'Kemaskini Aset (Admin)';
-            $auditDesc = "Admin '{$_SESSION['full_name']}' kemaskini aset ID $id ($nama_pegawai, S/N: $serial_number).";
+            $auditAction = 'Kemaskini Aset (Super Admin)';
+            $auditDesc = "Super Admin '{$_SESSION['full_name']}' kemaskini aset ID $id ($nama_pegawai, S/N: $serial_number).";
         } else {
             // INSERT
             $sql = "INSERT INTO staff_assets (
@@ -140,8 +140,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $jawatan, $jabatan_unit
             ]);
             $target_asset_id = $pdo->lastInsertId();
-            $auditAction = 'Tambah Aset (Admin)';
-            $auditDesc = "Admin '{$_SESSION['full_name']}' tambah aset baharu ID $target_asset_id ($nama_pegawai, S/N: $serial_number).";
+            $auditAction = 'Tambah Aset (Super Admin)';
+            $auditDesc = "Super Admin '{$_SESSION['full_name']}' tambah aset baharu ID $target_asset_id ($nama_pegawai, S/N: $serial_number).";
         }
 
         // Handle Image Uploads

@@ -10,6 +10,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="../assets/js/global.js?v=12"></script>
+    <style>
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.32rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        body.dark-theme .table-card table thead tr {
+            background: #1e293b !important;
+        }
+        body.dark-theme .table-card {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        body.dark-theme #superActivityTableBody tr:hover {
+            background: rgba(255, 255, 255, 0.03) !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -29,7 +51,11 @@
             <nav class="nav-links">
                 <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
                 <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="reports.php" class="nav-link">📝 Kelulusan Laporan</a>
+                <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
                 <a href="users.php" class="nav-link">👥 Pengguna</a>
+                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
                 <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
@@ -82,7 +108,7 @@
                                 -</div>
                         </div>
                     </div>
-                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem;">
+                    <div class="card stat-card" style="display: flex; align-items: center; gap: 1.5rem; cursor: pointer; transition: transform 0.2s;" onclick="window.location.href='reports.php'" title="Klik untuk lihat dan luluskan laporan">
                         <div class="stat-icon"
                             style="background: #fef3c7; color: #92400e; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                             📝
@@ -99,26 +125,70 @@
 
             <!-- Profil Saya section removed as requested -->
 
+            <!-- Activity Report Table Section (Pengesahan KEW.PA-9) -->
             <section style="margin-top: 3.5rem;">
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
-                    <div class="card" style="padding: 1.5rem;">
-                        <h3 style="margin-bottom: 1rem; color: var(--text-main);">Ringkasan Data (Carta)</h3>
-                        <div style="position: relative; height: 300px; width: 100%;">
-                            <canvas id="mainChart"></canvas>
-                        </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h3
+                            style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                            <span
+                                style="width: 4px; height: 24px; background: var(--primary); border-radius: 2px; display: inline-block;"></span>
+                            Laporan Aktiviti Pengesahan KEW.PA-9
+                        </h3>
+                        <p id="activitySectionSubtitle" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+                            Laporan terkini yang menunggu semakan &amp; keputusan Ketua Jabatan.
+                        </p>
                     </div>
-                    <div class="card" style="padding: 1.5rem;">
-                        <h3 style="margin-bottom: 1rem; color: var(--text-main);">Jejak Audit Terkini</h3>
-                        <ul id="recentActivityList" style="list-style: none; padding: 0; margin: 0;">
-                            <li
-                                style="padding: 1rem 0; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; color: #64748b;">
-                                Memuatkan...</li>
-                        </ul>
-                        <div style="margin-top: 1.5rem; text-align: center;">
-                            <a href="audit_logs.php" class="btn btn-outline"
-                                style="width: 100%; display: block; font-size: 0.9rem;">Lihat Semua Jejak Audit
-                                &rarr;</a>
-                        </div>
+                    <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+                        <a href="history_reports.php" class="btn btn-outline"
+                            style="display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 600; padding: 0.55rem 1.1rem; border-radius: 8px; text-decoration: none;">
+                            <span>📜 Semua Sejarah Laporan</span>
+                            <span>&rarr;</span>
+                        </a>
+                        <a href="reports.php" class="btn btn-primary"
+                            style="display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 600; padding: 0.55rem 1.1rem; border-radius: 8px; text-decoration: none;">
+                            <span>📝 Kelulusan Laporan</span>
+                            <span>&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tabs: Menunggu vs Telah Diluluskan -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center; flex-wrap: wrap;">
+                    <button type="button" id="tabPendingBtn" onclick="switchActivityTab('pending')"
+                        style="background: var(--primary); color: white; padding: 0.5rem 1.2rem; border-radius: 20px; font-weight: 700; font-size: 0.84rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
+                        <span>⏳ Menunggu Keputusan</span>
+                        <span id="pendingBadge" style="background: rgba(255,255,255,0.25); padding: 0.1rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">0</span>
+                    </button>
+                    <button type="button" id="tabApprovedBtn" onclick="switchActivityTab('approved')"
+                        style="background: #f1f5f9; color: var(--text-main); padding: 0.5rem 1.2rem; border-radius: 20px; font-weight: 600; font-size: 0.84rem; border: 1px solid var(--border); cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
+                        <span>✅ Rekod Telah Diluluskan</span>
+                        <span id="approvedBadge" style="background: #e2e8f0; color: #334155; padding: 0.1rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">0</span>
+                    </button>
+                </div>
+
+                <div class="card table-card" style="padding: 0; overflow: hidden; border-radius: 14px;">
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="text-align: left; background: #f8fafc; border-bottom: 1px solid var(--border);">
+                                    <th style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">ID</th>
+                                    <th style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Pelapor</th>
+                                    <th style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Aset</th>
+                                    <th style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Pegawai Teknikal</th>
+                                    <th style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Tarikh Hantar</th>
+                                    <th style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Keputusan</th>
+                                    <th style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="superActivityTableBody">
+                                <tr>
+                                    <td colspan="7" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+                                        ⏳ Memuatkan aktiviti laporan...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -180,6 +250,7 @@
             loadDeanName();
             loadProfileSummary();
             fetchStats();
+            fetchActivityReports();
         });
 
         function checkPasswordAge(updatedAt) {
@@ -224,149 +295,228 @@
                     document.getElementById('totalUsers').textContent = data.data.total_users;
                     document.getElementById('totalAssets').textContent = data.data.total_assets;
                     document.getElementById('totalReports').textContent = data.data.total_reports;
-
-                    renderChart(data.data);
-                    renderRecentLogs(data.data.recent_logs);
                 }
             } catch (e) {
                 console.error("Gagal mengambil statistik:", e);
             }
         }
 
-        let mainChartInstance = null;
+        let currentActivityTab = 'pending';
+        let cachedPendingReports = [];
+        let cachedApprovedReports = [];
 
-        function renderChart(stats) {
-            const ctx = document.getElementById('mainChart').getContext('2d');
+        function switchActivityTab(tab) {
+            currentActivityTab = tab;
+            const pendingBtn = document.getElementById('tabPendingBtn');
+            const approvedBtn = document.getElementById('tabApprovedBtn');
+            const subtitle = document.getElementById('activitySectionSubtitle');
 
-            if (mainChartInstance) {
-                mainChartInstance.destroy();
-            }
-
-            const isDarkNow = document.body.classList.contains('dark-theme');
-            const textColor = isDarkNow ? '#94a3b8' : '#64748b';
-            const gridColor = isDarkNow ? '#334155' : '#f1f5f9';
-
-            const primaryGrad = ctx.createLinearGradient(0, 0, 0, 300);
-            primaryGrad.addColorStop(0, 'rgba(79, 70, 229, 0.85)');
-            primaryGrad.addColorStop(1, 'rgba(79, 70, 229, 0.05)');
-
-            const successGrad = ctx.createLinearGradient(0, 0, 0, 300);
-            successGrad.addColorStop(0, 'rgba(13, 148, 136, 0.85)');
-            successGrad.addColorStop(1, 'rgba(13, 148, 136, 0.05)');
-
-            const warningGrad = ctx.createLinearGradient(0, 0, 0, 300);
-            warningGrad.addColorStop(0, 'rgba(245, 158, 11, 0.85)');
-            warningGrad.addColorStop(1, 'rgba(245, 158, 11, 0.05)');
-
-            mainChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Pengguna', 'Aset', 'Tiket/Laporan'],
-                    datasets: [{
-                        label: 'Jumlah Keseluruhan',
-                        data: [stats.total_users, stats.total_assets, stats.total_reports],
-                        backgroundColor: [primaryGrad, successGrad, warningGrad],
-                        borderColor: ['#4f46e5', '#0d9488', '#f59e0b'],
-                        borderWidth: 2,
-                        borderRadius: 12,
-                        borderSkipped: false,
-                        barPercentage: 0.55
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: isDarkNow ? '#1e293b' : '#ffffff',
-                            titleColor: isDarkNow ? '#f8fafc' : '#0f172a',
-                            bodyColor: isDarkNow ? '#94a3b8' : '#64748b',
-                            borderColor: isDarkNow ? '#334155' : '#e2e8f0',
-                            borderWidth: 1,
-                            padding: 14,
-                            cornerRadius: 12,
-                            displayColors: true,
-                            usePointStyle: true,
-                            callbacks: {
-                                label: function (context) {
-                                    return ` ${context.dataset.label}: ${context.raw}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: textColor,
-                                font: {
-                                    family: 'Outfit, sans-serif',
-                                    size: 13,
-                                    weight: '600'
-                                }
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: gridColor,
-                                drawBorder: false
-                            },
-                            ticks: {
-                                precision: 0,
-                                color: textColor,
-                                font: {
-                                    family: 'Outfit, sans-serif',
-                                    size: 12
-                                }
-                            }
-                        }
-                    }
+            if (tab === 'pending') {
+                if (pendingBtn) {
+                    pendingBtn.style.background = 'var(--primary)';
+                    pendingBtn.style.color = '#ffffff';
+                    pendingBtn.style.fontWeight = '700';
+                    pendingBtn.style.border = 'none';
                 }
-            });
+                if (approvedBtn) {
+                    approvedBtn.style.background = '#f1f5f9';
+                    approvedBtn.style.color = 'var(--text-main)';
+                    approvedBtn.style.fontWeight = '600';
+                    approvedBtn.style.border = '1px solid var(--border)';
+                }
+                if (subtitle) {
+                    subtitle.innerText = 'Laporan terkini yang menunggu semakan & keputusan Ketua Jabatan.';
+                }
+                renderActivityTable(cachedPendingReports, 'pending');
+            } else {
+                if (approvedBtn) {
+                    approvedBtn.style.background = '#10b981';
+                    approvedBtn.style.color = '#ffffff';
+                    approvedBtn.style.fontWeight = '700';
+                    approvedBtn.style.border = 'none';
+                }
+                if (pendingBtn) {
+                    pendingBtn.style.background = '#f1f5f9';
+                    pendingBtn.style.color = 'var(--text-main)';
+                    pendingBtn.style.fontWeight = '600';
+                    pendingBtn.style.border = '1px solid var(--border)';
+                }
+                if (subtitle) {
+                    subtitle.innerText = 'Rekod 5 laporan terkini yang telah diluluskan / diberi jawapan oleh Super Admin.';
+                }
+                renderActivityTable(cachedApprovedReports, 'approved');
+            }
         }
 
-        window.updateChartsTheme = (isDark) => {
-            if (mainChartInstance) {
-                const textColor = isDark ? '#94a3b8' : '#64748b';
-                const gridColor = isDark ? '#334155' : '#f1f5f9';
+        function formatId(id) {
+            if (!id && id !== 0) return '';
+            const num = parseInt(id);
+            return isNaN(num) ? `#ICT${id}` : `#ICT${String(num).padStart(2, '0')}`;
+        }
 
-                mainChartInstance.options.scales.x.ticks.color = textColor;
-                mainChartInstance.options.scales.y.ticks.color = textColor;
-                mainChartInstance.options.scales.y.grid.color = gridColor;
+        function formatSentDate(r) {
+            const dateVal = r.updated_at || r.admin_tarikh || r.created_at;
+            if (!dateVal) return '—';
+            const d = new Date(String(dateVal).replace(' ', 'T'));
+            if (isNaN(d.getTime())) return dateVal;
+            const dateStr = d.toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' });
+            const timeStr = d.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', hour12: true });
+            return `<div style="font-weight:600; color:var(--text-main); font-size:0.85rem;">${dateStr}</div><div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">🕒 ${timeStr}</div>`;
+        }
 
-                mainChartInstance.options.plugins.tooltip.backgroundColor = isDark ? '#1e293b' : '#ffffff';
-                mainChartInstance.options.plugins.tooltip.titleColor = isDark ? '#f8fafc' : '#0f172a';
-                mainChartInstance.options.plugins.tooltip.bodyColor = isDark ? '#94a3b8' : '#64748b';
-                mainChartInstance.options.plugins.tooltip.borderColor = isDark ? '#334155' : '#e2e8f0';
+        function renderActivityTable(reports, tabType) {
+            const tbody = document.getElementById('superActivityTableBody');
+            if (!tbody) return;
 
-                mainChartInstance.update();
-            }
-        };
+            const displayReports = reports.slice(0, 5);
 
-        function renderRecentLogs(logs) {
-            const list = document.getElementById('recentActivityList');
-            list.innerHTML = '';
-
-            if (!logs || logs.length === 0) {
-                list.innerHTML = '<li style="padding: 1rem 0; font-size: 0.9rem; color: #64748b;">Tiada aktiviti.</li>';
+            if (displayReports.length === 0) {
+                if (tabType === 'pending') {
+                    tbody.innerHTML = '<tr><td colspan="7" style="padding: 3rem; text-align: center; color: var(--text-muted); font-style: italic;">🎉 Tiada laporan menunggu pengesahan. Semua laporan telah selesai diambil tindakan oleh Super Admin.</td></tr>';
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" style="padding: 3rem; text-align: center; color: var(--text-muted); font-style: italic;">Belum ada rekod kelulusan laporan. Laporan yang telah diberi keputusan akan dipaparkan di sini.</td></tr>';
+                }
                 return;
             }
 
-            logs.forEach(log => {
-                const li = document.createElement('li');
-                li.style.cssText = 'padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem;';
-                li.innerHTML = `
-                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 0.2rem;">${log.action}</div>
-                    <div style="color: #64748b; font-size: 0.8rem;">Oleh <strong>${log.name || 'System'}</strong> pada ${new Date(log.created_at).toLocaleString('ms-MY')}</div>
+            tbody.innerHTML = '';
+            displayReports.forEach(r => {
+                const hasDecision = r.keputusan && r.keputusan !== 'Pending';
+                let badge = '';
+                if (!hasDecision) {
+                    badge = '<span class="status-pill" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a;">⏳ Menunggu Keputusan</span>';
+                } else if (r.keputusan === 'Diluluskan') {
+                    badge = '<span class="status-pill" style="background:#dcfce7; color:#166534; border:1px solid #bbf7d0;">✅ Diluluskan</span>';
+                } else if (r.keputusan === 'Tidak Diluluskan') {
+                    badge = '<span class="status-pill" style="background:#fee2e2; color:#991b1b; border:1px solid #fecaca;">❌ Tidak Diluluskan</span>';
+                } else if (r.keputusan === 'Syor Dilupuskan') {
+                    badge = '<span class="status-pill" style="background:#e2e8f0; color:#334155; border:1px solid #cbd5e1;">🗂️ Syor Dilupuskan</span>';
+                }
+
+                let actionBtn = '';
+                if (tabType === 'pending') {
+                    actionBtn = `
+                        <a href="reports.php?id=${r.id}" class="btn btn-primary" style="padding: 0.45rem 1rem; font-size: 0.82rem; font-weight: 700; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;" title="Buka dan buat keputusan KEW.PA-9">
+                            ⚖️ Keputusan ›
+                        </a>
+                    `;
+                } else {
+                    actionBtn = `
+                        <a href="history_reports.php?id=${r.id}" class="btn btn-outline" style="padding: 0.45rem 1rem; font-size: 0.82rem; font-weight: 600; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; border-color: #10b981; color: #10b981;" title="Lihat Rekod Kelulusan">
+                            📃 Butiran ›
+                        </a>
+                    `;
+                }
+
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid var(--border)';
+                tr.style.transition = 'background 0.15s ease';
+                tr.onmouseover = () => tr.style.background = 'rgba(0,0,0,0.015)';
+                tr.onmouseout = () => tr.style.background = 'transparent';
+
+                tr.innerHTML = `
+                    <td style="padding: 1.15rem 1.5rem; font-weight: 700; color: var(--primary); font-size: 0.9rem;">
+                        ${formatId(r.id)}
+                    </td>
+                    <td style="padding: 1.15rem 1.5rem;">
+                        <div style="font-weight: 600; color: var(--text-main); font-size: 0.9rem;">${r.nama_pelapor || r.full_name || '-'}</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">${r.department || r.location || '-'}</div>
+                    </td>
+                    <td style="padding: 1.15rem 1.5rem;">
+                        <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${r.jenis_aset || '-'}</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); font-family: monospace;">S/N: ${r.nombor_siri || '-'}</div>
+                    </td>
+                    <td style="padding: 1.15rem 1.5rem;">
+                        <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${r.admin_name_jawatan || 'Admin ICT'}</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">${r.admin_jawatan || 'Pegawai Teknikal'}</div>
+                    </td>
+                    <td style="padding: 1.15rem 1.5rem; white-space: nowrap;">
+                        ${formatSentDate(r)}
+                    </td>
+                    <td style="padding: 1.15rem 1.5rem; white-space: nowrap;">
+                        ${badge}
+                    </td>
+                    <td style="padding: 1.15rem 1.5rem; text-align: center; white-space: nowrap;">
+                        ${actionBtn}
+                    </td>
                 `;
-                list.appendChild(li);
+                tbody.appendChild(tr);
             });
+        }
+
+        async function fetchActivityReports() {
+            const tbody = document.getElementById('superActivityTableBody');
+            if (!tbody) return;
+
+            try {
+                const res = await fetch("../api/admin/admin_get_reports.php?_t=" + Date.now());
+                const result = await res.json();
+
+                if (result.status !== 'success' || !Array.isArray(result.data)) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="padding: 2.5rem; text-align: center; color: var(--danger);">❌ Gagal memuatkan laporan aktiviti.</td></tr>';
+                    return;
+                }
+
+                const all = result.data;
+
+                // 1. Tapis laporan yang MENUNGGU keputusan
+                cachedPendingReports = all.filter(r => {
+                    const hasDecision = r.keputusan && r.keputusan !== 'Pending';
+                    return !hasDecision;
+                });
+
+                // 2. Tapis laporan yang TELAH DIBERI KEPUTUSAN (Diluluskan, dsb)
+                cachedApprovedReports = all.filter(r => {
+                    return r.keputusan && r.keputusan !== 'Pending';
+                });
+
+                // Helper sorting: Bahagian 2 terisi di atas, kemudian tarikh terkini
+                const sortReports = (list) => {
+                    return list.slice().sort((a, b) => {
+                        const aHasAdmin = !!(a.admin_name_jawatan || a.admin_tarikh || a.syor_ulasan) ? 1 : 0;
+                        const bHasAdmin = !!(b.admin_name_jawatan || b.admin_tarikh || b.syor_ulasan) ? 1 : 0;
+                        if (aHasAdmin !== bHasAdmin) {
+                            return bHasAdmin - aHasAdmin;
+                        }
+
+                        const getTimeVal = (item) => {
+                            if (item.updated_at) {
+                                const t = new Date(String(item.updated_at).replace(' ', 'T')).getTime();
+                                if (!isNaN(t)) return t;
+                            }
+                            if (item.admin_tarikh) {
+                                const t = new Date(String(item.admin_tarikh)).getTime();
+                                if (!isNaN(t)) return t;
+                            }
+                            if (item.tarikh_kelulusan) {
+                                const t = new Date(String(item.tarikh_kelulusan)).getTime();
+                                if (!isNaN(t)) return t;
+                            }
+                            return parseInt(item.id) || 0;
+                        };
+
+                        const timeDiff = getTimeVal(b) - getTimeVal(a);
+                        if (timeDiff !== 0) return timeDiff;
+                        return (parseInt(b.id) || 0) - (parseInt(a.id) || 0);
+                    });
+                };
+
+                cachedPendingReports = sortReports(cachedPendingReports);
+                cachedApprovedReports = sortReports(cachedApprovedReports);
+
+                // Kemas kini badges
+                const pendingBadge = document.getElementById('pendingBadge');
+                const approvedBadge = document.getElementById('approvedBadge');
+                if (pendingBadge) pendingBadge.innerText = cachedPendingReports.length;
+                if (approvedBadge) approvedBadge.innerText = cachedApprovedReports.length;
+
+                // Paparkan mengikut tab aktif
+                switchActivityTab(currentActivityTab);
+
+            } catch (err) {
+                console.error("Ralat memuatkan laporan aktiviti superadmin:", err);
+                tbody.innerHTML = `<tr><td colspan="7" style="padding: 2.5rem; text-align: center; color: var(--danger);">❌ Ralat sambungan: ${err.message}</td></tr>`;
+            }
         }
     </script>
 </body>

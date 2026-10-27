@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengurusan Laporan - eICT Desk</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=4">
     <style>
         @media print {
             @page {
@@ -135,6 +135,41 @@
             min-width: 240px;
             flex-shrink: 0;
         }
+
+        .readonly-sec {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 1.25rem;
+        }
+        .form-control-readonly,
+        .readonly-sec input.form-control,
+        .readonly-sec textarea.form-control {
+            background-color: #f1f5f9 !important;
+            color: #475569 !important;
+            border: 1.5px solid #cbd5e1 !important;
+            cursor: not-allowed !important;
+            font-weight: 600;
+            user-select: none;
+        }
+        .form-control-readonly:focus,
+        .readonly-sec input.form-control:focus,
+        .readonly-sec textarea.form-control:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.dark-theme .readonly-sec {
+            background: rgba(30, 41, 59, 0.45) !important;
+            border-color: #334155 !important;
+        }
+        body.dark-theme .form-control-readonly,
+        body.dark-theme .readonly-sec input.form-control,
+        body.dark-theme .readonly-sec textarea.form-control {
+            background-color: #0f172a !important;
+            color: #94a3b8 !important;
+            border-color: #334155 !important;
+        }
     </style>
     <script src="../assets/js/global.js?v=12"></script>
 </head>
@@ -155,9 +190,7 @@
                 <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
                 <a href="profile.php" class="nav-link">👤 Profil Saya</a>
                 <a href="report_management.php" class="nav-link active">📝 Pengurusan Laporan</a>
-                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
+                <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -181,14 +214,7 @@
             <!-- Table -->
             <div class="card table-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05);">
-                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">Senarai Laporan</h3>
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin: 0;">KEPUTUSAN LAPORAN:</label>
-                        <select id="statusFilter" class="form-control" style="width: auto; min-width: 200px;" onchange="filterReports()">
-                            <option value="PendingToday" selected>Belum Selesai</option>
-                            <option value="Pending">Semua Laporan</option>
-                        </select>
-                    </div>
+                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">Senarai Laporan Belum Selesai</h3>
                 </div>
                 <div class="table-container">
                     <table style="width: 100%; border-collapse: collapse;">
@@ -197,16 +223,15 @@
                                 <th style="padding: 1rem;">ID</th>
                                 <th style="padding: 1rem;">Maklumat Aset</th>
                                 <th style="padding: 1rem;">Pelapor</th>
-                                <th style="padding: 1rem; white-space: nowrap;">Tarikh Aduan</th>
-                                <th style="padding: 1rem; white-space: nowrap;">Tarikh Siap</th>
-                                <th style="padding: 1rem; white-space: nowrap;">Pematuhan ISO</th>
+                                <th style="padding: 1rem; white-space: nowrap;">Tarikh & Masa Aduan</th>
+                                <th style="padding: 1rem; white-space: nowrap;">Proses Semasa</th>
                                 <th style="padding: 1rem; text-align: center; white-space: nowrap;">Keputusan</th>
                                 <th style="padding: 1rem; text-align: center; white-space: nowrap;">Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="reportTableBody">
                             <tr>
-                                <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                                <td colspan="7" style="padding: 2rem; text-align: center; color: var(--text-muted);">
                                     Memuatkan laporan...</td>
                             </tr>
                         </tbody>
@@ -229,7 +254,7 @@
     <div id="viewModal" class="modal">
         <div class="modal-content" style="max-width: 860px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2>Butiran Laporan KEW.PA-9</h2>
+                <h2 id="modalReportTitle">Butiran Laporan KEW.PA-9</h2>
                 <button onclick="closeModal()"
                     style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
@@ -240,49 +265,65 @@
                 <input type="hidden" id="p_created_at" name="created_at">
 
                 <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                    <!-- Bahagian I -->
-                    <div>
-                        <h4
-                            style="color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">
-                            Bahagian I: Maklumat Pengadu</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="form-group"><label>Jenis Aset</label><input type="text" id="v_jenis"
-                                    class="form-control" readonly></div>
-                            <div class="form-group"><label>No. Siri Pendaftaran</label><input type="text" id="v_siri"
-                                    class="form-control" readonly></div>
-                            <div class="form-group"><label>Pengguna Terakhir</label><input type="text" id="v_pengguna"
-                                    class="form-control" readonly></div>
-                            <div class="form-group"><label>Tarikh Kerosakan</label><input type="text"
-                                    id="v_tarikh_rosak" class="form-control" readonly></div>
-                            <div class="form-group"><label>Nama Pelapor & Jawatan</label><input type="text"
-                                    id="v_nama_jawatan" class="form-control" readonly></div>
-                            <div class="form-group"><label>Lokasi</label><input type="text" id="v_lokasi"
-                                    class="form-control" readonly></div>
+                    <!-- Bahagian I (Maklumat Pengadu - Read-only) -->
+                    <div class="readonly-sec">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 0.5rem;">
+                            <h4 style="margin: 0; color: var(--primary); font-size: 1rem;">Bahagian I: Maklumat Pengadu</h4>
                         </div>
-                        <div class="form-group"><label>Perihal Kerosakan</label><textarea id="v_perihal"
-                                class="form-control" rows="3" readonly></textarea></div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Jenis Aset</label>
+                                <input type="text" id="v_jenis" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">No. Siri Pendaftaran</label>
+                                <input type="text" id="v_siri" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Pengguna Terakhir</label>
+                                <input type="text" id="v_pengguna" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tarikh Kerosakan</label>
+                                <input type="text" id="v_tarikh_rosak" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Nama Pelapor & Jawatan</label>
+                                <input type="text" id="v_nama_jawatan" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Lokasi</label>
+                                <input type="text" id="v_lokasi" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 0.75rem;">
+                            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Perihal Kerosakan</label>
+                            <textarea id="v_perihal" readonly tabindex="-1" class="form-control form-control-readonly" rows="3"></textarea>
+                        </div>
                     </div>
 
-                    <!-- Bahagian II -->
-                    <div>
-                        <h4
-                            style="color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">
-                            Bahagian II: Penemuan Teknikal</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="form-group"><label>Kos Penyelenggaraan Terdahulu (RM)</label><input
-                                    type="number" step="0.01" name="kos_penyelenggaraan_dahulu" id="v_kos_dahulu"
-                                    class="form-control"></div>
-                            <div class="form-group"><label>Anggaran Kos Penyelenggaraan (RM)</label><input type="number"
-                                    step="0.01" name="anggaran_kos" id="v_anggaran_kos" class="form-control"></div>
+                    <!-- Lampiran Spesifikasi Aset Yang Rosak -->
+                    <div id="v_spec_container" style="background: rgba(241, 245, 249, 0.7); border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 1.25rem;">
+                        <h4 style="color: var(--primary); margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem;">
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                💻 Lampiran Spesifikasi Aset Yang Rosak
+                            </span>
+                            <span id="v_spec_status_badge" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 700;"></span>
+                        </h4>
+                        <div id="v_spec_body">
+                            <!-- Populated via renderAttachedSpec -->
                         </div>
-                        <div class="form-group"><label>Syor Dan Ulasan</label><textarea name="syor_ulasan" id="v_syor"
-                                class="form-control" rows="3"></textarea></div>
-                        <div class="form-group"><label>Nama Pegawai Teknikal</label><input type="text"
-                                name="pegawai_teknikal_nama" id="v_admin_nama" class="form-control"></div>
-                        <div class="form-group"><label>Jawatan Pegawai Teknikal</label><input type="text"
-                                name="pegawai_teknikal_jawatan" id="v_admin_jawatan" class="form-control"></div>
-                        <div class="form-group" id="tarikh_siap_group" style="display: none;"><label>Tarikh Siap (Admin
-                                ICT)</label><input type="text" id="v_admin_tarikh" class="form-control" readonly></div>
+                    </div>
+
+                    <!-- Gambar / Dokumen Lampiran Kerosakan (Jika Ada) -->
+                    <div id="v_images_container" style="background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem;">
+                        <h4 style="color: var(--text-main); margin-bottom: 0.75rem; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between;">
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">📸 Gambar / Bukti Kerosakan Aset</span>
+                            <span id="v_images_count_badge" style="font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 600; background: #e2e8f0; color: #475569;"></span>
+                        </h4>
+                        <div id="v_images_body">
+                            <!-- Populated via renderReportImages -->
+                        </div>
                     </div>
 
                     <!-- Proses Semasa (Web Only - Tidak termasuk dalam cetakan) -->
@@ -290,9 +331,7 @@
                         style="background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(168,85,247,0.05)); border: 1px solid rgba(99,102,241,0.2); border-radius: 12px; padding: 1.25rem;">
                         <h4
                             style="color: #6366f1; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
-                            🔄 Proses Semasa <span
-                                style="font-size: 0.7rem; background: #6366f1; color: white; padding: 0.15rem 0.5rem; border-radius: 20px; font-weight: 600;">WEB
-                                SAHAJA</span>
+                            🔄 Proses Semasa
                         </h4>
                         <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem;">Maklumat ini
                             <strong>tidak akan dicetak</strong> dalam borang KEW.PA-9. Ia hanya untuk makluman staff
@@ -305,7 +344,7 @@
                                     <option value="Sedang Dibaikpulih">🔧 Sedang Dibaikpulih</option>
                                     <option value="Tunggu Panel / Alat Ganti">⏳ Tunggu Panel / Alat Ganti</option>
                                     <option value="Dihantar ke Panel Lantikan">🚗 Dihantar ke Panel Lantikan</option>
-                                    <option value="Siap - Sedia Diambil">✅ Siap - Sedia Diambil</option>
+                                    <option value="Selesai Dibaiki">✅ Selesai Dibaiki (Sedia Diambil)</option>
                                 </select>
                             </div>
                             <button type="button" onclick="saveProsesSemasa()" class="btn btn-primary"
@@ -315,33 +354,63 @@
                         </div>
                     </div>
 
-                    <!-- Bahagian III -->
+                    <!-- Bahagian II -->
                     <div>
                         <h4
                             style="color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">
-                            Bahagian III: Keputusan</h4>
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            Bahagian II: Penemuan Teknikal</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group"><label>Kos Penyelenggaraan Terdahulu (RM) <span style="color:var(--danger)">*</span></label><input
+                                    type="number" step="0.01" name="kos_penyelenggaraan_dahulu" id="v_kos_dahulu"
+                                    class="form-control" required placeholder="0.00"></div>
+                            <div class="form-group"><label>Anggaran Kos Penyelenggaraan (RM) <span style="color:var(--danger)">*</span></label><input type="number"
+                                    step="0.01" name="anggaran_kos" id="v_anggaran_kos" class="form-control" required placeholder="0.00"></div>
+                        </div>
+                        <div class="form-group"><label>Syor Dan Ulasan <span style="color:var(--danger)">*</span></label><textarea name="syor_ulasan" id="v_syor"
+                                class="form-control" rows="3" required placeholder="Masukkan syor dan ulasan teknikal..."></textarea></div>
+                        <div class="form-group"><label>Nama Pegawai Teknikal <span style="color:var(--danger)">*</span></label><input type="text"
+                                name="pegawai_teknikal_nama" id="v_admin_nama" class="form-control" required placeholder="Nama pegawai..."></div>
+                        <div class="form-group"><label>Jawatan Pegawai Teknikal <span style="color:var(--danger)">*</span></label><input type="text"
+                                name="pegawai_teknikal_jawatan" id="v_admin_jawatan" class="form-control" required placeholder="Jawatan pegawai..."></div>
+                        <div class="form-group" id="tarikh_siap_group" style="display: none;"><label>Tarikh Siap (Admin
+                                ICT)</label><input type="text" id="v_admin_tarikh" class="form-control" readonly></div>
+                    </div>
+
+                    <!-- Bahagian III (Hanya untuk Super Admin - Read-only di Portal Admin) -->
+                    <div class="readonly-sec" style="border: 1.5px dashed #cbd5e1; background: #f8fafc; border-radius: 12px; padding: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <h4 style="margin: 0; color: #475569; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;">
+                                🔒 Bahagian III: Keputusan Ketua Jabatan
+                            </h4>
+                            <span id="v_kep_badge" style="font-size: 0.75rem; padding: 0.25rem 0.65rem; border-radius: 999px; font-weight: 700; background: #fef3c7; color: #92400e;">
+                                ⏳ Menunggu Keputusan Super Admin
+                            </span>
+                        </div>
+                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem;">
+                            Bahagian ini adalah bidang kuasa <strong>Super Admin (Ketua Jabatan)</strong>. Pegawai ICT/Admin hanya mengisi Bahagian II dan proses semasa.
+                        </p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                             <div class="form-group">
-                                <label>Keputusan</label>
-                                <select name="keputusan" id="v_keputusan" class="form-control">
-                                    <option value="Diluluskan">Diluluskan</option>
-                                    <option value="Tidak Diluluskan">Tidak Diluluskan</option>
-                                    <option value="Syor Dilupuskan">Syor Dilupuskan</option>
-                                </select>
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Keputusan</label>
+                                <input type="text" id="v_keputusan" class="form-control form-control-readonly" readonly tabindex="-1" placeholder="Belum diputuskan">
                             </div>
-                            <div class="form-group"><label>Nama Ketua</label><input type="text" name="keputusan_nama"
-                                    id="v_kep_nama" class="form-control"></div>
-                            <div class="form-group"><label>Tarikh Keputusan</label><input type="date"
-                                    name="keputusan_tarikh" id="v_kep_tarikh" class="form-control"></div>
-                            <div class="form-group" id="iso_badge_group" style="display: none;">
-                                <label>Pematuhan ISO (&lt;14 hari)</label>
-                                <div id="v_iso_badge" style="padding-top: 0.5rem;"></div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tarikh Keputusan</label>
+                                <input type="text" id="v_kep_tarikh" class="form-control form-control-readonly" readonly tabindex="-1" placeholder="—">
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Nama Pegawai Pelulus (Ketua Jabatan)</label>
+                                <input type="text" id="v_kep_nama" class="form-control form-control-readonly" readonly tabindex="-1" placeholder="Belum ditandatangani">
+                            </div>
+                            <div class="form-group" id="iso_badge_group" style="display: none; grid-column: 1 / -1;">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Pematuhan ISO (&lt;14 hari)</label>
+                                <div id="v_iso_badge" style="padding-top: 0.3rem;"></div>
                             </div>
                         </div>
                     </div>
 
                     <div style="display: flex; gap: 1rem;">
-                        <button type="submit" class="btn btn-primary" style="flex: 1;">💾 Simpan & Selesaikan</button>
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">💾 Simpan Penemuan Teknikal (Bahagian II)</button>
                         <button type="button" onclick="printKEWPA9()" class="btn btn-secondary" style="flex: 1;">🖨️
                             Cetak KEW.PA-9</button>
                         <button type="button" onclick="closeModal()" class="btn btn-secondary"
@@ -504,12 +573,21 @@
                 const result = await res.json();
                 if (result.status === 'success') {
                     allReports = result.data;
-
                     filterReports();
+
+                    // Shortcut daripada dashboard: Jika ada parameter ?id=, buka modal laporan berkenaan secara automatik
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const targetId = urlParams.get('id');
+                    if (targetId) {
+                        const targetReport = allReports.find(r => parseInt(r.id) === parseInt(targetId));
+                        if (targetReport) {
+                            openReport(targetReport);
+                        }
+                    }
                 } else {
                     console.error('API error:', result.message);
                     document.getElementById('reportTableBody').innerHTML =
-                        '<tr><td colspan="6" style="padding: 2rem; text-align: center; color: var(--danger);">Ralat: ' + result.message + '</td></tr>';
+                        '<tr><td colspan="7" style="padding: 2rem; text-align: center; color: var(--danger);">Ralat: ' + result.message + '</td></tr>';
                 }
             } catch (err) { console.error(err); }
         }
@@ -539,10 +617,17 @@
             ">${pass ? '✅' : '⚠️'} ${days} hari</span>`;
         }
 
+        function formatReportId(id) {
+            if (!id && id !== 0) return '';
+            const num = parseInt(id);
+            if (isNaN(num)) return `#ICT${id}`;
+            return `#ICT${String(num).padStart(2, '0')}`;
+        }
+
         function renderReports() {
             const tbody = document.getElementById('reportTableBody');
             if (!filteredData.length) {
-                tbody.innerHTML = '<tr><td colspan="8" style="padding: 2rem; text-align: center; color: var(--text-muted);">Tiada laporan dijumpai.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="padding: 2rem; text-align: center; color: var(--text-muted);">Tiada laporan dijumpai.</td></tr>';
                 updatePagination(0);
                 return;
             }
@@ -553,14 +638,27 @@
 
             tbody.innerHTML = pageItems.map(r => {
                 const badgeClass = r.keputusan === 'Syor Dilupuskan' ? 'badge-disposed' : r.status === 'Resolved' ? 'badge-resolved' : r.status === 'Rejected' ? 'badge-rejected' : 'badge-pending';
-                const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected';
-                const tarikhSiap = (isCompleted && r.admin_tarikh)
-                    ? new Date(r.admin_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })
-                    : '<span style="color:var(--text-muted);font-size:0.85rem;">Belum Diproses</span>';
+                
+                const prosesIcons = {
+                    'Diterima': '📥 Diterima',
+                    'Sedang Dibaikpulih': '🔧 Sedang Dibaikpulih',
+                    'Tunggu Panel / Alat Ganti': '⏳ Tunggu Panel / Alat Ganti',
+                    'Dihantar ke Panel Lantikan': '🚗 Dihantar ke Panel Lantikan',
+                    'Selesai Dibaiki': '✅ Selesai Dibaiki',
+                    'Siap - Sedia Diambil': '✅ Selesai Dibaiki'
+                };
+                const prosesBadge = r.proses_semasa
+                    ? `<span style="display: inline-flex; align-items: center; padding: 0.3rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600; background: rgba(99,102,241,0.1); color: #4f46e5; border: 1px solid rgba(99,102,241,0.25); white-space: nowrap;">${prosesIcons[r.proses_semasa] || r.proses_semasa}</span>`
+                    : '<span style="color:var(--text-muted);font-size:0.85rem;">— Tiada Kemas Kini —</span>';
+
+                const d = r.created_at ? new Date(r.created_at.replace(' ', 'T')) : null;
+                const tarikhMasaStr = (d && !isNaN(d.getTime()))
+                    ? `<div><span style="font-weight: 600; color: var(--text-main);">${d.toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</span><div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">🕒 ${d.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', hour12: true })}</div></div>`
+                    : '<span style="color:var(--text-muted);">—</span>';
 
                 return `
                 <tr style="border-bottom: 1px solid var(--border);">
-                    <td style="padding: 1rem; font-weight: 600; color: var(--primary);">#${r.id}</td>
+                    <td style="padding: 1rem; font-weight: 600; color: var(--primary);">${formatReportId(r.id)}</td>
                     <td style="padding: 1rem;">
                         <div style="font-weight: 700;">${r.jenis_aset}</div>
                         <div style="font-size: 0.8rem; color: var(--text-muted);">${r.nombor_siri}</div>
@@ -569,12 +667,11 @@
                         <div style="font-weight: 600;">${r.nama_pelapor || r.full_name || '-'}</div>
                         <div style="font-size: 0.8rem; color: var(--text-muted);">${r.location || '-'}</div>
                     </td>
-                    <td style="padding: 1rem; font-size: 0.9rem; color: var(--text-muted); white-space: nowrap;">${new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                    <td style="padding: 1rem; white-space: nowrap;">${tarikhSiap}</td>
-                    <td style="padding: 1rem; white-space: nowrap;">${isobadge(r)}</td>
+                    <td style="padding: 1rem; white-space: nowrap;">${tarikhMasaStr}</td>
+                    <td style="padding: 1rem; white-space: nowrap;">${prosesBadge}</td>
                     <td style="padding: 1rem; text-align: center; white-space: nowrap;"><span class="badge ${badgeClass}" style="white-space: nowrap;">${r.keputusan === 'Syor Dilupuskan' ? 'Syor Dilupuskan' : r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
                     <td style="padding: 1rem; text-align: center; white-space: nowrap;">
-                        <button onclick='openReport(${JSON.stringify(r).replace(/'/g, "&#39;")})' class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📋 Urus</button>
+                        <button type="button" onclick="openReport(${r.id})" class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📋 Urus</button>
                     </td>
                 </tr>`;
             }).join('');
@@ -608,57 +705,81 @@
         }
 
         function filterReports() {
-            const s = document.getElementById('statusFilter').value;
-
-            // Get today's date string for comparison (YYYY-MM-DD)
-            const today = new Date();
-            const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-
+            // Pengurusan Laporan hanya memaparkan laporan yang berstatus Belum Selesai / Pending
             filteredData = allReports.filter(r => {
-                let statusMatch = true;
-                if (s === 'PendingToday') {
-                    // Belum Selesai (Terkini) — only today's pending reports
-                    const createdDate = r.created_at ? r.created_at.substring(0, 10) : '';
-                    statusMatch = r.status === 'Pending' && r.keputusan !== 'Syor Dilupuskan' && createdDate === todayStr;
-                } else if (s === 'Pending') {
-                    // Semua Belum Selesai — all pending reports regardless of date
-                    statusMatch = r.status === 'Pending' && r.keputusan !== 'Syor Dilupuskan';
-                } else if (s === 'Syor Dilupuskan') {
-                    statusMatch = r.keputusan === 'Syor Dilupuskan';
-                } else if (s !== 'all') {
-                    statusMatch = r.status === s && r.keputusan !== 'Syor Dilupuskan';
-                }
-
-                return statusMatch;
+                const isCompleted = r.status === 'Completed' || 
+                                    r.status === 'Resolved' || 
+                                    r.status === 'Rejected' || 
+                                    r.keputusan === 'Syor Dilupuskan' || 
+                                    r.keputusan === 'Diluluskan' || 
+                                    r.keputusan === 'Tidak Diluluskan';
+                return !isCompleted;
             });
             currentPage = 1;
             renderReports();
         }
 
         function resetFilters() {
-            document.getElementById('statusFilter').value = "PendingToday";
             filterReports();
         }
 
-        function openReport(r) {
+        function openReport(reportOrId) {
+            let r = reportOrId;
+            if (typeof reportOrId === 'number' || typeof reportOrId === 'string') {
+                r = allReports.find(item => parseInt(item.id) === parseInt(reportOrId));
+            }
+            if (!r) {
+                console.error('Laporan tidak dijumpai:', reportOrId);
+                return;
+            }
+
+            const titleEl = document.getElementById('modalReportTitle');
+            if (titleEl) titleEl.textContent = 'Urus Laporan KEW.PA-9 (' + formatReportId(r.id) + ')';
+
             document.getElementById('p_id').value = r.id;
             document.getElementById('p_reporter').value = r.nama_pelapor || r.full_name || '';
             document.getElementById('p_created_at').value = r.created_at;
-            document.getElementById('v_jenis').value = r.jenis_aset;
-            document.getElementById('v_siri').value = r.nombor_siri;
-            document.getElementById('v_pengguna').value = r.pengguna_terakhir;
-            document.getElementById('v_tarikh_rosak').value = r.tarikh_kerosakan;
-            document.getElementById('v_perihal').value = r.perihal_kerosakan;
+            document.getElementById('v_jenis').value = r.jenis_aset || '';
+            document.getElementById('v_siri').value = r.nombor_siri || '';
+            document.getElementById('v_pengguna').value = r.pengguna_terakhir || '';
+            document.getElementById('v_tarikh_rosak').value = r.tarikh_kerosakan || '';
+            document.getElementById('v_perihal').value = r.perihal_kerosakan || '';
             document.getElementById('v_nama_jawatan').value = (r.nama_pelapor || r.full_name || '') + ' / ' + (r.jawatan_pelapor || '');
             document.getElementById('v_lokasi').value = r.location || '-';
-            document.getElementById('v_kos_dahulu').value = r.kos_penyelenggaraan_dahulu || '';
-            document.getElementById('v_anggaran_kos').value = r.anggaran_kos || '';
+
+            // Papar Spesifikasi Aset dan Gambar Lampiran
+            renderAttachedSpec(r.lampiran_spec);
+            renderReportImages(r.images);
+
+            document.getElementById('v_kos_dahulu').value = r.kos_penyelenggaraan_dahulu !== null && r.kos_penyelenggaraan_dahulu !== undefined ? r.kos_penyelenggaraan_dahulu : '';
+            document.getElementById('v_anggaran_kos').value = r.anggaran_kos !== null && r.anggaran_kos !== undefined ? r.anggaran_kos : '';
             document.getElementById('v_syor').value = r.syor_ulasan || '';
-            document.getElementById('v_admin_nama').value = r.admin_name_jawatan || '';
+            const currentUser = JSON.parse(sessionStorage.getItem('user') || '{}');
+            document.getElementById('v_admin_nama').value = r.admin_name_jawatan || currentUser.full_name || '';
             document.getElementById('v_admin_jawatan').value = r.admin_jawatan || '';
-            document.getElementById('v_keputusan').value = r.keputusan || 'Diluluskan';
-            document.getElementById('v_kep_nama').value = r.keputusan_nama || '';
-            document.getElementById('v_kep_tarikh').value = r.keputusan_tarikh || '';
+
+            // Bahagian III Read-Only Display
+            const hasDecision = r.keputusan && r.keputusan !== 'Pending';
+            const kepBadgeEl = document.getElementById('v_kep_badge');
+            if (hasDecision) {
+                document.getElementById('v_keputusan').value = r.keputusan;
+                document.getElementById('v_kep_nama').value = r.keputusan_nama || '-';
+                document.getElementById('v_kep_tarikh').value = r.keputusan_tarikh ? new Date(r.keputusan_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' }) : '-';
+                if (kepBadgeEl) {
+                    kepBadgeEl.textContent = '✅ Keputusan: ' + r.keputusan;
+                    kepBadgeEl.style.background = (r.keputusan === 'Diluluskan') ? '#dcfce7' : ((r.keputusan === 'Tidak Diluluskan') ? '#fee2e2' : '#e2e8f0');
+                    kepBadgeEl.style.color = (r.keputusan === 'Diluluskan') ? '#166534' : ((r.keputusan === 'Tidak Diluluskan') ? '#991b1b' : '#334155');
+                }
+            } else {
+                document.getElementById('v_keputusan').value = 'Menunggu Kelulusan Super Admin';
+                document.getElementById('v_kep_nama').value = 'Belum ditandatangani';
+                document.getElementById('v_kep_tarikh').value = '—';
+                if (kepBadgeEl) {
+                    kepBadgeEl.textContent = '⏳ Menunggu Keputusan Super Admin';
+                    kepBadgeEl.style.background = '#fef3c7';
+                    kepBadgeEl.style.color = '#92400e';
+                }
+            }
 
             // Proses Semasa — sentiasa boleh dikemaskini
             const prosesEl = document.getElementById('v_proses_semasa');
@@ -699,7 +820,14 @@
 
                 if (saveBtn) saveBtn.style.display = 'block';
                 document.querySelectorAll('#processForm input, #processForm textarea, #processForm select').forEach(el => {
-                    if (el.id !== 'p_id') el.disabled = false;
+                    if (el.id !== 'p_id') {
+                        if (el.closest('.readonly-sec') || el.classList.contains('form-control-readonly')) {
+                            el.readOnly = true;
+                            el.disabled = false;
+                        } else {
+                            el.disabled = false;
+                        }
+                    }
                 });
             }
 
@@ -708,6 +836,113 @@
 
         function closeModal() {
             document.getElementById('viewModal').style.display = 'none';
+        }
+
+        function renderAttachedSpec(specData) {
+            const bodyEl = document.getElementById('v_spec_body');
+            const badgeEl = document.getElementById('v_spec_status_badge');
+            if (!bodyEl) return;
+
+            let spec = null;
+            if (typeof specData === 'string') {
+                let cleanStr = specData.trim();
+                if (cleanStr.includes('&quot;') || cleanStr.includes('&#039;') || cleanStr.includes('&amp;')) {
+                    const txt = document.createElement('textarea');
+                    txt.innerHTML = cleanStr;
+                    cleanStr = txt.value;
+                }
+                if (cleanStr.startsWith('{')) {
+                    try { spec = JSON.parse(cleanStr); } catch (e) { spec = null; }
+                }
+            } else if (typeof specData === 'object' && specData !== null) {
+                spec = specData;
+            }
+
+            if (!spec) {
+                if (badgeEl) {
+                    badgeEl.textContent = 'Tiada Lampiran';
+                    badgeEl.style.background = '#f1f5f9';
+                    badgeEl.style.color = '#64748b';
+                    badgeEl.style.border = '1px solid #cbd5e1';
+                }
+                bodyEl.innerHTML = `
+                    <div style="padding:0.75rem 1rem;color:var(--text-muted);font-style:italic;font-size:0.83rem;background:#ffffff;border-radius:8px;border:1px dashed var(--border);">
+                        ℹ️ Tiada spesifikasi aset dilampirkan bagi aduan ini.
+                    </div>`;
+                return;
+            }
+
+            if (badgeEl) {
+                badgeEl.textContent = '✅ Spesifikasi Dilampirkan';
+                badgeEl.style.background = 'rgba(16, 185, 129, 0.12)';
+                badgeEl.style.color = '#059669';
+                badgeEl.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+            }
+
+            const items = [
+                { label: 'Model Komputer / Peranti', val: spec.model_komputer },
+                { label: 'No. Siri Pendaftaran', val: spec.no_siri_pendaftaran },
+                { label: 'No. Siri Komputer (S/N)', val: spec.serial_number },
+                { label: 'Model & No. Siri Monitor', val: spec.model_monitor ? `${spec.model_monitor} (${spec.serial_monitor || '-'})` : spec.serial_monitor },
+                { label: 'Sistem Pengendalian (OS)', val: spec.os },
+                { label: 'Pemproses (CPU)', val: spec.processor },
+                { label: 'RAM', val: spec.ram },
+                { label: 'Storan (Hard Disk/SSD)', val: spec.hard_disk },
+                { label: 'Alamat IP', val: spec.ip_address },
+                { label: 'Pencetak (Printer)', val: spec.printer },
+                { label: 'Tetikus & Papan Kekunci', val: (spec.mouse || spec.keyboard) ? `${spec.mouse || '-'} / ${spec.keyboard || '-'}` : '' },
+                { label: 'Perisian (Office & Antivirus)', val: (spec.ms_office || spec.antivirus) ? `${spec.ms_office ? 'Office ' + spec.ms_office : '-'} | ${spec.antivirus || '-'}` : '' },
+                { label: 'Perisian Lain / Catatan', val: spec.perisian_lain || spec.maklumat_ict }
+            ];
+
+            const gridHtml = items
+                .filter(it => it.val && it.val !== '-' && it.val !== '')
+                .map(it => `
+                    <div style="background:#ffffff;padding:0.55rem 0.8rem;border-radius:8px;border:1px solid var(--border);">
+                        <div style="font-size:0.73rem;font-weight:600;color:var(--text-muted);margin-bottom:0.15rem;">${it.label}</div>
+                        <div style="font-size:0.84rem;font-weight:700;color:var(--text-main);word-break:break-word;">${escapeHtml(it.val)}</div>
+                    </div>
+                `).join('');
+
+            bodyEl.innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:0.6rem;">
+                    ${gridHtml || '<div style="color:var(--text-muted);font-size:0.83rem;">Maklumat spesifikasi kosong.</div>'}
+                </div>
+            `;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function renderReportImages(images) {
+            const container = document.getElementById('v_images_container');
+            const bodyEl = document.getElementById('v_images_body');
+            const countEl = document.getElementById('v_images_count_badge');
+            if (!container || !bodyEl) return;
+
+            if (images && images.length > 0) {
+                if (countEl) countEl.textContent = `${images.length} fail`;
+                bodyEl.innerHTML = `
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:0.75rem;">
+                        ${images.map(img => {
+                            const p = typeof img === 'string' ? img : (img.image_path || '');
+                            const cleanPath = '../' + p.replace(/^\/+/, '');
+                            return `
+                                <div style="aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--border);position:relative;background:#000;">
+                                    <a href="${cleanPath}" target="_blank" title="Klik untuk besarkan">
+                                        <img src="${cleanPath}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                    </a>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            } else {
+                if (countEl) countEl.textContent = '0 fail';
+                bodyEl.innerHTML = `<div style="color:var(--text-muted);font-size:0.83rem;font-style:italic;">Tiada gambar kerosakan dimuat naik oleh pengadu.</div>`;
+            }
         }
 
         async function saveProsesSemasa() {
@@ -735,18 +970,25 @@
 
         document.getElementById('processForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            const formData = new FormData(form);
+            const pSemasa = document.getElementById('v_proses_semasa').value;
+            formData.append('proses_semasa', pSemasa);
             try {
                 const res = await fetch("../api/admin/admin_update_report.php", { method: 'POST', body: formData });
                 const result = await res.json();
                 if (result.status === 'success') {
-                    alert('Laporan berjaya dikemaskini!');
+                    alert('✅ ' + (result.message || 'Penemuan teknikal (Bahagian II) berjaya disimpan!'));
                     closeModal();
                     fetchReports();
                 } else {
-                    alert(result.message);
+                    alert('Ralat: ' + result.message);
                 }
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error(err); alert('Ralat sambungan.'); }
         });
 
         function printKEWPA9() {
@@ -787,8 +1029,8 @@
                 document.getElementById('pr_admin_tarikh').textContent = new Date().toLocaleDateString('ms-MY');
                 document.getElementById('pr_keputusan_line').innerHTML = kepLine;
                 document.getElementById('pr_kep_nama').textContent = document.getElementById('v_kep_nama').value || '';
-                document.getElementById('pr_kep_jawatan').textContent = document.getElementById('v_kep_nama').value || '';
-                document.getElementById('pr_kep_tarikh').textContent = document.getElementById('v_kep_tarikh').value || '';
+                document.getElementById('pr_kep_jawatan').textContent = document.getElementById('v_kep_nama').value ? 'Ketua Jabatan / Pegawai Pelulus' : '';
+                document.getElementById('pr_kep_tarikh').textContent = document.getElementById('v_kep_tarikh').value ? new Date(document.getElementById('v_kep_tarikh').value).toLocaleDateString('ms-MY') : '';
 
                 document.getElementById('printableArea').style.display = 'block';
                 window.print();

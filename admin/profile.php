@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya - eICT Desk</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=3">
     <script src="../assets/js/global.js?v=12"></script>
 </head>
 <body>
@@ -23,9 +23,7 @@
                 <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
                 <a href="profile.php" class="nav-link active">👤 Profil Saya</a>
                 <a href="report_management.php" class="nav-link">📝 Pengurusan Laporan</a>
-                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
+                <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>

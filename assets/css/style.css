@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 :root {
+    color-scheme: light;
     --primary: #dc2626; /* Merah */
     --primary-dark: #991b1b;
     --primary-light: #fee2e2;
@@ -99,6 +100,7 @@ body.dark-theme .password-strength-container {
     padding: 0;
     box-sizing: border-box;
     font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -440,17 +442,58 @@ h1, h2, h3, h4 {
     width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 12px;
-    border: 2px solid #f1f5f9;
-    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    background: #ffffff !important;
     font-size: 1rem;
-    transition: var(--transition);
+    color: var(--text-main);
+    transition: none !important;
+    -webkit-transition: none !important;
 }
 
 .form-control:focus {
-    outline: none;
-    border-color: var(--primary);
-    background: white;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    outline: none !important;
+    border-color: var(--primary) !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+    transition: none !important;
+    -webkit-transition: none !important;
+}
+
+select.form-control,
+select {
+    color-scheme: light !important;
+    background-color: #ffffff !important;
+    color: var(--text-main) !important;
+    cursor: pointer;
+    transition: none !important;
+    -webkit-transition: none !important;
+}
+
+select option {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+}
+
+select option:checked {
+    background-color: #eff6ff !important;
+    color: #1e40af !important;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+    color-scheme: light !important;
+    accent-color: #2563eb !important;
+    background-color: #ffffff !important;
+    color: var(--text-main) !important;
+    transition: none !important;
+    -webkit-transition: none !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: none !important;
+    transition: none !important;
 }
 
 /* Modals */
@@ -460,8 +503,7 @@ h1, h2, h3, h4 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.45);
     display: none;
     align-items: center;
     justify-content: center;
@@ -478,12 +520,6 @@ h1, h2, h3, h4 {
     overflow-y: auto;
     box-shadow: var(--shadow);
     position: relative;
-    animation: modalSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes modalSlide {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
 }
 
 /* Status Badges */

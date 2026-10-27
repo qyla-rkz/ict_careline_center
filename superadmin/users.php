@@ -196,11 +196,15 @@
             <nav class="nav-links">
                 <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
                 <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="reports.php" class="nav-link">📝 Kelulusan Laporan</a>
+                <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
                 <a href="users.php" class="nav-link active">👥 Pengguna</a>
+                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
+                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
                 <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
             </nav>
-            <div style="margin-top: auto;" <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link"
-                style="color: var(--danger);">🚪 Log Keluar</a>
+            <div style="margin-top: auto;">
+                <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
             </div>
         </aside>
 

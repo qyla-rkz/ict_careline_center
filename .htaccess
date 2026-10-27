@@ -5,12 +5,12 @@ DirectoryIndex login.php
     Require all denied
 </FilesMatch>
 
-# Halang fail pembangunan dan dump database daripada dihidangkan oleh web server
+# 2. Halang fail pembangunan dan dump database daripada dihidangkan oleh web server
 <FilesMatch "\.(sql|ps1|bak|old|log)$">
     Require all denied
 </FilesMatch>
 
-# 2. Matikan paparan senarai folder (Directory browsing)
+# 3. Matikan paparan senarai folder (Directory browsing)
 Options -Indexes
 
 

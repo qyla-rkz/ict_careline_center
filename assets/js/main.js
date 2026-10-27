@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else if (role === 'admin') {
                         window.location.href = "admin/dashboard.php";
                     } else {
-                        // Staff ke halaman Pilih Portal
-                        window.location.href = "portal.php";
+                        // Staff ke halaman Papan Pemuka Staf
+                        window.location.href = "staff/dashboard.php";
                     }
                 } else {
                     alert(data.message || 'Log Masuk gagal.');

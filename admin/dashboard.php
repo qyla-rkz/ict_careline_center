@@ -5,15 +5,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - eICT Desk</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=4">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../assets/js/global.js?v=12"></script>
+    <script src="../assets/js/global.js?v=14"></script>
     <style>
         @media print {
             @page {
                 size: A4 portrait;
                 margin: 10mm;
             }
+        }
+        .readonly-sec {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 1.25rem;
+        }
+        .form-control-readonly,
+        .readonly-sec input.form-control,
+        .readonly-sec textarea.form-control {
+            background-color: #f1f5f9 !important;
+            color: #475569 !important;
+            border: 1.5px solid #cbd5e1 !important;
+            cursor: not-allowed !important;
+            font-weight: 600;
+            user-select: none;
+        }
+        .form-control-readonly:focus,
+        .readonly-sec input.form-control:focus,
+        .readonly-sec textarea.form-control:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.dark-theme .readonly-sec {
+            background: rgba(30, 41, 59, 0.45) !important;
+            border-color: #334155 !important;
+        }
+        body.dark-theme .form-control-readonly,
+        body.dark-theme .readonly-sec input.form-control,
+        body.dark-theme .readonly-sec textarea.form-control {
+            background-color: #0f172a !important;
+            color: #94a3b8 !important;
+            border-color: #334155 !important;
         }
     </style>
 </head>
@@ -34,9 +68,7 @@
                 <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
                 <a href="profile.php" class="nav-link">👤 Profil Saya</a>
                 <a href="report_management.php" class="nav-link">📝 Pengurusan Laporan</a>
-                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
-                <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="history_reports.php" class="nav-link">📜 Log Sejarah</a>
+                <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -60,42 +92,42 @@
             </header>
 
             <section id="section-overview">
-                <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-main);">Ringkasan Statistik</h1>
-                <p class="text-muted">Pantau statistik keseluruhan untuk laporan dan aset staf.</p>
+                <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-main);">Ringkasan Statistik Hari Ini</h1>
+                <p class="text-muted">Pantau statistik keseluruhan hari ini untuk pengurusan laporan.</p>
 
                 <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; margin-top: 2.5rem;">
                     <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
                         <div class="stat-icon" style="background: #eff6ff; color: #1e40af; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📥</div>
                         <div>
-                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Laporan</div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Jumlah Laporan <span style="font-size:0.75rem;"></span></div>
                             <div id="stat-total" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
                         </div>
                     </div>
                     <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
                         <div class="stat-icon" style="background: #fef3c7; color: #92400e; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">⏳</div>
                         <div>
-                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Menunggu</div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Menunggu <span style="font-size:0.75rem;"></span></div>
                             <div id="stat-pending" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
                         </div>
                     </div>
                     <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
                         <div class="stat-icon" style="background: #dcfce7; color: #166534; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">✅</div>
                         <div>
-                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Selesai</div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Selesai <span style="font-size:0.75rem;"></span></div>
                             <div id="stat-resolved" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
                         </div>
                     </div>
                     <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
                         <div class="stat-icon" style="background: #fee2e2; color: #991b1b; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">❌</div>
                         <div>
-                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Ditolak</div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Ditolak <span style="font-size:0.75rem;"></span></div>
                             <div id="stat-rejected" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
                         </div>
                     </div>
                     <div class="card stat-card" style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem;">
                         <div class="stat-icon" style="background: #e2e8f0; color: #475569; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🗂️</div>
                         <div>
-                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Syor Dilupuskan</div>
+                            <div class="text-muted" style="font-size: 0.9rem; font-weight: 600;">Syor Dilupuskan <span style="font-size:0.75rem;"></span></div>
                             <div id="stat-disposed" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">0</div>
                         </div>
                     </div>
@@ -110,7 +142,7 @@
                             style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
                             <span
                                 style="width: 4px; height: 24px; background: var(--primary); border-radius: 2px; display: inline-block;"></span>
-                            Laporan Aktiviti
+                            Laporan Aktiviti Hari Ini
                         </h3>
                         <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Gambaran masa nyata keputusan laporan KEW.PA-9 semasa.</p>
                     </div>
@@ -131,10 +163,13 @@
                                     Aset</th>
                                 <th
                                     style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                                    Tarikh</th>
+                                    Masa</th>
                                 <th
                                     style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">
                                     Keputusan</th>
+                                <th
+                                    style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">
+                                    Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="reportTableBody">
@@ -189,12 +224,12 @@
     </div>
 
     <!-- ─── Report Management Modal ─── -->
-    <div id="reportModal" class="modal">
+    <div id="reportModal" class="modal" onclick="if (event.target === this) closeModal()">
         <div class="modal-content" style="max-width: 850px;">
             <div class="modal-header"
                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2>Proses Laporan KEW.PA-9</h2>
-                <button onclick="closeModal()"
+                <h2 id="modalManageTitle">Proses Laporan KEW.PA-9</h2>
+                <button type="button" onclick="closeModal()"
                     style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
 
@@ -204,30 +239,91 @@
                 <input type="hidden" id="edit_created_at">
 
                 <div style="display: flex; flex-direction: column; gap: 2rem;">
-                    <div>
-                        <h4 style="margin-bottom: 1rem; color: var(--primary);">Bahagian I: Maklumat Pengadu</h4>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <div class="form-group"><label>Nama Aset</label><input type="text" id="m_nama_aset" readonly
-                                    class="form-control"></div>
-                            <div class="form-group"><label>Jenis Aset</label><input type="text" id="m_jenis_aset"
-                                    readonly class="form-control"></div>
+                    <!-- Bahagian I (Maklumat Pengadu - Read-only) -->
+                    <div class="readonly-sec">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 0.5rem;">
+                            <h4 style="margin: 0; color: var(--primary); font-size: 1rem;">Bahagian I: Maklumat Pengadu</h4>
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
-                            <div class="form-group"><label>No. Siri Pendaftaran</label><input type="text"
-                                    id="m_nombor_siri" readonly class="form-control"></div>
-                            <div class="form-group"><label>Pengguna Terakhir</label><input type="text" id="m_pengguna"
-                                    readonly class="form-control"></div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Nama Aset</label>
+                                <input type="text" id="m_nama_aset" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Jenis Aset</label>
+                                <input type="text" id="m_jenis_aset" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">No. Siri Pendaftaran</label>
+                                <input type="text" id="m_nombor_siri" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Pengguna Terakhir</label>
+                                <input type="text" id="m_pengguna" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Lokasi Aset</label>
+                                <input type="text" id="m_lokasi" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tarikh Kerosakan</label>
+                                <input type="text" id="m_tarikh_kerosakan" readonly tabindex="-1" class="form-control form-control-readonly">
+                            </div>
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
-                            <div class="form-group"><label>Lokasi Aset</label><input type="text" id="m_lokasi" readonly
-                                    class="form-control"></div>
-                            <div class="form-group"><label>Tarikh Kerosakan</label><input type="text"
-                                    id="m_tarikh_kerosakan" readonly class="form-control"></div>
+                        <div class="form-group" style="margin-top: 0.75rem;">
+                            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Perihal Kerosakan</label>
+                            <textarea id="m_perihal" readonly tabindex="-1" class="form-control form-control-readonly" rows="3"></textarea>
                         </div>
-                        <div class="form-group"><label>Perihal Kerosakan</label><textarea id="m_perihal" readonly
-                                class="form-control" rows="3"></textarea></div>
                     </div>
 
+                    <!-- Lampiran Spesifikasi Aset Yang Rosak -->
+                    <div id="m_spec_container" style="background: rgba(241, 245, 249, 0.7); border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 1.25rem;">
+                        <h4 style="color: var(--primary); margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem;">
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                💻 Lampiran Spesifikasi Aset Yang Rosak
+                            </span>
+                            <span id="m_spec_status_badge" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 700;"></span>
+                        </h4>
+                        <div id="m_spec_body">
+                            <!-- Populated via renderDashboardSpec -->
+                        </div>
+                    </div>
+
+                    <!-- Gambar / Dokumen Lampiran Kerosakan (Jika Ada) -->
+                    <div id="m_images_container" style="background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem;">
+                        <h4 style="color: var(--text-main); margin-bottom: 0.75rem; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between;">
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">📸 Gambar / Bukti Kerosakan Aset</span>
+                            <span id="m_images_count_badge" style="font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 600; background: #e2e8f0; color: #475569;"></span>
+                        </h4>
+                        <div id="m_images_body">
+                            <!-- Populated via renderDashboardImages -->
+                        </div>
+                    </div>
+
+                    <!-- Proses Semasa (Web Only) -->
+                    <div style="background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(168,85,247,0.05)); border: 1px solid rgba(99,102,241,0.2); border-radius: 12px; padding: 1.25rem;">
+                        <h4 style="color: #6366f1; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                            🔄 Proses Semasa <span style="font-size: 0.7rem; background: #6366f1; color: white; padding: 0.15rem 0.5rem; border-radius: 20px; font-weight: 600;">WEB SAHAJA</span>
+                        </h4>
+                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem;">Maklumat ini <strong>tidak akan dicetak</strong> dalam borang KEW.PA-9. Ia hanya untuk makluman staff secara dalam talian.</p>
+                        <div style="display: flex; gap: 0.75rem; align-items: flex-end;">
+                            <div style="flex: 1;">
+                                <select id="m_proses_semasa" class="form-control">
+                                    <option value="">— Tiada Kemas Kini —</option>
+                                    <option value="Diterima">📥 Diterima</option>
+                                    <option value="Sedang Dibaikpulih">🔧 Sedang Dibaikpulih</option>
+                                    <option value="Tunggu Panel / Alat Ganti">⏳ Tunggu Panel / Alat Ganti</option>
+                                    <option value="Dihantar ke Panel Lantikan">🚗 Dihantar ke Panel Lantikan</option>
+                                    <option value="Selesai Dibaiki">✅ Selesai Dibaiki (Sedia Diambil)</option>
+                                </select>
+                            </div>
+                            <button type="button" onclick="saveProsesSemasaDashboard()" class="btn btn-primary" style="padding: 0.6rem 1.25rem; white-space: nowrap; font-size: 0.85rem;">
+                                💾 Simpan Proses
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bahagian II: Penemuan Teknikal -->
                     <div>
                         <h4 style="margin-bottom: 1rem; color: var(--primary);">Bahagian II: Penemuan Teknikal</h4>
                         <div class="form-group"><label>Kos Penyelenggaraan Terdahulu (RM)</label><input type="number"
@@ -244,52 +340,40 @@
                     </div>
                 </div>
 
-                    <!-- Proses Semasa (Web Only) -->
-                    <div style="background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(168,85,247,0.05)); border: 1px solid rgba(99,102,241,0.2); border-radius: 12px; padding: 1.25rem;">
-                        <h4 style="color: #6366f1; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
-                            🔄 Proses Semasa <span style="font-size: 0.7rem; background: #6366f1; color: white; padding: 0.15rem 0.5rem; border-radius: 20px; font-weight: 600;">WEB SAHAJA</span>
-                        </h4>
-                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem;">Maklumat ini <strong>tidak akan dicetak</strong> dalam borang KEW.PA-9. Ia hanya untuk makluman staff secara dalam talian.</p>
-                        <div style="display: flex; gap: 0.75rem; align-items: flex-end;">
-                            <div style="flex: 1;">
-                                <select id="m_proses_semasa" class="form-control">
-                                    <option value="">— Tiada Kemas Kini —</option>
-                                    <option value="Diterima">📥 Diterima</option>
-                                    <option value="Sedang Dibaikpulih">🔧 Sedang Dibaikpulih</option>
-                                    <option value="Tunggu Panel / Alat Ganti">⏳ Tunggu Panel / Alat Ganti</option>
-                                    <option value="Dihantar ke Panel Lantikan">🚗 Dihantar ke Panel Lantikan</option>
-                                    <option value="Siap - Sedia Diambil">✅ Siap - Sedia Diambil</option>
-                                </select>
+                    <!-- Bahagian III (Hanya untuk Super Admin - Read-only di Portal Admin) -->
+                    <div class="readonly-sec" style="margin-top: 1.5rem; border: 1.5px dashed #cbd5e1; background: #f8fafc; border-radius: 12px; padding: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <h4 style="margin: 0; color: #475569; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;">
+                                🔒 Bahagian III: Keputusan Ketua Jabatan
+                            </h4>
+                            <span id="m_kep_badge" style="font-size: 0.75rem; padding: 0.25rem 0.65rem; border-radius: 999px; font-weight: 700; background: #fef3c7; color: #92400e;">
+                                ⏳ Menunggu Keputusan Super Admin
+                            </span>
+                        </div>
+                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem;">
+                            Bahagian ini adalah bidang kuasa <strong>Super Admin (Ketua Jabatan)</strong>. Pegawai ICT/Admin hanya mengisi Bahagian II dan proses semasa.
+                        </p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Keputusan</label>
+                                <input type="text" id="edit_keputusan" class="form-control form-control-readonly" readonly tabindex="-1" placeholder="Belum diputuskan">
                             </div>
-                            <button type="button" onclick="saveProsesSemasaDashboard()" class="btn btn-primary" style="padding: 0.6rem 1.25rem; white-space: nowrap; font-size: 0.85rem;">
-                                💾 Simpan Proses
-                            </button>
+                            <div class="form-group">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tarikh Keputusan</label>
+                                <input type="text" id="edit_keputusan_tarikh" class="form-control form-control-readonly" readonly tabindex="-1" placeholder="—">
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Nama Pegawai Pelulus (Ketua Jabatan)</label>
+                                <input type="text" id="edit_keputusan_nama" class="form-control form-control-readonly" readonly tabindex="-1" placeholder="Belum ditandatangani">
+                            </div>
                         </div>
                     </div>
 
-                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
-                        <h4 style="margin-bottom: 1rem; color: var(--primary);">Bahagian III: Keputusan</h4>
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div class="form-group">
-                            <label>Keputusan</label>
-                            <select name="keputusan" id="edit_keputusan" class="form-control">
-                                <option value="Diluluskan">Diluluskan</option>
-                                <option value="Tidak Diluluskan">Tidak Diluluskan</option>
-                                <option value="Syor Dilupuskan">Syor Dilupuskan</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>Nama Ketua Jabatan</label><input type="text"
-                                name="keputusan_nama" id="edit_keputusan_nama" class="form-control"></div>
-                        <div class="form-group"><label>Tarikh Keputusan</label><input type="date"
-                                name="keputusan_tarikh" id="edit_keputusan_tarikh" class="form-control"></div>
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 2;">💾 Simpan Penemuan Teknikal (Bahagian II)</button>
+                        <button type="button" class="btn btn-secondary" onclick="printReport()"
+                            style="flex: 1; border: 2px solid var(--primary); color: var(--primary); background: transparent;">🖨️ Cetak Borang</button>
                     </div>
-                </div>
-
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <button type="submit" class="btn btn-primary" style="flex: 2;">Simpan Laporan</button>
-                    <button type="button" class="btn btn-secondary" onclick="printReport()"
-                        style="flex: 1; border: 2px solid var(--primary); color: var(--primary); background: transparent;">Cetak Borang</button>
-                </div>
             </form>
         </div>
     </div>
@@ -690,16 +774,50 @@
                     globalReports = result.data;
                     const allReports = result.data;
 
-                    // Stats reflect ALL reports
+                    // Tarikh tempatan hari ini (YYYY-MM-DD)
+                    const now = new Date();
+                    const todayLocal = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+                    function getReportDateStr(rawDate) {
+                        if (!rawDate) return '';
+                        const match = String(rawDate).match(/^(\d{4})-(\d{2})-(\d{2})/);
+                        if (match) return `${match[1]}-${match[2]}-${match[3]}`;
+                        const d = new Date(String(rawDate).replace(' ', 'T'));
+                        if (!isNaN(d.getTime())) {
+                            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                        }
+                        return '';
+                    }
+
+                    function formatTimeOnly(rawDate) {
+                        if (!rawDate) return '—';
+                        const d = new Date(String(rawDate).replace(' ', 'T'));
+                        if (!isNaN(d.getTime())) {
+                            return d.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', hour12: true });
+                        }
+                        const match = String(rawDate).match(/(\d{2}):(\d{2})/);
+                        return match ? `${match[1]}:${match[2]}` : '—';
+                    }
+
+                    function formatReportId(id) {
+                        if (!id && id !== 0) return '';
+                        const num = parseInt(id);
+                        if (isNaN(num)) return `#ICT${id}`;
+                        return `#ICT${String(num).padStart(2, '0')}`;
+                    }
+
+                    // Statistik mencerminkan laporan HARI INI sahaja
+                    const todayStatsReports = allReports.filter(r => getReportDateStr(r.created_at) === todayLocal);
+
                     let pending = 0, resolved = 0, rejected = 0, disposed = 0;
-                    allReports.forEach(r => {
-                        if (r.status === 'Pending') pending++;
+                    todayStatsReports.forEach(r => {
+                        if (r.status === 'Pending' && r.keputusan !== 'Syor Dilupuskan') pending++;
                         if (r.status === 'Resolved' && r.keputusan !== 'Syor Dilupuskan') resolved++;
                         if (r.status === 'Rejected') rejected++;
                         if (r.keputusan === 'Syor Dilupuskan') disposed++;
                     });
 
-                    document.getElementById('stat-total').textContent = allReports.length;
+                    document.getElementById('stat-total').textContent = todayStatsReports.length;
                     document.getElementById('stat-pending').textContent = pending;
                     document.getElementById('stat-resolved').textContent = resolved;
                     document.getElementById('stat-rejected').textContent = rejected;
@@ -708,14 +826,10 @@
                     populateYearsDropdown();
                     updateTrendChart();
 
-                    // Filter for TODAY'S reports only
-                    const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
-                    const todayReports = allReports.filter(r => {
-                        const rDate = new Date(r.created_at).toLocaleDateString('en-CA');
-                        return rDate === today;
-                    });
+                    // Tapis Laporan Aktiviti: HARI INI (hari tersebut) sahaja
+                    const todayReports = allReports.filter(r => getReportDateStr(r.created_at) === todayLocal);
 
-                    // Sort by latest (ID descending) and take top 10
+                    // Susun laporan terkini dahulu (ID secara menurun) dan hadkan kepada 10 rekod
                     todayReports.sort((a, b) => b.id - a.id);
                     const displayReports = todayReports.slice(0, 10);
 
@@ -723,17 +837,23 @@
                     tbody.innerHTML = '';
 
                     if (displayReports.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="5" style="padding: 3rem; text-align: center; color: var(--text-muted); font-style: italic;">Tiada laporan diterima hari ini.</td></tr>`;
+                        const todayFormatted = now.toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
+                        tbody.innerHTML = `<tr><td colspan="6" style="padding: 3rem; text-align: center; color: var(--text-muted); font-style: italic;">Tiada laporan diterima hari ini (${todayFormatted}).</td></tr>`;
                     } else {
                         displayReports.forEach(r => {
                             const tr = document.createElement('tr');
                             tr.style.borderBottom = '1px solid var(--border)';
                             tr.innerHTML = `
-                                <td style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--text-main);">#${r.id}</td>
+                                <td style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--text-main);">${formatReportId(r.id)}</td>
                                 <td style="padding: 1.25rem 1.5rem; color: var(--text-main); font-weight: 500;">${r.nama_pelapor || r.full_name || '-'}</td>
                                 <td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">${r.jenis_aset}</td>
-                                <td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">${new Date(r.created_at).toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })}</td>
+                                <td style="padding: 1.25rem 1.5rem; color: var(--text-main); font-weight: 600; white-space: nowrap;">${formatTimeOnly(r.created_at)}</td>
                                 <td style="padding: 1.25rem 1.5rem;"><span class="badge badge-${r.keputusan === 'Syor Dilupuskan' ? 'disposed' : r.status === 'Resolved' ? 'resolved' : r.status === 'Rejected' ? 'rejected' : 'pending'}">${r.keputusan === 'Syor Dilupuskan' ? 'Syor Dilupuskan' : r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
+                                <td style="padding: 1.25rem 1.5rem; text-align: center; white-space: nowrap;">
+                                    <a href="report_management.php?id=${r.id}" class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.35rem; text-decoration: none; border-radius: 8px;" title="Pergi ke Pengurusan Laporan">
+                                        📝 Urus Laporan ›
+                                    </a>
+                                </td>
                             `;
                             tbody.appendChild(tr);
                         });
@@ -742,30 +862,68 @@
             } catch (err) { console.error(err); }
         }
 
-        function manageReport(r) {
+        function manageReport(reportIdOrObj) {
+            let r = reportIdOrObj;
+            if (typeof reportIdOrObj === 'number' || typeof reportIdOrObj === 'string') {
+                r = globalReports.find(item => parseInt(item.id) === parseInt(reportIdOrObj));
+            }
+            if (!r) {
+                console.error('Laporan tidak ditemui:', reportIdOrObj);
+                alert('Maklumat laporan tidak ditemui.');
+                return;
+            }
+
+            const titleEl = document.getElementById('modalManageTitle');
+            if (titleEl) titleEl.textContent = 'Proses Laporan KEW.PA-9 (' + formatReportId(r.id) + ')';
+
             document.getElementById('edit_id').value = r.id;
-            document.getElementById('edit_reporter_name').value = r.name || r.full_name;
+            document.getElementById('edit_reporter_name').value = r.nama_pelapor || r.full_name || r.name || '';
             document.getElementById('edit_created_at').value = r.created_at;
 
             document.getElementById('m_nama_aset').value = r.nama_aset || '-';
-            document.getElementById('m_jenis_aset').value = r.jenis_aset;
-            document.getElementById('m_nombor_siri').value = r.nombor_siri;
-            document.getElementById('m_pengguna').value = r.pengguna_terakhir;
-            document.getElementById('m_lokasi').value = r.lokasi || '-';
-            document.getElementById('m_tarikh_kerosakan').value = r.tarikh_kerosakan;
-            document.getElementById('m_perihal').value = r.perihal_kerosakan;
+            document.getElementById('m_jenis_aset').value = r.jenis_aset || '';
+            document.getElementById('m_nombor_siri').value = r.nombor_siri || '';
+            document.getElementById('m_pengguna').value = r.pengguna_terakhir || '';
+            document.getElementById('m_lokasi').value = r.location || r.lokasi || '-';
+            document.getElementById('m_tarikh_kerosakan').value = r.tarikh_kerosakan || '';
+            document.getElementById('m_perihal').value = r.perihal_kerosakan || '';
 
             document.getElementById('edit_kos_dahulu').value = r.kos_penyelenggaraan_dahulu || '0.00';
             document.getElementById('edit_anggaran_kos').value = r.anggaran_kos || '0.00';
             document.getElementById('edit_syor').value = r.syor_ulasan || '';
-            document.getElementById('edit_admin_nama').value = r.admin_name_jawatan || '';
-            document.getElementById('edit_admin_jawatan').value = r.admin_jawatan || '';
 
-            document.getElementById('edit_keputusan').value = r.keputusan || 'Diluluskan';
-            document.getElementById('edit_keputusan_nama').value = r.keputusan_nama || '';
-            document.getElementById('edit_keputusan_tarikh').value = r.keputusan_tarikh || new Date().toISOString().split('T')[0];
+            const curUser = JSON.parse(sessionStorage.getItem('user') || '{}');
+            document.getElementById('edit_admin_nama').value = r.admin_name_jawatan || curUser.full_name || '';
+            document.getElementById('edit_admin_jawatan').value = r.admin_jawatan || curUser.jawatan || '';
+
+            // Bahagian III Read-Only Display
+            const hasDecision = r.keputusan && r.keputusan !== 'Pending';
+            const mBadgeEl = document.getElementById('m_kep_badge');
+            if (hasDecision) {
+                document.getElementById('edit_keputusan').value = r.keputusan;
+                document.getElementById('edit_keputusan_nama').value = r.keputusan_nama || '-';
+                document.getElementById('edit_keputusan_tarikh').value = r.keputusan_tarikh ? new Date(r.keputusan_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' }) : '-';
+                if (mBadgeEl) {
+                    mBadgeEl.textContent = '✅ Keputusan: ' + r.keputusan;
+                    mBadgeEl.style.background = (r.keputusan === 'Diluluskan') ? '#dcfce7' : ((r.keputusan === 'Tidak Diluluskan') ? '#fee2e2' : '#e2e8f0');
+                    mBadgeEl.style.color = (r.keputusan === 'Diluluskan') ? '#166534' : ((r.keputusan === 'Tidak Diluluskan') ? '#991b1b' : '#334155');
+                }
+            } else {
+                document.getElementById('edit_keputusan').value = 'Menunggu Kelulusan Super Admin';
+                document.getElementById('edit_keputusan_nama').value = 'Belum ditandatangani';
+                document.getElementById('edit_keputusan_tarikh').value = '—';
+                if (mBadgeEl) {
+                    mBadgeEl.textContent = '⏳ Menunggu Keputusan Super Admin';
+                    mBadgeEl.style.background = '#fef3c7';
+                    mBadgeEl.style.color = '#92400e';
+                }
+            }
 
             document.getElementById('m_proses_semasa').value = r.proses_semasa || '';
+
+            // Papar Spesifikasi Aset dan Gambar Lampiran
+            renderDashboardSpec(r.lampiran_spec);
+            renderDashboardImages(r.images);
 
             const isCompleted = r.status === 'Completed' || r.status === 'Resolved' || r.status === 'Rejected' || r.keputusan === 'Syor Dilupuskan';
             const saveBtn = document.querySelector('#manageForm button[type="submit"]');
@@ -778,11 +936,129 @@
             } else {
                 if (saveBtn) saveBtn.style.display = 'block';
                 document.querySelectorAll('#manageForm input, #manageForm textarea, #manageForm select').forEach(el => {
-                    if (el.id !== 'edit_id') el.disabled = false;
+                    if (el.id !== 'edit_id') {
+                        // Bahagian 1 kekal readonly dan tidak boleh diedit
+                        if (el.closest('.readonly-sec') || el.classList.contains('form-control-readonly')) {
+                            el.readOnly = true;
+                            el.disabled = false;
+                        } else {
+                            el.disabled = false;
+                        }
+                    }
                 });
             }
 
-            document.getElementById('reportModal').style.display = 'flex';
+            const modal = document.getElementById('reportModal');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+
+        function renderDashboardSpec(specData) {
+            const bodyEl = document.getElementById('m_spec_body');
+            const badgeEl = document.getElementById('m_spec_status_badge');
+            if (!bodyEl) return;
+
+            let spec = null;
+            if (typeof specData === 'string') {
+                let cleanStr = specData.trim();
+                if (cleanStr.includes('&quot;') || cleanStr.includes('&#039;') || cleanStr.includes('&amp;')) {
+                    const txt = document.createElement('textarea');
+                    txt.innerHTML = cleanStr;
+                    cleanStr = txt.value;
+                }
+                if (cleanStr.startsWith('{')) {
+                    try { spec = JSON.parse(cleanStr); } catch (e) { spec = null; }
+                }
+            } else if (typeof specData === 'object' && specData !== null) {
+                spec = specData;
+            }
+
+            if (!spec) {
+                if (badgeEl) {
+                    badgeEl.textContent = 'Tiada Lampiran';
+                    badgeEl.style.background = '#f1f5f9';
+                    badgeEl.style.color = '#64748b';
+                    badgeEl.style.border = '1px solid #cbd5e1';
+                }
+                bodyEl.innerHTML = `
+                    <div style="padding:0.75rem 1rem;color:var(--text-muted);font-style:italic;font-size:0.83rem;background:#ffffff;border-radius:8px;border:1px dashed var(--border);">
+                        ℹ️ Tiada spesifikasi aset dilampirkan bagi aduan ini.
+                    </div>`;
+                return;
+            }
+
+            if (badgeEl) {
+                badgeEl.textContent = '✅ Spesifikasi Dilampirkan';
+                badgeEl.style.background = 'rgba(16, 185, 129, 0.12)';
+                badgeEl.style.color = '#059669';
+                badgeEl.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+            }
+
+            const items = [
+                { label: 'Model Komputer / Peranti', val: spec.model_komputer },
+                { label: 'No. Siri Pendaftaran', val: spec.no_siri_pendaftaran },
+                { label: 'No. Siri Komputer (S/N)', val: spec.serial_number },
+                { label: 'Model & No. Siri Monitor', val: spec.model_monitor ? `${spec.model_monitor} (${spec.serial_monitor || '-'})` : spec.serial_monitor },
+                { label: 'Sistem Pengendalian (OS)', val: spec.os },
+                { label: 'Pemproses (CPU)', val: spec.processor },
+                { label: 'RAM', val: spec.ram },
+                { label: 'Storan (Hard Disk/SSD)', val: spec.hard_disk },
+                { label: 'Alamat IP', val: spec.ip_address },
+                { label: 'Pencetak (Printer)', val: spec.printer },
+                { label: 'Tetikus & Papan Kekunci', val: (spec.mouse || spec.keyboard) ? `${spec.mouse || '-'} / ${spec.keyboard || '-'}` : '' },
+                { label: 'Perisian (Office & Antivirus)', val: (spec.ms_office || spec.antivirus) ? `${spec.ms_office ? 'Office ' + spec.ms_office : '-'} | ${spec.antivirus || '-'}` : '' },
+                { label: 'Perisian Lain / Catatan', val: spec.perisian_lain || spec.maklumat_ict }
+            ];
+
+            const gridHtml = items
+                .filter(it => it.val && it.val !== '-' && it.val !== '')
+                .map(it => `
+                    <div style="background:#ffffff;padding:0.55rem 0.8rem;border-radius:8px;border:1px solid var(--border);">
+                        <div style="font-size:0.73rem;font-weight:600;color:var(--text-muted);margin-bottom:0.15rem;">${it.label}</div>
+                        <div style="font-size:0.84rem;font-weight:700;color:var(--text-main);word-break:break-word;">${escapeHtml(it.val)}</div>
+                    </div>
+                `).join('');
+
+            bodyEl.innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:0.6rem;">
+                    ${gridHtml || '<div style="color:var(--text-muted);font-size:0.83rem;">Maklumat spesifikasi kosong.</div>'}
+                </div>
+            `;
+        }
+
+        function renderDashboardImages(images) {
+            const container = document.getElementById('m_images_container');
+            const bodyEl = document.getElementById('m_images_body');
+            const countEl = document.getElementById('m_images_count_badge');
+            if (!container || !bodyEl) return;
+
+            if (images && images.length > 0) {
+                if (countEl) countEl.textContent = `${images.length} fail`;
+                bodyEl.innerHTML = `
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:0.75rem;">
+                        ${images.map(img => {
+                            const p = typeof img === 'string' ? img : (img.image_path || '');
+                            const cleanPath = '../' + p.replace(/^\/+/, '');
+                            return `
+                                <div style="aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--border);position:relative;background:#000;">
+                                    <a href="${cleanPath}" target="_blank" title="Klik untuk besarkan">
+                                        <img src="${cleanPath}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                    </a>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            } else {
+                if (countEl) countEl.textContent = '0 fail';
+                bodyEl.innerHTML = `<div style="color:var(--text-muted);font-size:0.83rem;font-style:italic;">Tiada gambar kerosakan dimuat naik oleh pengadu.</div>`;
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
         function closeModal() {
@@ -816,6 +1092,8 @@
         document.getElementById('manageForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
+            const pSemasa = document.getElementById('m_proses_semasa').value;
+            formData.append('proses_semasa', pSemasa);
             try {
                 const response = await fetch("../api/admin/admin_update_report.php", {
                     method: 'POST',
@@ -823,7 +1101,7 @@
                 });
                 const res = await response.json();
                 if (res.status === 'success') {
-                    alert('Laporan berjaya dikemaskini!');
+                    alert('✅ ' + (res.message || 'Penemuan teknikal (Bahagian II) berjaya disimpan!'));
                     closeModal();
                     fetchReports();
                 } else {

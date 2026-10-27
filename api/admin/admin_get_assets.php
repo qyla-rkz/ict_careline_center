@@ -7,8 +7,8 @@ header('Pragma: no-cache');
 header('Expires: 0');
 require_once '../config.php';
 
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['Admin', 'Super Admin'])) {
-    jsonResponse('error', 'Unauthorized - Role: ' . ($_SESSION['role'] ?? 'TIADA'));
+if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''), ['super admin', 'superadmin'])) {
+    jsonResponse('error', 'Akses ditolak. Pengurusan Aset Staf kini hanya untuk Super Admin.');
 }
 
 try {
