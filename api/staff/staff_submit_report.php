@@ -109,7 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } catch (Exception $e) {
         $pdo->rollBack();
-        jsonResponse('error', 'Database error: ' . $e->getMessage());
+        error_log("staff_submit_report database error: " . $e->getMessage());
+        jsonResponse('error', 'Ralat pangkalan data semasa menghantar aduan. Sila cuba sebentar lagi.');
     }
 } else {
     jsonResponse('error', 'Invalid request method');

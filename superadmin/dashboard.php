@@ -50,12 +50,13 @@
             </div>
             <nav class="nav-links">
                 <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="profile.php" class="nav-link">🪪 Profil Saya</a>
                 <a href="reports.php" class="nav-link">📝 Kelulusan Laporan</a>
                 <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
-                <a href="users.php" class="nav-link">👥 Pengguna</a>
+                <a href="users.php" class="nav-link">👤 Pengguna</a>
                 <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
+                <a href="disposed_assets.php" class="nav-link">🗑️ Aset Lupus</a>
                 <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
@@ -153,19 +154,6 @@
                     </div>
                 </div>
 
-                <!-- Tabs: Menunggu vs Telah Diluluskan -->
-                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center; flex-wrap: wrap;">
-                    <button type="button" id="tabPendingBtn" onclick="switchActivityTab('pending')"
-                        style="background: var(--primary); color: white; padding: 0.5rem 1.2rem; border-radius: 20px; font-weight: 700; font-size: 0.84rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
-                        <span>⏳ Menunggu Keputusan</span>
-                        <span id="pendingBadge" style="background: rgba(255,255,255,0.25); padding: 0.1rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">0</span>
-                    </button>
-                    <button type="button" id="tabApprovedBtn" onclick="switchActivityTab('approved')"
-                        style="background: #f1f5f9; color: var(--text-main); padding: 0.5rem 1.2rem; border-radius: 20px; font-weight: 600; font-size: 0.84rem; border: 1px solid var(--border); cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
-                        <span>✅ Rekod Telah Diluluskan</span>
-                        <span id="approvedBadge" style="background: #e2e8f0; color: #334155; padding: 0.1rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">0</span>
-                    </button>
-                </div>
 
                 <div class="card table-card" style="padding: 0; overflow: hidden; border-radius: 14px;">
                     <div style="overflow-x: auto;">
@@ -303,49 +291,9 @@
 
         let currentActivityTab = 'pending';
         let cachedPendingReports = [];
-        let cachedApprovedReports = [];
 
         function switchActivityTab(tab) {
-            currentActivityTab = tab;
-            const pendingBtn = document.getElementById('tabPendingBtn');
-            const approvedBtn = document.getElementById('tabApprovedBtn');
-            const subtitle = document.getElementById('activitySectionSubtitle');
-
-            if (tab === 'pending') {
-                if (pendingBtn) {
-                    pendingBtn.style.background = 'var(--primary)';
-                    pendingBtn.style.color = '#ffffff';
-                    pendingBtn.style.fontWeight = '700';
-                    pendingBtn.style.border = 'none';
-                }
-                if (approvedBtn) {
-                    approvedBtn.style.background = '#f1f5f9';
-                    approvedBtn.style.color = 'var(--text-main)';
-                    approvedBtn.style.fontWeight = '600';
-                    approvedBtn.style.border = '1px solid var(--border)';
-                }
-                if (subtitle) {
-                    subtitle.innerText = 'Laporan terkini yang menunggu semakan & keputusan Ketua Jabatan.';
-                }
-                renderActivityTable(cachedPendingReports, 'pending');
-            } else {
-                if (approvedBtn) {
-                    approvedBtn.style.background = '#10b981';
-                    approvedBtn.style.color = '#ffffff';
-                    approvedBtn.style.fontWeight = '700';
-                    approvedBtn.style.border = 'none';
-                }
-                if (pendingBtn) {
-                    pendingBtn.style.background = '#f1f5f9';
-                    pendingBtn.style.color = 'var(--text-main)';
-                    pendingBtn.style.fontWeight = '600';
-                    pendingBtn.style.border = '1px solid var(--border)';
-                }
-                if (subtitle) {
-                    subtitle.innerText = 'Rekod 5 laporan terkini yang telah diluluskan / diberi jawapan oleh Super Admin.';
-                }
-                renderActivityTable(cachedApprovedReports, 'approved');
-            }
+            renderActivityTable(cachedPendingReports, 'pending');
         }
 
         function formatId(id) {
@@ -414,21 +362,28 @@
                 tr.onmouseover = () => tr.style.background = 'rgba(0,0,0,0.015)';
                 tr.onmouseout = () => tr.style.background = 'transparent';
 
+                const safeReporter = escapeHtml(r.nama_pelapor || r.full_name || '-');
+                const safeDept = escapeHtml(r.department || r.location || '-');
+                const safeAssetType = escapeHtml(r.jenis_aset || '-');
+                const safeSN = escapeHtml(r.nombor_siri || '-');
+                const safeAdminName = escapeHtml(r.admin_name_jawatan || 'Admin ICT');
+                const safeAdminJawatan = escapeHtml(r.admin_jawatan || 'Pegawai Teknikal');
+
                 tr.innerHTML = `
                     <td style="padding: 1.15rem 1.5rem; font-weight: 700; color: var(--primary); font-size: 0.9rem;">
                         ${formatId(r.id)}
                     </td>
                     <td style="padding: 1.15rem 1.5rem;">
-                        <div style="font-weight: 600; color: var(--text-main); font-size: 0.9rem;">${r.nama_pelapor || r.full_name || '-'}</div>
-                        <div style="font-size: 0.78rem; color: var(--text-muted);">${r.department || r.location || '-'}</div>
+                        <div style="font-weight: 600; color: var(--text-main); font-size: 0.9rem;">${safeReporter}</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">${safeDept}</div>
                     </td>
                     <td style="padding: 1.15rem 1.5rem;">
-                        <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${r.jenis_aset || '-'}</div>
-                        <div style="font-size: 0.78rem; color: var(--text-muted); font-family: monospace;">S/N: ${r.nombor_siri || '-'}</div>
+                        <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${safeAssetType}</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); font-family: monospace;">S/N: ${safeSN}</div>
                     </td>
                     <td style="padding: 1.15rem 1.5rem;">
-                        <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${r.admin_name_jawatan || 'Admin ICT'}</div>
-                        <div style="font-size: 0.78rem; color: var(--text-muted);">${r.admin_jawatan || 'Pegawai Teknikal'}</div>
+                        <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${safeAdminName}</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">${safeAdminJawatan}</div>
                     </td>
                     <td style="padding: 1.15rem 1.5rem; white-space: nowrap;">
                         ${formatSentDate(r)}
@@ -502,16 +457,13 @@
                 };
 
                 cachedPendingReports = sortReports(cachedPendingReports);
-                cachedApprovedReports = sortReports(cachedApprovedReports);
 
-                // Kemas kini badges
+                // Kemas kini badge jumlah menunggu
                 const pendingBadge = document.getElementById('pendingBadge');
-                const approvedBadge = document.getElementById('approvedBadge');
                 if (pendingBadge) pendingBadge.innerText = cachedPendingReports.length;
-                if (approvedBadge) approvedBadge.innerText = cachedApprovedReports.length;
 
-                // Paparkan mengikut tab aktif
-                switchActivityTab(currentActivityTab);
+                // Paparkan senarai menunggu keputusan
+                renderActivityTable(cachedPendingReports, 'pending');
 
             } catch (err) {
                 console.error("Ralat memuatkan laporan aktiviti superadmin:", err);

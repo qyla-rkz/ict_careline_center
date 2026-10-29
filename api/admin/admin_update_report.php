@@ -161,6 +161,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $id
             ]);
 
+            // ==========================================
+            // KEMASKINI ASET LUPUS AUTOMATIK UNTUK 'Syor Dilupuskan'
+            // ==========================================
+            if ($keputusan === 'Syor Dilupuskan') {
+                $chkDisposal = $pdo->prepare("SELECT id FROM disposed_assets WHERE report_id = ?");
+                $chkDisposal->execute([$id]);
+                $existingDisposal = $chkDisposal->fetch(PDO::FETCH_ASSOC);
+
+                // Cari rekod padanan dalam staff_assets
+                $sa = null;
+                $sn = !empty($existingReport['nombor_siri']) ? trim($existingReport['nombor_siri']) : '';
+                if (!empty($sn)) {
+                    $saStmt = $pdo->prepare("SELECT * FROM staff_assets WHERE serial_number = ? LIMIT 1");
+                    $saStmt->execute([$sn]);
+                    $sa = $saStmt->fetch(PDO::FETCH_ASSOC);
+                }
+                if (!$sa && !empty($existingReport['asset_id'])) {
+                    $saStmt = $pdo->prepare("SELECT * FROM staff_assets WHERE id = ? LIMIT 1");
+                    $saStmt->execute([$existingReport['asset_id']]);
+                    $sa = $saStmt->fetch(PDO::FETCH_ASSOC);
+                }
+
+                $assetId = $sa['id'] ?? ($existingReport['asset_id'] ?: null);
+                $serialNum = $sn ?: ($sa['serial_number'] ?? 'TIADA');
+                $noPendaftaran = (!empty($sa['no_siri_pendaftaran'])) ? $sa['no_siri_pendaftaran'] : $serialNum;
+                $assetType = !empty($existingReport['jenis_aset']) ? $existingReport['jenis_aset'] : ($sa['asset_type'] ?? 'Desktop PC');
+                $model = (!empty($sa['model_komputer'])) ? $sa['model_komputer'] : (!empty($existingReport['jenis_aset']) ? $existingReport['jenis_aset'] : 'Komputer');
+                $pegawai = !empty($existingReport['nama_pelapor']) ? $existingReport['nama_pelapor'] : (!empty($existingReport['pengguna_terakhir']) ? $existingReport['pengguna_terakhir'] : ($sa['nama_pegawai'] ?? 'Staf'));
+                $jawatan = !empty($existingReport['jawatan_pelapor']) ? $existingReport['jawatan_pelapor'] : ($sa['jawatan'] ?? '');
+                $dept = (!empty($sa['jabatan_unit'])) ? $sa['jabatan_unit'] : (!empty($existingReport['location']) ? $existingReport['location'] : 'Majlis Perbandaran Manjung');
+                $tLupus = (!empty($kep_tarikh) && $kep_tarikh !== '0000-00-00') ? $kep_tarikh : date('Y-m-d');
+                $sebab = !empty($syor_ulasan) ? $syor_ulasan : (!empty($existingReport['perihal_kerosakan']) ? 'Aduan KEW.PA-9: ' . $existingReport['perihal_kerosakan'] : 'Disyorkan lupus melalui kelulusan KEW.PA-9');
+                $pelulus = !empty($kep_nama) ? $kep_nama : ($_SESSION['full_name'] ?? 'Super Admin');
+                $rujukan = 'KEW.PA-9 #' . str_pad($id, 2, '0', STR_PAD_LEFT);
+
+                if (!$existingDisposal) {
+                    $ins = $pdo->prepare("INSERT INTO disposed_assets 
+                        (asset_id, report_id, no_siri_pendaftaran, serial_number, asset_type, model_komputer,
+                         nama_pegawai, jawatan, jabatan_unit, tarikh_lupus, kaedah_pelupusan,
+                         sebab_lupus, no_rujukan_kelulusan, pegawai_pelulus, status)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '-', ?, ?, ?, 'Syor Dilupuskan')");
+                    $ins->execute([
+                        $assetId, $id, $noPendaftaran, $serialNum, $assetType, $model,
+                        $pegawai, $jawatan, $dept, $tLupus, $sebab, $rujukan, $pelulus
+                    ]);
+                } else {
+                    $upd = $pdo->prepare("UPDATE disposed_assets SET 
+                        tarikh_lupus = ?, sebab_lupus = ?, pegawai_pelulus = ?, no_rujukan_kelulusan = ?
+                        WHERE id = ?");
+                    $upd->execute([$tLupus, $sebab, $pelulus, $rujukan, $existingDisposal['id']]);
+                }
+
+                // Kemaskini status aset staf kepada 'Dilupuskan'
+                if ($assetId) {
+                    $pdo->prepare("UPDATE staff_assets SET status = 'Dilupuskan' WHERE id = ?")->execute([$assetId]);
+                } elseif (!empty($serialNum) && $serialNum !== 'TIADA') {
+                    $pdo->prepare("UPDATE staff_assets SET status = 'Dilupuskan' WHERE serial_number = ?")->execute([$serialNum]);
+                }
+            } else {
+                // Jika keputusan bukan lagi 'Syor Dilupuskan', padam rekod auto dan kembalikan status aset jika ada
+                $pdo->prepare("DELETE FROM disposed_assets WHERE report_id = ?")->execute([$id]);
+                if (!empty($existingReport['nombor_siri'])) {
+                    $pdo->prepare("UPDATE staff_assets SET status = 'Aktif' WHERE serial_number = ? AND status = 'Dilupuskan'")->execute([trim($existingReport['nombor_siri'])]);
+                }
+            }
+
             logAudit($pdo, $_SESSION['user_id'], 'Keputusan KEW.PA-9 (Super Admin)', "Super Admin '{$_SESSION['full_name']}' telah membuat keputusan Bahagian III untuk Laporan ID $id: '$keputusan' ($status).");
 
             jsonResponse('success', 'Keputusan KEW.PA-9 (Bahagian III) berjaya disimpan.');

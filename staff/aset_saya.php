@@ -194,9 +194,9 @@ include 'includes/header.php';
                 <div class="asset-card">
                     <div class="asset-card-top">
                         <div class="asset-card-badges">
-                            <span class="asset-badge asset-badge-type">${icon} ${assetTypeDisplay}</span>
+                            <span class="asset-badge asset-badge-type">${icon} ${escapeHtml(assetTypeDisplay)}</span>
                             <span class="asset-badge asset-badge-admin">🛡️ Didaftarkan Melalui Admin</span>
-                            <span class="asset-badge asset-badge-sn">S/N: ${serial}</span>
+                            <span class="asset-badge asset-badge-sn">S/N: ${escapeHtml(serial)}</span>
                         </div>
                         <div style="font-size:.74rem;color:#64748b;font-weight:600;">
                             📅 Didaftar: ${regDate}
@@ -205,35 +205,35 @@ include 'includes/header.php';
 
                     <div class="asset-card-title">
                         <div>
-                            <span>${model}</span>
-                            ${a.no_siri_pendaftaran ? `<span style="font-size:.75rem;font-weight:600;color:#64748b;margin-left:.5rem;">(No. Pendaftaran: <strong>${a.no_siri_pendaftaran}</strong>)</span>` : ''}
+                            <span>${escapeHtml(model)}</span>
+                            ${a.no_siri_pendaftaran ? `<span style="font-size:.75rem;font-weight:600;color:#64748b;margin-left:.5rem;">(No. Pendaftaran: <strong>${escapeHtml(a.no_siri_pendaftaran)}</strong>)</span>` : ''}
                         </div>
                     </div>
 
                     <div class="asset-specs-grid">
                         <div class="asset-spec-item">
                             <span class="asset-spec-label">🖥️ Monitor</span>
-                            <span class="asset-spec-value">${a.model_monitor ? a.model_monitor + (a.serial_monitor ? ' (' + a.serial_monitor + ')' : '') : 'Tiada / Bersepadu'}</span>
+                            <span class="asset-spec-value">${escapeHtml(a.model_monitor ? a.model_monitor + (a.serial_monitor ? ' (' + a.serial_monitor + ')' : '') : 'Tiada / Bersepadu')}</span>
                         </div>
                         <div class="asset-spec-item">
                             <span class="asset-spec-label">⚙️ OS &amp; Pemproses</span>
-                            <span class="asset-spec-value">${(a.os || '-') + ' / ' + (a.processor || '-')}</span>
+                            <span class="asset-spec-value">${escapeHtml((a.os || '-') + ' / ' + (a.processor || '-'))}</span>
                         </div>
                         <div class="asset-spec-item">
                             <span class="asset-spec-label">💾 RAM &amp; Storan</span>
-                            <span class="asset-spec-value">${(a.ram || '-') + ' / ' + (a.hard_disk || '-')}</span>
+                            <span class="asset-spec-value">${escapeHtml((a.ram || '-') + ' / ' + (a.hard_disk || '-'))}</span>
                         </div>
                         <div class="asset-spec-item">
                             <span class="asset-spec-label">🌐 Alamat IP</span>
-                            <span class="asset-spec-value">${a.ip_address || '-'}</span>
+                            <span class="asset-spec-value">${escapeHtml(a.ip_address || '-')}</span>
                         </div>
                         <div class="asset-spec-item">
                             <span class="asset-spec-label">🖨️ Pencetak</span>
-                            <span class="asset-spec-value">${a.printer || 'Tiada'}</span>
+                            <span class="asset-spec-value">${escapeHtml(a.printer || 'Tiada')}</span>
                         </div>
                         <div class="asset-spec-item">
                             <span class="asset-spec-label">📄 Perisian Office & Antivirus</span>
-                            <span class="asset-spec-value">${(a.ms_office ? 'Office ' + a.ms_office : '-') + (a.antivirus ? ' | ' + a.antivirus : '')}</span>
+                            <span class="asset-spec-value">${escapeHtml((a.ms_office ? 'Office ' + a.ms_office : '-') + (a.antivirus ? ' | ' + a.antivirus : ''))}</span>
                         </div>
                     </div>
 

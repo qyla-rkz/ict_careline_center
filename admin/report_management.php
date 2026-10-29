@@ -660,12 +660,12 @@
                 <tr style="border-bottom: 1px solid var(--border);">
                     <td style="padding: 1rem; font-weight: 600; color: var(--primary);">${formatReportId(r.id)}</td>
                     <td style="padding: 1rem;">
-                        <div style="font-weight: 700;">${r.jenis_aset}</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">${r.nombor_siri}</div>
+                        <div style="font-weight: 700;">${escapeHtml(r.jenis_aset)}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(r.nombor_siri)}</div>
                     </td>
                     <td style="padding: 1rem;">
-                        <div style="font-weight: 600;">${r.nama_pelapor || r.full_name || '-'}</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">${r.location || '-'}</div>
+                        <div style="font-weight: 600;">${escapeHtml(r.nama_pelapor || r.full_name || '-')}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(r.location || '-')}</div>
                     </td>
                     <td style="padding: 1rem; white-space: nowrap;">${tarikhMasaStr}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${prosesBadge}</td>

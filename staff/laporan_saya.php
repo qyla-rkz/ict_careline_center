@@ -260,14 +260,14 @@ include 'includes/header.php';
 
             return `<tr>
                 <td style="font-weight:700;color:#2563eb;">${formatReportId(r.id)}</td>
-                <td style="font-weight:600;">${r.jenis_aset || '—'}</td>
+                <td style="font-weight:600;">${escapeHtml(r.jenis_aset || '—')}</td>
                 <td style="color:#66768c;">${new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                 <td>${tarikhSiap}</td>
                 <td>${isobadge(r)}</td>
                 <td>${r.proses_semasa
-                    ? `<span style="display:inline-flex;padding:.25rem .65rem;border-radius:20px;font-size:.7rem;font-weight:700;background:#f1f5f9;color:#475569;">${r.proses_semasa}</span>`
+                    ? `<span style="display:inline-flex;padding:.25rem .65rem;border-radius:20px;font-size:.7rem;font-weight:700;background:#f1f5f9;color:#475569;">${escapeHtml(r.proses_semasa)}</span>`
                     : '<span style="color:#66768c;">—</span>'}</td>
-                <td><span style="font-weight:700;font-size:.78rem;color:${kepColor};">${r.keputusan || 'Menunggu'}</span></td>
+                <td><span style="font-weight:700;font-size:.78rem;color:${kepColor};">${escapeHtml(r.keputusan || 'Menunggu')}</span></td>
                 <td style="text-align:center;"><button type="button" class="btn-lihat" onclick='viewDetails(${safeJson})'>🔍 Lihat</button></td>
             </tr>`;
         }).join('');
@@ -334,7 +334,7 @@ include 'includes/header.php';
                 'Siap - Sedia Diambil': { bg: '#dcfce7', color: '#166534' },
             };
             const pc = prosesColors[r.proses_semasa] || { bg: '#f1f5f9', color: '#475569' };
-            prosesEl.innerHTML = `<span style="display:inline-flex;padding:.45rem .9rem;border-radius:20px;font-size:.82rem;font-weight:700;background:${pc.bg};color:${pc.color};">${r.proses_semasa}</span>`;
+            prosesEl.innerHTML = `<span style="display:inline-flex;padding:.45rem .9rem;border-radius:20px;font-size:.82rem;font-weight:700;background:${pc.bg};color:${pc.color};">${escapeHtml(r.proses_semasa)}</span>`;
         } else {
             prosesEl.innerHTML = '<span style="color:#66768c;font-size:.85rem;">⏳ Menunggu tindakan admin...</span>';
         }

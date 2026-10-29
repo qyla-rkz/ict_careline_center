@@ -8,33 +8,38 @@ function loadEnv($path) {
     }
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue; // Skip comments
-        list($name, $value) = explode('=', $line, 2);
+        $trimmed = trim($line);
+        if ($trimmed === '' || strpos($trimmed, '#') === 0) continue; // Skip empty and comments
+        if (strpos($trimmed, '=') === false) continue;
+        list($name, $value) = explode('=', $trimmed, 2);
         $name = trim($name);
         $value = trim($value);
-        if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
-            putenv(sprintf('%s=%s', $name, $value));
-            $_ENV[$name] = $value;
-            $_SERVER[$name] = $value;
+        if ((substr($value, 0, 1) === '"' && substr($value, -1) === '"') ||
+            (substr($value, 0, 1) === "'" && substr($value, -1) === "'")) {
+            $value = substr($value, 1, -1);
         }
+        putenv(sprintf('%s=%s', $name, $value));
+        $_ENV[$name] = $value;
+        $_SERVER[$name] = $value;
     }
 }
 
 // Load .env file from the root directory
 loadEnv(__DIR__ . '/../.env');
 
-$db_host = getenv('DB_HOST');
-$db_name = getenv('DB_NAME');
-$db_user = getenv('DB_USER');
-$db_pass = getenv('DB_PASS');
+$db_host = $_ENV['DB_HOST'] ?? (getenv('DB_HOST') ?: 'localhost');
+$db_port = $_ENV['DB_PORT'] ?? (getenv('DB_PORT') ?: '3306');
+$db_name = $_ENV['DB_NAME'] ?? (getenv('DB_NAME') ?: 'ict_careline');
+$db_user = $_ENV['DB_USER'] ?? (getenv('DB_USER') ?: 'root');
+$db_pass = $_ENV['DB_PASS'] ?? (getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
 
 try {
-    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass);
+    $pdo = new PDO("mysql:host=$db_host;port=$db_port;dbname=$db_name;charset=utf8mb4", $db_user, $db_pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     header('Content-Type: application/json');
-    // Log actual error to file here in production instead of showing it
+    error_log("Database connection error: " . $e->getMessage());
     echo json_encode(['status' => 'error', 'message' => 'Database connection failed. Please contact administrator.']);
     exit;
 }

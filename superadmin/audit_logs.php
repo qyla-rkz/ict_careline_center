@@ -67,14 +67,15 @@
                     Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">🪪 Profil Saya</a>
                 <a href="reports.php" class="nav-link">📝 Kelulusan Laporan</a>
                 <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
-                <a href="users.php" class="nav-link">👥 Pengguna</a>
+                <a href="users.php" class="nav-link">👤 Pengguna</a>
                 <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="audit_logs.php" class="nav-link active">📜 Jejak Audit</a>
+                <a href="disposed_assets.php" class="nav-link">🗑️ Aset Lupus</a>
+                <a href="audit_logs.php" class="nav-link">🔎 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -242,11 +243,16 @@
 
             logs.forEach(log => {
                 const tr = document.createElement('tr');
+                const safeDate = log.created_at ? new Date(log.created_at).toLocaleString('ms-MY') : '-';
+                const safeUser = escapeHtml(log.user_name || 'Tidak diketahui');
+                const safeStaffId = escapeHtml(log.staff_id || '-');
+                const safeAction = escapeHtml(log.action || '-');
+                const safeDetails = escapeHtml(log.details || '-');
                 tr.innerHTML = `
-                    <td style="white-space:nowrap; color:#64748b;">${new Date(log.created_at).toLocaleString('ms-MY')}</td>
-                    <td><strong>${log.user_name || 'Tidak diketahui'}</strong><br><small>${log.staff_id || '-'}</small></td>
-                    <td><span class="badge-action">${log.action}</span></td>
-                    <td>${log.details || '-'}</td>
+                    <td style="white-space:nowrap; color:#64748b;">${safeDate}</td>
+                    <td><strong>${safeUser}</strong><br><small>${safeStaffId}</small></td>
+                    <td><span class="badge-action">${safeAction}</span></td>
+                    <td>${safeDetails}</td>
                 `;
                 tbody.appendChild(tr);
             });

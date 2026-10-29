@@ -18,7 +18,13 @@ $smtp_host = !empty($settings['smtp_host']) ? $settings['smtp_host'] : (getenv('
 $smtp_user = !empty($settings['smtp_username']) ? $settings['smtp_username'] : (getenv('SMTP_USER') ?: '');
 $smtp_pass = !empty($settings['smtp_password']) ? $settings['smtp_password'] : (getenv('SMTP_PASS') ?: '');
 $smtp_port = !empty($settings['smtp_port']) ? $settings['smtp_port'] : (getenv('SMTP_PORT') ?: 587);
-$app_url   = getenv('APP_URL') ?: 'http://localhost/ict_careline_center';
+$app_url = !empty($_ENV['APP_URL']) ? $_ENV['APP_URL'] : getenv('APP_URL');
+if (empty($app_url)) {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $app_url = $protocol . $host . '/ict_careline_center';
+}
+$app_url = rtrim($app_url, '/');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse('error', 'Kaedah permintaan tidak sah');

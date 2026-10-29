@@ -845,8 +845,8 @@
                             tr.style.borderBottom = '1px solid var(--border)';
                             tr.innerHTML = `
                                 <td style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--text-main);">${formatReportId(r.id)}</td>
-                                <td style="padding: 1.25rem 1.5rem; color: var(--text-main); font-weight: 500;">${r.nama_pelapor || r.full_name || '-'}</td>
-                                <td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">${r.jenis_aset}</td>
+                                <td style="padding: 1.25rem 1.5rem; color: var(--text-main); font-weight: 500;">${escapeHtml(r.nama_pelapor || r.full_name || '-')}</td>
+                                <td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">${escapeHtml(r.jenis_aset || '-')}</td>
                                 <td style="padding: 1.25rem 1.5rem; color: var(--text-main); font-weight: 600; white-space: nowrap;">${formatTimeOnly(r.created_at)}</td>
                                 <td style="padding: 1.25rem 1.5rem;"><span class="badge badge-${r.keputusan === 'Syor Dilupuskan' ? 'disposed' : r.status === 'Resolved' ? 'resolved' : r.status === 'Rejected' ? 'rejected' : 'pending'}">${r.keputusan === 'Syor Dilupuskan' ? 'Syor Dilupuskan' : r.status === 'Pending' ? 'Belum Selesai' : r.status === 'Resolved' ? 'Selesai' : r.status === 'Rejected' ? 'Ditolak' : r.status}</span></td>
                                 <td style="padding: 1.25rem 1.5rem; text-align: center; white-space: nowrap;">

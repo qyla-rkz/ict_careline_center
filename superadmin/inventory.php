@@ -32,15 +32,16 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">Selamat kembali,</p>
                 <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super Admin</p>
             </div>
-            <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+           <nav class="nav-links">
+                <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">🪪 Profil Saya</a>
                 <a href="reports.php" class="nav-link">📝 Kelulusan Laporan</a>
                 <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
-                <a href="users.php" class="nav-link">👥 Pengguna</a>
-                <a href="inventory.php" class="nav-link active">🖥️ Inventori Aset</a>
+                <a href="users.php" class="nav-link">👤 Pengguna</a>
+                <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
+                <a href="disposed_assets.php" class="nav-link">🗑️ Aset Lupus</a>
+                <a href="audit_logs.php" class="nav-link">🔎 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
@@ -207,8 +208,8 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                 let total = 0;
                 let badgesHtml = '';
                 for (let [name, count] of Object.entries(assets)) {
-                    total += parseInt(count);
-                    badgesHtml += `<span style="display: inline-block; background: var(--primary-light); color: var(--primary); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-right: 0.25rem; margin-bottom: 0.25rem; border: 1px solid rgba(0,0,0,0.05);">${name}: <b>${count}</b></span>`;
+                    total += parseInt(count) || 0;
+                    badgesHtml += `<span style="display: inline-block; background: var(--primary-light); color: var(--primary); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-right: 0.25rem; margin-bottom: 0.25rem; border: 1px solid rgba(0,0,0,0.05);">${escapeHtml(name)}: <b>${parseInt(count) || 0}</b></span>`;
                 }
 
                 if (badgesHtml === '') badgesHtml = '<span class="text-muted" style="font-size: 0.85rem;">Tiada Aset</span>';
@@ -218,7 +219,7 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                 tr.style.borderBottom = '1px solid var(--border)';
                 tr.innerHTML = `
                     <td style="padding: 1rem; font-weight: 600; cursor: pointer; color: var(--primary);" onclick="toggleAssets('${accordionId}')" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
-                        ${d.department_name} <span style="font-size: 0.8rem; margin-left: 0.5rem;">▼</span>
+                        ${escapeHtml(d.department_name)} <span style="font-size: 0.8rem; margin-left: 0.5rem;">▼</span>
                     </td>
                     <td style="padding: 1rem; text-align: center; font-weight: 700; color: var(--primary);">${total}</td>
                     <td style="padding: 1rem; text-align: center;">
@@ -287,8 +288,8 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
             row.style.display = 'flex';
             row.style.gap = '0.5rem';
             row.innerHTML = `
-                <input type="text" class="form-control asset-name-input" placeholder="Nama Aset" value="${name}" required style="flex: 2;">
-                <input type="number" class="form-control asset-count-input" placeholder="Kuantiti" value="${count}" required style="flex: 1;" min="1">
+                <input type="text" class="form-control asset-name-input" placeholder="Nama Aset" value="${escapeHtml(name)}" required style="flex: 2;">
+                <input type="number" class="form-control asset-count-input" placeholder="Kuantiti" value="${parseInt(count) || 1}" required style="flex: 1;" min="1">
                 <button type="button" class="btn" style="background: var(--danger); color: white; padding: 0.4rem 0.8rem;" onclick="this.parentElement.remove()">X</button>
             `;
             container.appendChild(row);

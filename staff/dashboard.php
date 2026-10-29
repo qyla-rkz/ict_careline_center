@@ -285,7 +285,7 @@ include 'includes/header.php';
                         let prosesHTML = '';
                         if (report.proses_semasa) {
                             const pc = prosesColors[report.proses_semasa] || ['#f1f5f9','#475569'];
-                            prosesHTML = `<div style="margin-top:.35rem;display:inline-flex;align-items:center;gap:.3rem;background:${pc[0]};color:${pc[1]};padding:.2rem .65rem;border-radius:20px;font-size:.74rem;font-weight:700;">🔄 ${report.proses_semasa}</div>`;
+                            prosesHTML = `<div style="margin-top:.35rem;display:inline-flex;align-items:center;gap:.3rem;background:${pc[0]};color:${pc[1]};padding:.2rem .65rem;border-radius:20px;font-size:.74rem;font-weight:700;">🔄 ${escapeHtml(report.proses_semasa)}</div>`;
                         } else {
                             prosesHTML = `<div style="margin-top:.3rem;font-size:.74rem;color:#66768c;">⏳ Menunggu tindakan admin...</div>`;
                         }
@@ -294,8 +294,8 @@ include 'includes/header.php';
                             <div style="display:flex;align-items:center;gap:.75rem;flex:1;">
                                 <div style="width:38px;height:38px;border-radius:50%;background:${sBg};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">${sIcon}</div>
                                 <div style="flex:1;">
-                                    <div style="font-weight:700;color:#24324b;font-size:.88rem;">${report.jenis_aset}</div>
-                                    <div style="color:#66768c;font-size:.76rem;">S/N: ${report.nombor_siri || '—'} &bull; ${dateStr}</div>
+                                    <div style="font-weight:700;color:#24324b;font-size:.88rem;">${escapeHtml(report.jenis_aset)}</div>
+                                    <div style="color:#66768c;font-size:.76rem;">S/N: ${escapeHtml(report.nombor_siri || '—')} &bull; ${dateStr}</div>
                                     ${prosesHTML}
                                 </div>
                             </div>
@@ -329,8 +329,8 @@ include 'includes/header.php';
                     <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:rgba(0,0,0,.02);border-radius:10px;border:1px solid rgba(37,99,235,.1);margin-bottom:.4rem;">
                         <div style="background:${bg};color:${color};width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">${icon}</div>
                         <div style="flex:1;">
-                            <div style="font-weight:700;font-size:.84rem;color:#24324b;">${a.activity_type}</div>
-                            <div style="color:#66768c;font-size:.76rem;">${a.description}</div>
+                            <div style="font-weight:700;font-size:.84rem;color:#24324b;">${escapeHtml(a.activity_type)}</div>
+                            <div style="color:#66768c;font-size:.76rem;">${escapeHtml(a.description)}</div>
                         </div>
                         <div style="font-size:.72rem;color:#66768c;font-weight:600;white-space:nowrap;">${dateStr}</div>
                     </div>`;

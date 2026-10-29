@@ -126,13 +126,14 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
             </div>
             <nav class="nav-links">
                 <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="profile.php" class="nav-link">🪪 Profil Saya</a>
                 <a href="reports.php" class="nav-link">📝 Kelulusan Laporan</a>
                 <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
-                <a href="users.php" class="nav-link">👥 Pengguna</a>
+                <a href="users.php" class="nav-link">👤 Pengguna</a>
                 <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.php" class="nav-link active">👥 Aset Staf</a>
-                <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
+                <a href="disposed_assets.php" class="nav-link">🗑️ Aset Lupus</a>
+                <a href="audit_logs.php" class="nav-link">🔎 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
@@ -191,6 +192,15 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                         </div>
                     </div>
 
+                    <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 140px;">
+                        <label for="filterStatus" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; display: block;">Status Aset</label>
+                        <select id="filterStatus" class="form-control" onchange="handleSearch()">
+                            <option value="">Semua Status</option>
+                            <option value="Aktif" selected>🟢 Aktif</option>
+                            <option value="Dilupuskan">🔴 Dilupuskan</option>
+                        </select>
+                    </div>
+
                     <div style="margin-left: auto;">
                         <button onclick="openAddAssetModal()" class="btn btn-primary" style="padding: 0.75rem 1.4rem; border-radius: 12px; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 14px var(--primary-light);">
                             ➕ Tambah Aset Staf
@@ -205,17 +215,18 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                     <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                         <thead>
                             <tr style="text-align: left; background: #f8fafc; border-bottom: 2px solid var(--border);">
-                                <th style="padding: 1rem; width: 14%; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">ID Aset / No Siri</th>
+                                <th style="padding: 1rem; width: 13%; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">ID Aset / No Siri</th>
                                 <th style="padding: 1rem; width: 16%; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">Pemilik (Staf)</th>
-                                <th style="padding: 1rem; width: 18%; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">Jabatan / Unit</th>
-                                <th style="padding: 1rem; width: 12%; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">Jenis Aset</th>
-                                <th style="padding: 1rem; width: 15%; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">Jenama / Model</th>
-                                <th style="padding: 1rem; width: 11%; font-weight: 700; color: var(--text-main); font-size: 0.88rem; text-align: center;">Laporan</th>
-                                <th style="padding: 1rem; width: 14%; text-align: center; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">Tindakan</th>
+                                <th style="padding: 1rem; width: 16%; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">Jabatan / Unit</th>
+                                <th style="padding: 1rem; width: 11%; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">Jenis Aset</th>
+                                <th style="padding: 1rem; width: 13%; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">Jenama / Model</th>
+                                <th style="padding: 1rem; width: 9%; font-weight: 700; color: var(--text-main); font-size: 0.88rem; text-align: center;">Status</th>
+                                <th style="padding: 1rem; width: 7%; font-weight: 700; color: var(--text-main); font-size: 0.88rem; text-align: center;">Laporan</th>
+                                <th style="padding: 1rem; width: 15%; text-align: center; font-weight: 700; color: var(--text-main); font-size: 0.88rem;">Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="assetTableBody">
-                            <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">⏳ Memuatkan data aset staf...</td></tr>
+                            <tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">⏳ Memuatkan data aset staf...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -557,6 +568,7 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
         function handleSearch() {
             const searchTerm = document.getElementById('filterSearch').value.toLowerCase().trim();
             const selectedDept = document.getElementById('filterDept').value;
+            const selectedStatus = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : '';
 
             filteredAssets = allAssets.filter(a => {
                 const nameMatch = (a.name || a.nama_pegawai || '').toLowerCase().includes(searchTerm);
@@ -567,7 +579,10 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                 const deptVal = a.department || a.jabatan_unit || '';
                 const deptPass = !selectedDept || deptVal === selectedDept;
 
-                return searchPass && deptPass;
+                const assetStatus = a.status || 'Aktif';
+                const statusPass = !selectedStatus || assetStatus === selectedStatus;
+
+                return searchPass && deptPass && statusPass;
             });
 
             currentPage = 1;
@@ -581,7 +596,7 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
             const pageItems = filteredAssets.slice(start, end);
 
             if (!filteredAssets.length) {
-                tbody.innerHTML = '<tr><td colspan="7" style="padding:2.5rem;text-align:center;color:var(--text-muted)">Tiada rekod ditemui yang sepadan dengan carian.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="padding:2.5rem;text-align:center;color:var(--text-muted)">Tiada rekod ditemui yang sepadan dengan carian.</td></tr>';
                 updatePagination(0);
                 return;
             }
@@ -590,35 +605,57 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                 const assetDataSafe = JSON.stringify(a).replace(/'/g, "&#39;");
                 const staffName = a.name || a.nama_pegawai || 'Staf';
                 const staffDept = a.department || a.jabatan_unit || '-';
+                const safeStaffName = escapeHtml(staffName);
+                const safeStaffDept = escapeHtml(staffDept);
+                const safeSN = escapeHtml(a.serial_number || 'N/A');
+                const safeType = escapeHtml(a.asset_type || 'Desktop PC');
+                const safeModel = escapeHtml(a.model_komputer || '-');
+                const cleanStaffNameParam = (staffName || '').replace(/['"\\]/g, '');
                 const reportCount = a.total_report_count || 0;
+                const isDisposed = (a.status || 'Aktif') === 'Dilupuskan';
+                const statusBadge = isDisposed
+                    ? `<span class="status-pill" style="background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; font-size:0.75rem; font-weight:700;">Dilupuskan</span>`
+                    : `<span class="status-pill" style="background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; font-size:0.75rem; font-weight:700;">Aktif</span>`;
 
                 return `
                     <tr style="border-bottom: 1px solid var(--border); transition: background 0.2s ease;">
                         <td style="padding: 1rem; vertical-align: middle; font-weight: 700; color: var(--text-main); font-size: 0.88rem; word-break: break-all;">
-                            ${a.serial_number || 'N/A'}
+                            ${safeSN}
                         </td>
                         <td style="padding: 1rem; vertical-align: middle; font-weight: 600; color: var(--text-main); font-size: 0.88rem;">
-                            ${staffName}
+                            ${safeStaffName}
                         </td>
                         <td style="padding: 1rem; vertical-align: middle; font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; word-wrap: break-word;">
-                            ${staffDept}
+                            ${safeStaffDept}
                         </td>
                         <td style="padding: 1rem; vertical-align: middle; font-size: 0.85rem; color: var(--text-main);">
-                            ${a.asset_type || 'Desktop PC'}
+                            ${safeType}
                         </td>
                         <td style="padding: 1rem; vertical-align: middle; font-size: 0.85rem; color: var(--text-main); font-weight: 500;">
-                            ${a.model_komputer || '-'}
+                            ${safeModel}
                         </td>
                         <td style="padding: 1rem; vertical-align: middle; text-align: center;">
-                            <button class="btn btn-secondary" title="Lihat sejarah laporan staf" style="padding: 0.35rem 0.65rem; font-size: 0.75rem; border-radius: 6px; font-weight: 700;" onclick="viewUserHistory('${a.user_id || ''}', '${staffName.replace(/'/g, "\\'")}')">
+                            ${statusBadge}
+                        </td>
+                        <td style="padding: 1rem; vertical-align: middle; text-align: center;">
+                            <button class="btn btn-secondary" title="Lihat sejarah laporan staf" style="padding: 0.35rem 0.65rem; font-size: 0.75rem; border-radius: 6px; font-weight: 700;" onclick="viewUserHistory('${a.user_id || ''}', '${cleanStaffNameParam}')">
                                 📋 ${reportCount}
                             </button>
                         </td>
                         <td style="padding: 1rem; vertical-align: middle; text-align: center;">
-                            <div style="display: flex; gap: 0.4rem; justify-content: center;">
+                            <div style="display: flex; gap: 0.35rem; justify-content: center; flex-wrap: wrap;">
                                 <button onclick='openEditAssetModal(${assetDataSafe})' class="btn btn-primary table-action-btn" title="Kemaskini Maklumat Aset">
-                                    ✏️ Edit
+                                    ✏️
                                 </button>
+                                ${!isDisposed ? `
+                                    <button onclick='openQuickDisposeModal(${assetDataSafe})' class="btn btn-secondary table-action-btn" style="color: #b91c1c; border-color: rgba(220,38,38,0.3);" title="Hantar Aset ke Pelupusan">
+                                        🗑️ Lupus
+                                    </button>
+                                ` : `
+                                    <a href="disposed_assets.php" class="btn btn-secondary table-action-btn" style="color: #b91c1c;" title="Lihat Rekod di Aset Lupus">
+                                        📋 Lupus
+                                    </a>
+                                `}
                                 <button onclick="deleteAsset(${a.id}, '${(a.serial_number||'').replace(/'/g, "\\'")}')" class="btn btn-secondary table-action-btn" style="color: var(--danger); border-color: rgba(220,38,38,0.2);" title="Padam Rekod">
                                     🗑️
                                 </button>
@@ -880,15 +917,15 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                         ${reports.map(r => `
                             <div style="border:1px solid var(--border); padding:1.25rem; border-radius:12px; background: #fafafa;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
-                                    <div style="font-weight:700; color:var(--text-main); font-size:1rem;">${formatReportId(r.id)} - ${r.jenis_aset || 'Aset ICT'}</div>
+                                    <div style="font-weight:700; color:var(--text-main); font-size:1rem;">${formatReportId(r.id)} - ${escapeHtml(r.jenis_aset || 'Aset ICT')}</div>
                                     <div style="font-size:0.8rem; color:var(--text-muted);">${r.created_at ? new Date(r.created_at).toLocaleString('ms-MY') : '-'}</div>
                                 </div>
                                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.6rem; font-size:0.88rem;">
-                                    <div><strong>No. Siri:</strong> ${r.nombor_siri || '-'}</div>
-                                    <div><strong>Status Semasa:</strong> <span style="font-weight:700; color:var(--primary);">${r.status || '-'}</span></div>
-                                    <div><strong>Tarikh Kerosakan:</strong> ${r.tarikh_kerosakan || '-'}</div>
-                                    <div><strong>Keputusan:</strong> ${r.keputusan || '-'}</div>
-                                    <div style="grid-column: 1 / -1;"><strong>Perihal Kerosakan:</strong> ${r.perihal_kerosakan || '-'}</div>
+                                    <div><strong>No. Siri:</strong> ${escapeHtml(r.nombor_siri || '-')}</div>
+                                    <div><strong>Status Semasa:</strong> <span style="font-weight:700; color:var(--primary);">${escapeHtml(r.status || '-')}</span></div>
+                                    <div><strong>Tarikh Kerosakan:</strong> ${escapeHtml(r.tarikh_kerosakan || '-')}</div>
+                                    <div><strong>Keputusan:</strong> ${escapeHtml(r.keputusan || '-')}</div>
+                                    <div style="grid-column: 1 / -1;"><strong>Perihal Kerosakan:</strong> ${escapeHtml(r.perihal_kerosakan || '-')}</div>
                                 </div>
                             </div>
                         `).join('')}
@@ -902,6 +939,134 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
         function closeHistoryModal() {
             document.getElementById('historyModal').style.display = 'none';
         }
+
+        // ==========================================
+        // QUICK DISPOSAL MODAL LOGIC
+        // ==========================================
+        function openQuickDisposeModal(asset) {
+            document.getElementById('qd_asset_id').value = asset.id || '';
+            document.getElementById('qd_serial_number').value = asset.serial_number || '';
+            document.getElementById('qd_no_siri_pendaftaran').value = asset.no_siri_pendaftaran || asset.serial_number || '';
+            document.getElementById('qd_asset_type').value = asset.asset_type || 'Desktop PC';
+            document.getElementById('qd_model_komputer').value = asset.model_komputer || '';
+            document.getElementById('qd_nama_pegawai').value = asset.nama_pegawai || asset.name || '';
+            document.getElementById('qd_jabatan_unit').value = asset.jabatan_unit || asset.department || '';
+            
+            document.getElementById('qd_asset_info_text').textContent = `${asset.model_komputer || 'Komputer'} (S/N: ${asset.serial_number || 'N/A'}) - ${asset.nama_pegawai || asset.name || 'Tiada Staf'}`;
+            document.getElementById('qd_tarikh_lupus').value = new Date().toISOString().split('T')[0];
+            document.getElementById('quickDisposalAlert').style.display = 'none';
+            document.getElementById('quickDisposalModal').style.display = 'flex';
+        }
+
+        function closeQuickDisposalModal() {
+            document.getElementById('quickDisposalModal').style.display = 'none';
+        }
+
+        async function handleQuickDisposeSubmit(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnSubmitQD');
+            const alertBox = document.getElementById('quickDisposalAlert');
+            btn.disabled = true;
+            btn.textContent = 'Memproses Pelupusan...';
+
+            const form = document.getElementById('quickDisposalForm');
+            const formData = new FormData(form);
+
+            try {
+                const res = await fetch('../api/admin/admin_manage_disposal.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
+
+                if (result.status === 'success') {
+                    alertBox.style.display = 'block';
+                    alertBox.style.background = '#dcfce7';
+                    alertBox.style.color = '#15803d';
+                    alertBox.textContent = '✅ ' + result.message;
+
+                    setTimeout(() => {
+                        closeQuickDisposalModal();
+                        fetchAssets();
+                    }, 800);
+                } else {
+                    alertBox.style.display = 'block';
+                    alertBox.style.background = '#fee2e2';
+                    alertBox.style.color = '#b91c1c';
+                    alertBox.textContent = '❌ ' + (result.message || 'Ralat semasa memproses pelupusan.');
+                }
+            } catch (err) {
+                alertBox.style.display = 'block';
+                alertBox.style.background = '#fee2e2';
+                alertBox.style.color = '#b91c1c';
+                alertBox.textContent = '❌ Ralat sambungan: ' + err.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Sahkan & Hantar ke Aset Lupus';
+            }
+        }
     </script>
+
+    <!-- MODAL: PELUPUSAN PANTAS ASET (QUICK DISPOSAL) -->
+    <div id="quickDisposalModal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+        <div class="modal-content" style="background: white; border-radius: 20px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem;">
+                <div>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--danger); text-transform: uppercase;">Tindakan Pelupusan</span>
+                    <h3 style="margin: 0.2rem 0 0 0; font-size: 1.3rem; color: var(--text-main);">Hantar Aset ke Pelupusan</h3>
+                </div>
+                <button type="button" onclick="closeQuickDisposalModal()" style="background: none; border: none; font-size: 1.6rem; color: var(--text-muted); cursor: pointer;">&times;</button>
+            </div>
+
+            <div id="quickDisposalAlert" style="display: none; padding: 0.85rem 1.25rem; border-radius: 10px; margin-bottom: 1.25rem; font-size: 0.9rem; font-weight: 600;"></div>
+
+            <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem;">
+                <p style="margin: 0; font-size: 0.85rem; color: #9f1239; font-weight: 600;">Aset yang akan dilupuskan:</p>
+                <p id="qd_asset_info_text" style="margin: 0.3rem 0 0 0; font-size: 0.95rem; font-weight: 700; color: #881337;">-</p>
+            </div>
+
+            <form id="quickDisposalForm" onsubmit="handleQuickDisposeSubmit(event)">
+                <input type="hidden" name="asset_id" id="qd_asset_id">
+                <input type="hidden" name="serial_number" id="qd_serial_number">
+                <input type="hidden" name="no_siri_pendaftaran" id="qd_no_siri_pendaftaran">
+                <input type="hidden" name="asset_type" id="qd_asset_type">
+                <input type="hidden" name="model_komputer" id="qd_model_komputer">
+                <input type="hidden" name="nama_pegawai" id="qd_nama_pegawai">
+                <input type="hidden" name="jabatan_unit" id="qd_jabatan_unit">
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="font-weight: 600; font-size: 0.85rem;">Tarikh Pelupusan <span style="color:var(--danger)">*</span></label>
+                    <input type="date" name="tarikh_lupus" id="qd_tarikh_lupus" class="form-control" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="font-weight: 600; font-size: 0.85rem;">Kaedah Pelupusan <span style="color:var(--danger)">*</span></label>
+                    <select name="kaedah_pelupusan" id="qd_kaedah_pelupusan" class="form-control" required>
+                        <option value="E-Waste / Buangan Terjadual">♻️ E-Waste / Buangan Terjadual</option>
+                        <option value="Musnah">🔥 Musnah / Bakar / Tanam</option>
+                        <option value="Jualan Sisa">💵 Jualan Sisa / Besi Buruk</option>
+                        <option value="Pindahan / Tukar Ganti">🔄 Pindahan / Tukar Ganti (Trade-In)</option>
+                        <option value="Hadiah">🎁 Hadiah</option>
+                        <option value="Lain-lain">📦 Lain-lain Kaedah</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="font-weight: 600; font-size: 0.85rem;">Sebab / Justifikasi Pelupusan <span style="color:var(--danger)">*</span></label>
+                    <textarea name="sebab_lupus" id="qd_sebab_lupus" class="form-control" rows="2" placeholder="Cth: Rosak teruk tidak ekonomi dibaiki, Usang melebihi tempoh hayat ekonomi..." required>Rosak teruk dan tidak ekonomik dibaiki / Melebihi had umur ekonomi.</textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="font-weight: 600; font-size: 0.85rem;">No. Rujukan Kelulusan (Pilihan)</label>
+                    <input type="text" name="no_rujukan_kelulusan" id="qd_no_rujukan" class="form-control" placeholder="cth: MPM/BTM/LUPUS/2026/01">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border); padding-top: 1.25rem;">
+                    <button type="button" onclick="closeQuickDisposalModal()" class="btn btn-secondary">Batal</button>
+                    <button type="submit" id="btnSubmitQD" class="btn btn-primary" style="background: var(--danger); border-color: var(--danger); font-weight: 700;">Sahkan & Hantar ke Aset Lupus</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

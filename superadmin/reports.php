@@ -66,14 +66,15 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                 <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
-                <a href="reports.php" class="nav-link active">📝 Kelulusan Laporan</a>
+                <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">🪪 Profil Saya</a>
+                <a href="reports.php" class="nav-link">📝 Kelulusan Laporan</a>
                 <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
-                <a href="users.php" class="nav-link">👥 Pengguna</a>
+                <a href="users.php" class="nav-link">👤 Pengguna</a>
                 <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
+                <a href="disposed_assets.php" class="nav-link">🗑️ Aset Lupus</a>
+                <a href="audit_logs.php" class="nav-link">🔎 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
@@ -518,8 +519,10 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                     prosesLabel = `<span style="font-size:0.8rem; font-weight:600; color:${isSelesai ? '#166534' : '#4338ca'}; background:${isSelesai ? '#dcfce7' : '#e0e7ff'}; padding:0.2rem 0.5rem; border-radius:6px;">${r.proses_semasa}</span>`;
                 }
 
-                const reporterName = r.nama_pelapor || r.full_name || 'Staf';
-                const department = r.department || r.location || 'MPM';
+                const safeReporterName = escapeHtml(r.nama_pelapor || r.full_name || 'Staf');
+                const safeDepartment = escapeHtml(r.department || r.location || 'MPM');
+                const safeJenisAset = escapeHtml(r.jenis_aset || 'Aset ICT');
+                const safeNomborSiri = escapeHtml(r.nombor_siri || '-');
                 const reportDate = r.created_at ? new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
 
                 return `
@@ -528,12 +531,12 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                             ${formatReportId(r.id)}
                         </td>
                         <td style="padding: 1.1rem 1.25rem;">
-                            <div style="font-weight: 700; color: var(--text-main); font-size: 0.9rem;">${reporterName}</div>
-                            <div style="font-size: 0.78rem; color: var(--text-muted);">${department}</div>
+                            <div style="font-weight: 700; color: var(--text-main); font-size: 0.9rem;">${safeReporterName}</div>
+                            <div style="font-size: 0.78rem; color: var(--text-muted);">${safeDepartment}</div>
                         </td>
                         <td style="padding: 1.1rem 1.25rem;">
-                            <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${r.jenis_aset || 'Aset ICT'}</div>
-                            <div style="font-size: 0.78rem; color: var(--text-muted); font-family: monospace;">S/N: ${r.nombor_siri || '-'}</div>
+                            <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${safeJenisAset}</div>
+                            <div style="font-size: 0.78rem; color: var(--text-muted); font-family: monospace;">S/N: ${safeNomborSiri}</div>
                         </td>
                         <td style="padding: 1.1rem 1.25rem; font-size: 0.85rem; color: var(--text-muted);">
                             ${reportDate}
@@ -637,8 +640,8 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                 .filter(it => it.val && it.val !== '-' && it.val !== '')
                 .map(it => `
                     <div style="background:#ffffff;padding:0.5rem 0.75rem;border-radius:8px;border:1px solid var(--border);">
-                        <div style="font-size:0.72rem;font-weight:600;color:var(--text-muted);">${it.label}</div>
-                        <div style="font-size:0.85rem;font-weight:700;color:var(--text-main);">${it.val}</div>
+                        <div style="font-size:0.72rem;font-weight:600;color:var(--text-muted);">${escapeHtml(it.label)}</div>
+                        <div style="font-size:0.85rem;font-weight:700;color:var(--text-main);">${escapeHtml(it.val)}</div>
                     </div>
                 `).join('');
 

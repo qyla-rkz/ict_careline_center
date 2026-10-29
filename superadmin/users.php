@@ -194,14 +194,15 @@
                     Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">🪪 Profil Saya</a>
                 <a href="reports.php" class="nav-link">📝 Kelulusan Laporan</a>
                 <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
-                <a href="users.php" class="nav-link active">👥 Pengguna</a>
+                <a href="users.php" class="nav-link">👤 Pengguna</a>
                 <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
+                <a href="disposed_assets.php" class="nav-link">🗑️ Aset Lupus</a>
+                <a href="audit_logs.php" class="nav-link">🔎 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0).php" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪 Log Keluar</a>
@@ -418,22 +419,28 @@
                 if (user.department && user.department !== '-') detailsArr.push(user.department);
                 const detailsText = detailsArr.join(' | ') || 'Kakitangan';
 
+                const safeStaffId = escapeHtml(user.staff_id || '-');
+                const safeName = escapeHtml(user.name || '-');
+                const safeDetails = escapeHtml(detailsText);
+                const safePicPath = user.profile_picture ? escapeHtml('../' + user.profile_picture.replace(/^\/+/, '')) : '';
+                const picClickParam = (user.name || '').replace(/['"\\]/g, '');
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="font-weight: 800; color: var(--text-main); font-size: 0.95rem;">${user.staff_id}</td>
+                    <td style="font-weight: 800; color: var(--text-main); font-size: 0.95rem;">${safeStaffId}</td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 0.75rem;">
-                            <div style="width: 45px; height: 45px; border-radius: 50%; border: 1.5px solid var(--primary); overflow: hidden; display: flex; justify-content: center; align-items: center; background: #f1f5f9; flex-shrink: 0; cursor: pointer; position: relative;" onclick="showProfilePicModal('${user.profile_picture ? '../' + user.profile_picture : ''}', '${user.name.replace(/'/g, "\\'")}')" title="Klik untuk lihat gambar penuh">
-                                ${user.profile_picture ? `<img src="../${user.profile_picture}" style="width:100%; height:100%; object-fit:cover;">` : `<span style="font-size: 1.4rem;">👤</span>`}
+                            <div style="width: 45px; height: 45px; border-radius: 50%; border: 1.5px solid var(--primary); overflow: hidden; display: flex; justify-content: center; align-items: center; background: #f1f5f9; flex-shrink: 0; cursor: pointer; position: relative;" onclick="showProfilePicModal('${safePicPath}', '${picClickParam}')" title="Klik untuk lihat gambar penuh">
+                                ${safePicPath ? `<img src="${safePicPath}" style="width:100%; height:100%; object-fit:cover;">` : `<span style="font-size: 1.4rem;">👤</span>`}
                             </div>
                             <div>
-                                <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem; margin-bottom: 0.2rem;">${user.name}</div>
-                                <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">${detailsText}</div>
+                                <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem; margin-bottom: 0.2rem;">${safeName}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">${safeDetails}</div>
                             </div>
                         </div>
                     </td>
-                    <td><span class="badge ${roleClass}">${user.role}</span></td>
-                    <td><span class="badge ${statusClass}">${(user.status || 'active').toUpperCase()}</span></td>
+                    <td><span class="badge ${roleClass}">${escapeHtml(user.role)}</span></td>
+                    <td><span class="badge ${statusClass}">${escapeHtml((user.status || 'active').toUpperCase())}</span></td>
                     <td>
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
                             ${actionsHTML}

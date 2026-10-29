@@ -776,10 +776,10 @@
                 return `
                 <tr style="border-bottom: 1px solid var(--border);">
                     <td style="padding: 1rem; font-weight: 600; color: var(--primary);">${formatReportId(r.id)}</td>
-                    <td style="padding: 1rem;">${r.nama_pelapor || r.full_name}</td>
-                    <td style="padding: 1rem; white-space: nowrap;">${r.department || '<span style="color:var(--text-muted);font-size:0.85rem;">—</span>'}</td>
-                    <td style="padding: 1rem;"><span class="badge badge-${r.keputusan === 'Diluluskan' ? 'resolved' : r.keputusan === 'Syor Dilupuskan' ? 'disposed' : 'rejected'}" style="white-space: nowrap;">${r.keputusan || 'N/A'}</span></td>
-                    <td style="padding: 1rem;">${diprosesOleh}</td>
+                    <td style="padding: 1rem;">${escapeHtml(r.nama_pelapor || r.full_name || '-')}</td>
+                    <td style="padding: 1rem; white-space: nowrap;">${escapeHtml(r.department || '—')}</td>
+                    <td style="padding: 1rem;"><span class="badge badge-${r.keputusan === 'Diluluskan' ? 'resolved' : r.keputusan === 'Syor Dilupuskan' ? 'disposed' : 'rejected'}" style="white-space: nowrap;">${escapeHtml(r.keputusan || 'N/A')}</span></td>
+                    <td style="padding: 1rem;">${escapeHtml(diprosesOleh)}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${new Date(r.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${tarikhSiap}</td>
                     <td style="padding: 1rem; white-space: nowrap;">${isobadge(r)}</td>

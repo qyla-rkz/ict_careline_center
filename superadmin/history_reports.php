@@ -214,14 +214,15 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                 <p id="sidebarSuperadminName" style="font-weight: 700; color: var(--primary); font-size: 1rem;">Super Admin</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.php" class="nav-link">📊 Papan Pemuka</a>
-                <a href="profile.php" class="nav-link">👤 Profil Saya</a>
+                <a href="dashboard.php" class="nav-link active">📊 Papan Pemuka</a>
+                <a href="profile.php" class="nav-link">🪪 Profil Saya</a>
                 <a href="reports.php" class="nav-link">📝 Kelulusan Laporan</a>
-                <a href="history_reports.php" class="nav-link active">📜 Sejarah Laporan</a>
-                <a href="users.php" class="nav-link">👥 Pengguna</a>
+                <a href="history_reports.php" class="nav-link">📜 Sejarah Laporan</a>
+                <a href="users.php" class="nav-link">👤 Pengguna</a>
                 <a href="inventory.php" class="nav-link">🖥️ Inventori Aset</a>
                 <a href="staff_assets.php" class="nav-link">👥 Aset Staf</a>
-                <a href="audit_logs.php" class="nav-link">📜 Jejak Audit</a>
+                <a href="disposed_assets.php" class="nav-link">🗑️ Aset Lupus</a>
+                <a href="audit_logs.php" class="nav-link">🔎 Jejak Audit</a>
             </nav>
             <div style="margin-top: auto;">
                 <a href="javascript:void(0)" onclick="handleLogout()" class="nav-link" style="color: var(--danger);">🚪
@@ -804,8 +805,14 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                 const reporter = r.nama_pelapor || r.full_name || '-';
                 const department = r.department || r.location || '-';
 
-                const rawDecisionDate = r.keputusan_tarikh || r.admin_tarikh;
-                const decisionDateStr = rawDecisionDate ? new Date(rawDecisionDate).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+                const rawDecisionDate = (r.keputusan_tarikh && r.keputusan_tarikh !== '0000-00-00') 
+                    ? r.keputusan_tarikh 
+                    : ((r.admin_tarikh && r.admin_tarikh !== '0000-00-00') ? r.admin_tarikh : null);
+                let decisionDateStr = '-';
+                if (rawDecisionDate) {
+                    const parsed = new Date(rawDecisionDate.replace(' ', 'T'));
+                    decisionDateStr = !isNaN(parsed.getTime()) ? parsed.toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+                }
 
                 // Pengiraan ISO
                 const isoDays = calcIsoDays(r.created_at, rawDecisionDate);
@@ -821,18 +828,18 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
                             ${formatReportId(r.id)}
                         </td>
                         <td style="padding: 1.1rem 1.25rem;">
-                            <div style="font-weight: 600; color: var(--text-main); font-size: 0.9rem;">${reporter}</div>
+                            <div style="font-weight: 600; color: var(--text-main); font-size: 0.9rem;">${escapeHtml(reporter)}</div>
                         </td>
                         <td style="padding: 1.1rem 1.25rem; color: var(--text-muted); font-size: 0.85rem;">
-                            ${department}
+                            ${escapeHtml(department)}
                         </td>
                         <td style="padding: 1.1rem 1.25rem;">
-                            <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${r.jenis_aset || '-'}</div>
-                            <div style="font-size: 0.78rem; color: var(--text-muted); font-family: monospace;">S/N: ${r.nombor_siri || '-'}</div>
+                            <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${escapeHtml(r.jenis_aset || '-')}</div>
+                            <div style="font-size: 0.78rem; color: var(--text-muted); font-family: monospace;">S/N: ${escapeHtml(r.nombor_siri || '-')}</div>
                         </td>
                         <td style="padding: 1.1rem 1.25rem;">
-                            <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${r.admin_name_jawatan || 'Admin ICT'}</div>
-                            <div style="font-size: 0.78rem; color: var(--text-muted);">${r.admin_jawatan || 'Pegawai Teknikal'}</div>
+                            <div style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">${escapeHtml(r.admin_name_jawatan || 'Admin ICT')}</div>
+                            <div style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(r.admin_jawatan || 'Pegawai Teknikal')}</div>
                         </td>
                         <td style="padding: 1.1rem 1.25rem; font-size: 0.85rem; color: var(--text-main); white-space: nowrap;">
                             ${decisionDateStr}
@@ -915,7 +922,15 @@ if (!isset($_SESSION['user_id']) || !in_array(strtolower($_SESSION['role'] ?? ''
 
             // Bahagian III
             document.getElementById('v_keputusan').value = r.keputusan || '-';
-            document.getElementById('v_kep_tarikh').value = r.keputusan_tarikh ? new Date(r.keputusan_tarikh).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' }) : '-';
+            const kTarikh = (r.keputusan_tarikh && r.keputusan_tarikh !== '0000-00-00') ? r.keputusan_tarikh : null;
+            if (kTarikh) {
+                const parsedK = new Date(kTarikh.replace(' ', 'T'));
+                document.getElementById('v_kep_tarikh').value = !isNaN(parsedK.getTime()) 
+                    ? parsedK.toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' }) 
+                    : '-';
+            } else {
+                document.getElementById('v_kep_tarikh').value = '-';
+            }
             document.getElementById('v_kep_nama').value = r.keputusan_nama || 'Ketua Jabatan MPM';
 
             const badgeEl = document.getElementById('v_kep_badge');
